@@ -1,0 +1,19 @@
+{
+    "title": "储留箱",
+    "author": "王东",
+    "description": "储留箱需求设计相关文档",
+    "language": "zh-hans",
+    "gitbook": "3.2.3",
+    "plugins": [
+        "-sharing",
+        "search-pro",
+        "ancre-navigation",
+        "copy-code-button",
+        "splitter"
+    ],
+    "links": {
+        "sidebar": {
+            "swagger": "http://112.126.60.107:8080/swagger-ui.html"
+        }
+    }
+}
