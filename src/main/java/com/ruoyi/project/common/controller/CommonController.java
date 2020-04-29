@@ -134,13 +134,14 @@ public class CommonController {
      * @return 结果
      */
     @Log(title = "5.1.1 登录", businessType = BusinessType.OTHER)
-    @PostMapping("/login")
+    @GetMapping("/login")
     @ApiOperation(value = "5.1.1 登录", notes = "登录方法")
-    public AjaxResult login(@RequestBody LoginBody loginBody) {
+    //@RequestBody LoginBody loginBody
+    public AjaxResult login() {
         // 返回成功消息
         AjaxResult ajax = AjaxResult.success();
         // 生成令牌
-        String token = commonService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getUserType());
+        String token = commonService.login("admin", "admin123", "01");
         // 令牌放入map
         ajax.put(Constants.TOKEN, token);
         // 返回

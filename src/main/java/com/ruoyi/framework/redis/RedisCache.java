@@ -16,6 +16,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 /**
  * spring redis 工具类
  * 
@@ -25,7 +27,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RedisCache
 {
-    @Autowired
+    @Resource
     public RedisTemplate redisTemplate;
 
     /**

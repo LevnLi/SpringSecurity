@@ -1,6 +1,6 @@
-package com.ruoyi.project.storage.backend.advertisement.mapper;
+package com.ruoyi.project.storage.advertisement.mapper;
 
-import com.ruoyi.project.storage.backend.advertisement.domain.Advertisement;
+import com.ruoyi.project.storage.advertisement.domain.Advertisement;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

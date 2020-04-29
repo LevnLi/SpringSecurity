@@ -1,4 +1,4 @@
-package com.ruoyi.project.storage.backend.advertisement.domain;
+package com.ruoyi.project.storage.advertisement.domain;
 
 import com.ruoyi.framework.web.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;

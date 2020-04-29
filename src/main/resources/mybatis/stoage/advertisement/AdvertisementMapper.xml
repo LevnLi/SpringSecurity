@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.project.storage.backend.advertisement.mapper.AdvertisementMapper">
+<mapper namespace="com.ruoyi.project.storage.advertisement.mapper.AdvertisementMapper">
 
-    <resultMap id="AdvertisementResult" type="com.ruoyi.project.storage.backend.advertisement.domain.Advertisement">
+    <resultMap id="AdvertisementResult" type="com.ruoyi.project.storage.advertisement.domain.Advertisement">
         <id     property="id" column="id"/>
         <result property="title" column="title"/>
         <result property="content" column="content"/>
@@ -24,14 +24,14 @@
         select id,title,content,img_url,points,is_enable,sort_no,create_time,create_by,update_time,update_by,version,del_flag from t_advertisement
     </sql>
 
-    <select id="selectAdvertisementList" parameterType="com.ruoyi.project.storage.backend.advertisement.domain.Advertisement" resultMap="AdvertisementResult">
+    <select id="selectAdvertisementList" parameterType="com.ruoyi.project.storage.advertisement.domain.Advertisement" resultMap="AdvertisementResult">
         <include refid="selectAdvertisementVo"/>
         <where>
             and del_flag = '0'
             <if test="searchValue != null and searchValue != ''">
                 and (
                        title like concat(#{searchValue}, '%')
-                    or img_url like concat(#{searchValue}, '')
+                    or img_url like concat(#{searchValue}, '%')
                     or points = #{searchValue}
                 )
             </if>
@@ -39,7 +39,7 @@
         order by sort_no
     </select>
 
-    <insert id="insertAdvertisement" parameterType="com.ruoyi.project.storage.backend.advertisement.domain.Advertisement" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertAdvertisement" parameterType="com.ruoyi.project.storage.advertisement.domain.Advertisement" useGeneratedKeys="true" keyProperty="id">
         insert into t_advertisement
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="title != null and title != ''">title,</if>
@@ -71,7 +71,7 @@
         </trim>
     </insert>
 
-    <update id="updateAdvertisement" parameterType="com.ruoyi.project.storage.backend.advertisement.domain.Advertisement">
+    <update id="updateAdvertisement" parameterType="com.ruoyi.project.storage.advertisement.domain.Advertisement">
         update t_advertisement
         <trim prefix="SET" suffixOverrides=",">
             <if test="title != null and title != ''">title = #{title},</if>
@@ -108,15 +108,15 @@
         update t_advertisement
         set
         <if test="operate != null and operate == 'enable'.toString()">
-            is_enable = 0;
+            is_enable = 0,
         </if>
         <if test="operate != null and operate == 'disable'.toString()">
-            is_enable = 1;
+            is_enable = 1,
         </if>
         version = version + 1,
         update_time = #{time},
         update_by = #{user}
-        where disable = '0'
+        where del_flag = '0'
         and id in
         <foreach item="id" collection="ids" open="(" separator="," close=")">
             #{id}

@@ -3,6 +3,7 @@ package com.ruoyi.project.common.controller;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +23,7 @@ import com.ruoyi.framework.web.domain.AjaxResult;
 @RestController
 public class CaptchaController
 {
-    @Autowired
+    @Resource
     private RedisCache redisCache;
 
     /**

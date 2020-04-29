@@ -1,7 +1,6 @@
-package com.ruoyi.project.storage.backend.advertisement.service;
+package com.ruoyi.project.storage.advertisement.service;
 
-import com.ruoyi.project.storage.backend.advertisement.domain.Advertisement;
-import org.springframework.stereotype.Service;
+import com.ruoyi.project.storage.advertisement.domain.Advertisement;
 
 import java.util.List;
 
