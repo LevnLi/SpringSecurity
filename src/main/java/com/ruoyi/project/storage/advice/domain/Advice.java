@@ -20,7 +20,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(value = "意见建议对象", description = "意见建议对象")
-public class Advice  extends BaseEntity {
+public class Advice extends BaseEntity {
 
     /**
      * 序列化id
