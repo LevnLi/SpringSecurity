@@ -21,6 +21,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.system.domain.SysNotice;
 import com.ruoyi.project.system.service.ISysNoticeService;
 
+import javax.annotation.Resource;
+
 /**
  * 公告 信息操作处理
  * 

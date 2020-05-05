@@ -24,6 +24,8 @@ import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.project.system.domain.SysMenu;
 import com.ruoyi.project.system.service.ISysMenuService;
 
+import javax.annotation.Resource;
+
 /**
  * 菜单信息
  * 

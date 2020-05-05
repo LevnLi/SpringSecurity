@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.storage.mapper.AppAdvertisementMapper">
+
+    <resultMap id="AdvertisementResult" type="com.ruoyi.project.storage.domain.Advertisement">
+        <id     property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="imgUrl" column="img_url"/>
+        <result property="points" column="points"/>
+        <result property="isEnable" column="is_enable"/>
+        <result property="sortNo" column="sort_no"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="version" column="version"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <sql id="selectAdvertisementVo">
+        select id,title,content,img_url,points,is_enable,sort_no,create_time,create_by,update_time,update_by,version,del_flag from storage_dev.t_advertisement
+    </sql>
+
+    <select id="selectAdvertisementList" resultMap="AdvertisementResult">
+        <include refid="selectAdvertisementVo"/>
+        <where>
+            and del_flag = '0'
+        </where>
+        order by sort_no
+    </select>
+
+    <update id="getAdvertisementPoints" parameterType="Map">
+        UPDATE
+            sys_user
+        SET
+            current_points = current_points + #{id} ,
+            update_by = #{msg} ,
+            version = version + 1
+        WHERE
+            user_id = #{userId}
+    </update>
+</mapper>

@@ -23,6 +23,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.system.domain.SysPost;
 import com.ruoyi.project.system.service.ISysPostService;
 
+import javax.annotation.Resource;
+
 /**
  * 岗位信息操作处理
  * 

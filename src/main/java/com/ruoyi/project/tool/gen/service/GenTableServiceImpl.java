@@ -32,6 +32,8 @@ import com.ruoyi.project.tool.gen.util.GenUtils;
 import com.ruoyi.project.tool.gen.util.VelocityInitializer;
 import com.ruoyi.project.tool.gen.util.VelocityUtils;
 
+import javax.annotation.Resource;
+
 /**
  * 业务 服务层实现
  * 

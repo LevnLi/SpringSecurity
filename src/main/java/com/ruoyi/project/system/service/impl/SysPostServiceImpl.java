@@ -11,6 +11,8 @@ import com.ruoyi.project.system.mapper.SysPostMapper;
 import com.ruoyi.project.system.mapper.SysUserPostMapper;
 import com.ruoyi.project.system.service.ISysPostService;
 
+import javax.annotation.Resource;
+
 /**
  * 岗位信息 服务层处理
  * 

@@ -2,6 +2,8 @@ package com.ruoyi.project.monitor.service.impl;
 
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+
 import org.quartz.JobDataMap;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;

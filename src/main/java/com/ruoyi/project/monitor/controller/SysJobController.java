@@ -22,6 +22,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.monitor.domain.SysJob;
 import com.ruoyi.project.monitor.service.ISysJobService;
 
+import javax.annotation.Resource;
+
 /**
  * 调度任务信息操作处理
  * 

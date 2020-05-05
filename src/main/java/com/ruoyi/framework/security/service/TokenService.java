@@ -3,6 +3,7 @@ package com.ruoyi.framework.security.service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,11 +29,15 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class TokenService
 {
-    // 令牌自定义标识
+    /**
+     * 令牌自定义标识
+     */
     @Value("${token.header}")
     private String header;
 
-    // 令牌秘钥
+    /**
+     * 令牌秘钥
+     */
     @Value("${token.secret}")
     private String secret;
 
@@ -106,7 +111,7 @@ public class TokenService
         setUserAgent(loginUser);
         refreshToken(loginUser);
 
-        Map<String, Object> claims = new HashMap<>();
+        Map<String, Object> claims = new HashMap<>(1);
         claims.put(Constants.LOGIN_USER_KEY, token);
         return createToken(claims);
     }

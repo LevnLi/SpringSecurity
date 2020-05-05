@@ -22,6 +22,8 @@ import com.ruoyi.project.system.mapper.SysMenuMapper;
 import com.ruoyi.project.system.mapper.SysRoleMenuMapper;
 import com.ruoyi.project.system.service.ISysMenuService;
 
+import javax.annotation.Resource;
+
 /**
  * 菜单 业务层处理
  * 

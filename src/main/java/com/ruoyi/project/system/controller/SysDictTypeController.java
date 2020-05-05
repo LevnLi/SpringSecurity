@@ -23,6 +23,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.system.domain.SysDictType;
 import com.ruoyi.project.system.service.ISysDictTypeService;
 
+import javax.annotation.Resource;
+
 /**
  * 数据字典信息
  * 

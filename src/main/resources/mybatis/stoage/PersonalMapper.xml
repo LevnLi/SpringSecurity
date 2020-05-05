@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.storage.mapper.PersonalMapper">
+
+    <select id="queryOldPassword" parameterType="Map" resultType="string">
+        SELECT
+            password
+        FROM
+            storage_dev.sys_user
+        WHERE
+            user_id = #{id}
+          and
+            user_type = #{userType}
+    </select>
+
+    <insert id="updatePassword" parameterType="com.ruoyi.project.storage.domain.Personal" useGeneratedKeys="true" keyProperty="id">
+        update
+            storage_dev.sys_user
+        set
+            password = #{msg}
+        where
+            user_id = #{id}
+          and
+            user_type = #{userType}
+    </insert>
+
+</mapper>

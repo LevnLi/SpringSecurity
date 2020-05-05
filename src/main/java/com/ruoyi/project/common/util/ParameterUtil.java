@@ -50,6 +50,46 @@ public class ParameterUtil {
     }
 
     /**
+     * 通过传入id数组及操作返回Map<String, Object>
+     *
+     * @param id
+     * @param msg
+     * @return Map<String, Object>
+     */
+    public static Map<String, Object> getMapByOperateIds(Long id, String msg,String userType){
+        // 初始化map
+        Map<String, Object> map = new HashMap(3);
+        // 设置id数组
+        map.put("id", id);
+        // 设置操作类型
+        map.put("msg", msg);
+        // 设置用户类型
+        map.put("userType",userType);
+        // 返回map
+        return map;
+    }
+
+    /**
+     * 通过传入id数组及操作返回Map<String, Object>
+     *
+     * @param id
+     * @param msg
+     * @return Map<String, Object>
+     */
+    public static Map<String, Object> getMapByMsg(Long userId, Long id, String msg){
+        // 初始化map
+        Map<String, Object> map = new HashMap(3);
+        // 设置id数组
+        map.put("userId", userId);
+        // 设置操作类型
+        map.put("id", id);
+        // 设置用户类型
+        map.put("msg",msg);
+        // 返回map
+        return map;
+    }
+
+    /**
      * 初始化返回参数Map<String, Object>
      *
      * @return 返回参数

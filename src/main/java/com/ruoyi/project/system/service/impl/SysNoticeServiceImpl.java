@@ -7,6 +7,8 @@ import com.ruoyi.project.system.domain.SysNotice;
 import com.ruoyi.project.system.mapper.SysNoticeMapper;
 import com.ruoyi.project.system.service.ISysNoticeService;
 
+import javax.annotation.Resource;
+
 /**
  * 公告 服务层实现
  * 

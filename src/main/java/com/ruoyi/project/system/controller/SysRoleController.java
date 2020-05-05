@@ -23,6 +23,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.system.domain.SysRole;
 import com.ruoyi.project.system.service.ISysRoleService;
 
+import javax.annotation.Resource;
+
 /**
  * 角色信息
  * 

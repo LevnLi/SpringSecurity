@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.storage.mapper.AdviceMapper">
+
+    <resultMap id="AdviceResult" type="com.ruoyi.project.storage.domain.Advice">
+        <id     property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="sortNo" column="sort_no"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="version" column="version"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <sql id="adviceVO">
+        select id,user_id,title,content,sort_no,create_time,create_by,update_time,update_by,version,del_flag from t_advice
+    </sql>
+
+    <select id="queryAllAdvice" parameterType="com.ruoyi.project.storage.domain.Advice" resultMap="AdviceResult">
+        <include refid="adviceVO"/>
+        <where>
+            and del_flag = '0'
+            <if test="searchValue != null and searchValue != ''">
+                and (
+                title like concat(#{searchValue}, '%')
+                or content like concat(#{searchValue}, '%')
+                or create_by like concat(#{searchValue}, '%')
+                )
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <insert id="insertAdvice" parameterType="com.ruoyi.project.storage.domain.Advice" useGeneratedKeys="true" keyProperty="id">
+        insert into t_advice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null and title != ''">user_id,</if>
+            <if test="title != null and title != ''">title,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="version != null">version,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="version != null">#{version},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+        </trim>
+    </insert>
+
+</mapper>

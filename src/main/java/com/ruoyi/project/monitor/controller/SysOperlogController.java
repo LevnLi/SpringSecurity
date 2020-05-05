@@ -17,6 +17,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.monitor.domain.SysOperLog;
 import com.ruoyi.project.monitor.service.ISysOperLogService;
 
+import javax.annotation.Resource;
+
 /**
  * 操作日志记录
  * 

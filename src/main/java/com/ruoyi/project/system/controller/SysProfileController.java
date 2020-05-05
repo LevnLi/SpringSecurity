@@ -23,6 +23,8 @@ import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.project.system.domain.SysUser;
 import com.ruoyi.project.system.service.ISysUserService;
 
+import javax.annotation.Resource;
+
 /**
  * 个人信息 业务处理
  * 

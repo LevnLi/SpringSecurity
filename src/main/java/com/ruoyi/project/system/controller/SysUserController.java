@@ -30,6 +30,8 @@ import com.ruoyi.project.system.service.ISysPostService;
 import com.ruoyi.project.system.service.ISysRoleService;
 import com.ruoyi.project.system.service.ISysUserService;
 
+import javax.annotation.Resource;
+
 /**
  * 用户信息
  * 

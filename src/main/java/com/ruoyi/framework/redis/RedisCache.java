@@ -27,7 +27,7 @@ import javax.annotation.Resource;
 @Component
 public class RedisCache
 {
-    @Resource
+    @Autowired
     public RedisTemplate redisTemplate;
 
     /**

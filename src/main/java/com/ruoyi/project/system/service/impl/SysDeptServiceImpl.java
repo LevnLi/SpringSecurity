@@ -15,6 +15,8 @@ import com.ruoyi.project.system.domain.SysDept;
 import com.ruoyi.project.system.mapper.SysDeptMapper;
 import com.ruoyi.project.system.service.ISysDeptService;
 
+import javax.annotation.Resource;
+
 /**
  * 部门管理 服务实现
  * 

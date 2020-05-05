@@ -7,6 +7,8 @@ import com.ruoyi.project.monitor.domain.SysJobLog;
 import com.ruoyi.project.monitor.mapper.SysJobLogMapper;
 import com.ruoyi.project.monitor.service.ISysJobLogService;
 
+import javax.annotation.Resource;
+
 /**
  * 定时任务调度日志信息 服务层
  * 

@@ -9,6 +9,8 @@ import com.ruoyi.project.system.domain.SysConfig;
 import com.ruoyi.project.system.mapper.SysConfigMapper;
 import com.ruoyi.project.system.service.ISysConfigService;
 
+import javax.annotation.Resource;
+
 /**
  * 参数配置 服务层实现
  * 

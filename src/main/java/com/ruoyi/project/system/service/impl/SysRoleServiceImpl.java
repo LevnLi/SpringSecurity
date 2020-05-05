@@ -21,6 +21,8 @@ import com.ruoyi.project.system.mapper.SysRoleMenuMapper;
 import com.ruoyi.project.system.mapper.SysUserRoleMapper;
 import com.ruoyi.project.system.service.ISysRoleService;
 
+import javax.annotation.Resource;
+
 /**
  * 角色 业务层处理
  * 

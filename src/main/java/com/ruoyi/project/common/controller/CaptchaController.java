@@ -23,7 +23,7 @@ import com.ruoyi.framework.web.domain.AjaxResult;
 @RestController
 public class CaptchaController
 {
-    @Resource
+    @Autowired
     private RedisCache redisCache;
 
     /**

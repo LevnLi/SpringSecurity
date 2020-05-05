@@ -11,6 +11,8 @@ import com.ruoyi.project.system.mapper.SysDictDataMapper;
 import com.ruoyi.project.system.mapper.SysDictTypeMapper;
 import com.ruoyi.project.system.service.ISysDictTypeService;
 
+import javax.annotation.Resource;
+
 /**
  * 字典 业务层处理
  * 

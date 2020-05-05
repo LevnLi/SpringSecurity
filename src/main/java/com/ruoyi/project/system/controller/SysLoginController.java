@@ -19,6 +19,8 @@ import com.ruoyi.project.system.domain.SysMenu;
 import com.ruoyi.project.system.domain.SysUser;
 import com.ruoyi.project.system.service.ISysMenuService;
 
+import javax.annotation.Resource;
+
 /**
  * 登录验证
  * 

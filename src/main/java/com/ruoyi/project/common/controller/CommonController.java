@@ -1,5 +1,6 @@
 package com.ruoyi.project.common.controller;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -42,7 +43,7 @@ import java.util.Set;
 @RequestMapping("common")
 @Slf4j
 @SuppressWarnings("Duplicates")
-@Api(tags = {"5.1 公共"}, description = "登录、获取当前登录人信息、退出登录（POST）（/logout）、上传")
+@Api(tags = {"【公共端】5.1 公共"}, description = "登录、获取当前登录人信息、退出登录（POST）（/logout）、上传")
 public class CommonController {
 
     /**
@@ -136,12 +137,11 @@ public class CommonController {
     @Log(title = "5.1.1 登录", businessType = BusinessType.OTHER)
     @GetMapping("/login")
     @ApiOperation(value = "5.1.1 登录", notes = "登录方法")
-    //@RequestBody LoginBody loginBody
-    public AjaxResult login() {
+    public AjaxResult login(LoginBody loginBody) {
         // 返回成功消息
         AjaxResult ajax = AjaxResult.success();
         // 生成令牌
-        String token = commonService.login("admin", "admin123", "01");
+        String token = commonService.login(loginBody.getUsername(),loginBody.getPassword(),loginBody.getUserType());
         // 令牌放入map
         ajax.put(Constants.TOKEN, token);
         // 返回

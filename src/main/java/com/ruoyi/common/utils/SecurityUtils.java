@@ -7,13 +7,14 @@ import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.framework.security.LoginUser;
 
+import javax.annotation.Resource;
+
 /**
  * 安全服务工具类
  * 
  * @author ruoyi
  */
-public class SecurityUtils
-{
+public class SecurityUtils {
     /**
      * 获取用户账户
      **/
@@ -26,6 +27,36 @@ public class SecurityUtils
         catch (Exception e)
         {
             throw new CustomException("获取用户账户异常", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    /**
+     * 获取用户id
+     **/
+    public static Long getUserId()
+    {
+        try
+        {
+            return getLoginUser().getUser().getUserId();
+        }
+        catch (Exception e)
+        {
+            throw new CustomException("获取用户ID异常", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    /**
+     * 获取用户type
+     **/
+    public static String getUserType()
+    {
+        try
+        {
+            return getLoginUser().getUserType();
+        }
+        catch (Exception e)
+        {
+            throw new CustomException("获取用户Type异常", HttpStatus.UNAUTHORIZED);
         }
     }
 

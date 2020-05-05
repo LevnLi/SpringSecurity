@@ -21,6 +21,8 @@ import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.project.system.domain.SysDept;
 import com.ruoyi.project.system.service.ISysDeptService;
 
+import javax.annotation.Resource;
+
 /**
  * 部门信息
  * 

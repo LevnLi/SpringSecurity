@@ -14,6 +14,8 @@ import com.ruoyi.framework.security.LoginUser;
 import com.ruoyi.project.system.domain.SysUser;
 import com.ruoyi.project.system.service.ISysUserService;
 
+import javax.annotation.Resource;
+
 /**
  * 用户验证处理
  *

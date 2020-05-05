@@ -51,7 +51,7 @@ public class CommonService {
     /**
      * 注入AuthenticationManager
      */
-    @Resource
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     /**
@@ -104,6 +104,8 @@ public class CommonService {
                 userType.replaceAll("01", "后台端用户").replaceAll("02", "手机端用户") + MessageUtils.message("user.login.success")));
         // 获得登录用户身份权限
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        // 添加用户类型
+        loginUser.setUserType(userType);
         // 生成token
         return tokenService.createToken(loginUser);
     }

@@ -2,6 +2,7 @@ package com.ruoyi.framework.security;
 
 import java.util.Collection;
 import java.util.Set;
+import com.ruoyi.project.common.domain.LoginBody;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -20,6 +21,11 @@ public class LoginUser implements UserDetails
      * 用户唯一标识
      */
     private String token;
+
+    /**
+     * 用户类型
+     */
+    private String userType;
 
     /**
      * 登陆时间
@@ -71,12 +77,17 @@ public class LoginUser implements UserDetails
         this.token = token;
     }
 
-    public LoginUser()
-    {
+    public String getUserType() {
+        return userType;
     }
 
-    public LoginUser(SysUser user, Set<String> permissions)
-    {
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public LoginUser() {}
+
+    public LoginUser(SysUser user, Set<String> permissions) {
         this.user = user;
         this.permissions = permissions;
     }

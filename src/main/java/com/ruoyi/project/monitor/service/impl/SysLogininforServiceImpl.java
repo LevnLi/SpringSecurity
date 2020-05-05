@@ -7,6 +7,8 @@ import com.ruoyi.project.monitor.domain.SysLogininfor;
 import com.ruoyi.project.monitor.mapper.SysLogininforMapper;
 import com.ruoyi.project.monitor.service.ISysLogininforService;
 
+import javax.annotation.Resource;
+
 /**
  * 系统访问日志情况信息 服务层处理
  * 

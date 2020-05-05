@@ -17,6 +17,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.monitor.domain.SysLogininfor;
 import com.ruoyi.project.monitor.service.ISysLogininforService;
 
+import javax.annotation.Resource;
+
 /**
  * 系统访问记录
  * 

@@ -8,6 +8,8 @@ import com.ruoyi.project.system.domain.SysUser;
 import com.ruoyi.project.system.service.ISysMenuService;
 import com.ruoyi.project.system.service.ISysRoleService;
 
+import javax.annotation.Resource;
+
 /**
  * 用户权限处理
  * 

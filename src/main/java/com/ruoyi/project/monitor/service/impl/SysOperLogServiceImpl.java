@@ -7,6 +7,8 @@ import com.ruoyi.project.monitor.domain.SysOperLog;
 import com.ruoyi.project.monitor.mapper.SysOperLogMapper;
 import com.ruoyi.project.monitor.service.ISysOperLogService;
 
+import javax.annotation.Resource;
+
 /**
  * 操作日志 服务层处理
  * 

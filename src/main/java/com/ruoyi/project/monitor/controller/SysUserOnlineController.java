@@ -23,6 +23,8 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.monitor.domain.SysUserOnline;
 import com.ruoyi.project.system.service.ISysUserOnlineService;
 
+import javax.annotation.Resource;
+
 /**
  * 在线用户监控
  * 

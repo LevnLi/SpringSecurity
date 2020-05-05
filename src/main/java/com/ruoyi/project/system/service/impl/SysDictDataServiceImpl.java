@@ -7,6 +7,8 @@ import com.ruoyi.project.system.domain.SysDictData;
 import com.ruoyi.project.system.mapper.SysDictDataMapper;
 import com.ruoyi.project.system.service.ISysDictDataService;
 
+import javax.annotation.Resource;
+
 /**
  * 字典 业务层处理
  * 

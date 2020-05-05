@@ -54,9 +54,7 @@ public class DataScopeAspect
 
     // 配置织入点
     @Pointcut("@annotation(com.ruoyi.framework.aspectj.lang.annotation.DataScope)")
-    public void dataScopePointCut()
-    {
-    }
+    public void dataScopePointCut() {}
 
     @Before("dataScopePointCut()")
     public void doBefore(JoinPoint point) throws Throwable

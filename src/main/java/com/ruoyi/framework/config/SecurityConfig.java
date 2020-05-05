@@ -16,6 +16,8 @@ import com.ruoyi.framework.security.filter.JwtAuthenticationTokenFilter;
 import com.ruoyi.framework.security.handle.AuthenticationEntryPointImpl;
 import com.ruoyi.framework.security.handle.LogoutSuccessHandlerImpl;
 
+import javax.annotation.Resource;
+
 /**
  * spring security配置
  *
@@ -92,6 +94,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .antMatchers("/login", "/captchaImage").anonymous()
                 // 对于登录common/login允许匿名访问
                 .antMatchers("/common/login").anonymous()
+                // 对于手机端注册app/regist允许匿名访问
+                .antMatchers("/app/regist").anonymous()
                 .antMatchers(
                         HttpMethod.GET,
                         "/*.html",

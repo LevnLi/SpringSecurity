@@ -25,6 +25,8 @@ import com.ruoyi.project.system.mapper.SysUserRoleMapper;
 import com.ruoyi.project.system.service.ISysConfigService;
 import com.ruoyi.project.system.service.ISysUserService;
 
+import javax.annotation.Resource;
+
 /**
  * 用户 业务层处理
  * 
