@@ -1,15 +1,18 @@
 package com.ruoyi.project.storage.service.impl;
 
 import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.project.common.util.MathUtils;
+import com.ruoyi.project.common.util.ParameterUtil;
+import com.ruoyi.project.common.util.SeqGeneratorUtil;
 import com.ruoyi.project.storage.domain.BoxInfo;
+import com.ruoyi.project.storage.domain.BoxStandard;
 import com.ruoyi.project.storage.mapper.BackEndBoxInfoMapper;
 import com.ruoyi.project.storage.service.BackEndBoxInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author :lihao
@@ -35,21 +38,43 @@ public class BackEndBoxInfoServiceImpl implements BackEndBoxInfoService {
     }
 
     /**
+     * 箱子信息列表（分页）
+     *
+     * @param boxInfo
+     * @return 结果
+     */
+    @Override
+    public List<BoxInfo> queryBoxInfoList(BoxInfo boxInfo) {
+        return backEndBoxInfoMapper.queryBoxInfoList(boxInfo);
+    }
+
+    /**
+     * 删除箱子信息
+     *
+     * @param ids
+     * @return 结果
+     */
+    @Override
+    public int deleteBoxInfo(Long[] ids) {
+        return backEndBoxInfoMapper.deleteBoxInfo(ParameterUtil.getBatchUpdateMapByIds(ids));
+    }
+
+    /**
      * 添加箱子信息
      *
      * @param boxInfo
-     * @return
+     * @return 结果
      */
     @Override
     public int insertBoxInfo(BoxInfo boxInfo) {
         // 箱子编号: 年月日+随机六位数
-        boxInfo.setBoxCode(Long.valueOf(DateUtils.getNowDateStr() + MathUtils.randomDigitNumber(6)));
+        boxInfo.setBoxCode(Long.valueOf(SeqGeneratorUtil.seqGenerator(DateUtils.getNowDateStr(),6)));
         // 未使用
         boxInfo.setIsUsed(0);
         // 创建时间
         boxInfo.setCreateTime(DateUtils.getNowDate());
         // 创建人
-        boxInfo.setCreateBy(SecurityUtils.getUsername());
+        boxInfo.setCreateBy("admin");
         // 版本号
         boxInfo.setVersion(0L);
         // 未删除

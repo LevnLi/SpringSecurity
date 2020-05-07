@@ -3,6 +3,7 @@ package com.ruoyi.project.common.util;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,6 +67,27 @@ public class ParameterUtil {
         map.put("msg", msg);
         // 设置用户类型
         map.put("userType",userType);
+        // 返回map
+        return map;
+    }
+
+    /**
+     * 通过传入id数组及操作返回Map<String, Object>
+     *
+     * @param id
+     * @param msg
+     * @param userType
+     * @return Map<String, Object>
+     */
+    public static Map<String, Object> getMapByOperateIdsArray(Long[] id, String userName, Date updateTime){
+        // 初始化map
+        Map<String, Object> map = new HashMap(3);
+        // 设置id数组
+        map.put("ids", id);
+        // 设置操作类型
+        map.put("userName", userName);
+        // 设置用户类型
+        map.put("updateTime",updateTime);
         // 返回map
         return map;
     }

@@ -69,7 +69,7 @@ public class BackEndBoxStandardController extends BaseController {
     }
 
     /**
-     * 删除广告
+     * 删除箱子规格
      * @param ids 箱子规格ID数组
      * @return 结果
      */
@@ -110,8 +110,8 @@ public class BackEndBoxStandardController extends BaseController {
     }
 
     /**
-     * 新增广告
-     * @param boxStandard 广告对象
+     * 新增箱子规格
+     * @param boxStandard 箱子规格对象
      * @return 结果
      */
     @Log(title = "5.3.4.2 箱子规格新增", businessType = BusinessType.INSERT)

@@ -96,7 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .antMatchers("/common/login").anonymous()
                 // 对于手机端注册app/regist允许匿名访问
                 .antMatchers("/app/regist").anonymous()
-                .antMatchers("/backend/box/standard/**").anonymous()
+                //.antMatchers("/backend/box/info/**").anonymous()
                 .antMatchers(
                         HttpMethod.GET,
                         "/*.html",

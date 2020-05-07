@@ -28,7 +28,7 @@
     </resultMap>
 
     <sql id="BoxStandardVO">
-        select id,boxStandard,box_unit_price,remark,sort_no,create_time,create_by,update_time,update_by,version,del_flag from t_box_standard
+        select id,box_standard,box_unit_price,remark,sort_no,create_time,create_by,update_time,update_by,version,del_flag from t_box_standard
     </sql>
 
     <select id="queryBoxStandardList" parameterType="com.ruoyi.project.storage.domain.BoxStandard" resultMap="BoxStandardResult">
