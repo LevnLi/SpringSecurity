@@ -56,7 +56,7 @@ public class AppAdvertisementController extends BaseController {
     @GetMapping("/list")
     @ApiOperation(value = "5.3.7.1 广告列表（非分页）",notes = "广告列表")
     public AjaxResult list(){
-        // 返回想用请求分页数据
+        // 返回请求数据
         return AjaxResult.success("查询成功",appAdvertisementService.selectAdvertisementList());
     }
 

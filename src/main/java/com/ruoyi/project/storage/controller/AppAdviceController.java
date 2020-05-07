@@ -12,12 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author :lihao
  * @date :2020/05/05
  * @description :手机端意见管理
  */
+@RestController
 @RequestMapping("/app/personal")
 @Api(tags = {"【手机端】5.2.8 意见建议"},description = "新增意见")
 public class AppAdviceController extends BaseController {

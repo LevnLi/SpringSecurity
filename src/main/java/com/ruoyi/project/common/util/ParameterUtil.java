@@ -54,6 +54,7 @@ public class ParameterUtil {
      *
      * @param id
      * @param msg
+     * @param userType
      * @return Map<String, Object>
      */
     public static Map<String, Object> getMapByOperateIds(Long id, String msg,String userType){
@@ -65,6 +66,24 @@ public class ParameterUtil {
         map.put("msg", msg);
         // 设置用户类型
         map.put("userType",userType);
+        // 返回map
+        return map;
+    }
+
+    /**
+     * 通过传入id及操作返回Map<String, Object>
+     *
+     * @param id
+     * @param msg
+     * @return Map<String, Object>
+     */
+    public static Map<String, Object> getMapByIdMsg(Long id, String msg){
+        // 初始化map
+        Map<String, Object> map = new HashMap(3);
+        // 设置id
+        map.put("id", id);
+        // 设置操作类型
+        map.put("msg", msg);
         // 返回map
         return map;
     }
