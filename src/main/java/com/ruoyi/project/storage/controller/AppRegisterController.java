@@ -1,6 +1,5 @@
 package com.ruoyi.project.storage.controller;
 
-import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.Log;
 import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
 import com.ruoyi.framework.web.controller.BaseController;
@@ -36,7 +35,7 @@ public class AppRegisterController extends BaseController {
     private final RegisterService registerService;
 
     /**
-     * 积分记录接口
+     * 积分记录service接口
      */
     private final PointService pointService;
 

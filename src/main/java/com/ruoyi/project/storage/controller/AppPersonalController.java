@@ -9,6 +9,7 @@ import com.ruoyi.project.storage.service.PersonalService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
@@ -22,8 +23,19 @@ import javax.annotation.Resource;
 @Api(tags = {"【手机端】5.2.5 个人中心"},description = "修改个人密码")
 public class AppPersonalController extends BaseController {
 
+    /**
+     * 个人service接口
+     */
+    private final PersonalService personalService;
+
+    /**
+     * 通过构造方法注入
+     * @param personalService
+     */
     @Autowired
-    private PersonalService personalService;
+    public AppPersonalController(PersonalService personalService) {
+        this.personalService = personalService;
+    }
 
     /**
      * 修改密码
@@ -33,6 +45,7 @@ public class AppPersonalController extends BaseController {
      */
     @Log(title = "5.2.5.1 修改密码", businessType = BusinessType.UPDATE)
     @PutMapping("/updatePassword/{oldPassword}/{newPassword}")
+    @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "5.2.5.1 修改密码",notes = "修改密码")
     public AjaxResult updatePassword(@PathVariable String oldPassword,@PathVariable String newPassword){
         // 如果输入的旧密码和数据库中的旧密码不一样

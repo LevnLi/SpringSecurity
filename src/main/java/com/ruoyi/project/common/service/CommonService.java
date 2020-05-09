@@ -51,8 +51,7 @@ public class CommonService {
     /**
      * 注入AuthenticationManager
      */
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
     /**
      * 构造方法注入
@@ -60,8 +59,9 @@ public class CommonService {
      * @param tokenService token验证处理
      */
     @Autowired
-    public CommonService(TokenService tokenService) {
+    public CommonService(TokenService tokenService, AuthenticationManager authenticationManager) {
         this.tokenService = tokenService;
+        this.authenticationManager = authenticationManager;
     }
 
     /**

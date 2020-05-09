@@ -9,6 +9,7 @@ import com.ruoyi.project.storage.domain.Advertisement;
 import com.ruoyi.project.storage.service.AdvertisementService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -63,6 +64,7 @@ public class BackEndAdvertisementController extends BaseController {
      */
     @Log(title = "5.3.7.2 广告新增", businessType = BusinessType.INSERT)
     @PostMapping("/create")
+    @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "5.3.7.2 广告新增",notes = "新增广告")
     public AjaxResult add(@RequestBody Advertisement advertisement){
         /**
@@ -82,6 +84,7 @@ public class BackEndAdvertisementController extends BaseController {
      */
     @Log(title = "5.3.7.3 广告编辑", businessType = BusinessType.UPDATE)
     @PutMapping("/update")
+    @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "5.3.7.2 广告编辑",notes = "修改广告")
     public AjaxResult edit(@RequestBody Advertisement advertisement){
         /**
@@ -101,6 +104,7 @@ public class BackEndAdvertisementController extends BaseController {
      */
     @Log(title = "5.3.7.4 广告删除", businessType = BusinessType.DELETE)
     @PutMapping("/delete/{ids}")
+    @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "5.3.7.4 广告删除",notes = "删除广告")
     public AjaxResult remove(@PathVariable Long[] ids){
         /**
@@ -121,6 +125,7 @@ public class BackEndAdvertisementController extends BaseController {
      */
     @Log(title = "5.3.7.5 广告启用/停用", businessType = BusinessType.UPDATE)
     @PutMapping("/{operate}/{ids}")
+    @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "5.3.7.5 广告启用/停用",notes = "启用/停用广告")
     public AjaxResult remove(@PathVariable String operate, @PathVariable Long[] ids){
         // 定义字符串: "disable"

@@ -1,5 +1,6 @@
 package com.ruoyi.project.storage.controller;
 
+import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.framework.aspectj.lang.annotation.Log;
 import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
 import com.ruoyi.framework.web.controller.BaseController;
@@ -78,18 +79,19 @@ public class BackEndBoxStandardController extends BaseController {
     @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "5.3.4.3 箱子规格删除",notes = "箱子规格删除")
     public AjaxResult remove(@PathVariable Long[] ids){
-        // new一个箱子规格对象
-        BoxStandard boxStandard = new BoxStandard();
         // 定义count接收修改条数
         int count = 0;
         // 对ids进行foreach循环
         for (Long id : ids) {
-            // 如果当前箱子规格下的箱子没被使用
-            if (standardService.queryBoxStandardById(id)==null){
-                // 将遍历的id装入箱子规格对象
-                boxStandard.setId(id);
+            // 如果当前箱子规格下有箱子
+            if (standardService.queryBoxStandardById(id)!=null){
+                // 抛出异常
+                throw new CustomException("删除箱子规格失败，规格下仍有箱子");
+            }
+            // 其余情况
+            else {
                 // 加合当前修改条数
-                count += standardService.deleteBoxStandard(boxStandard);
+                count += standardService.deleteBoxStandard(id);
             }
         }
         // 如果修改条数大于等于当前ids数组长度
@@ -97,15 +99,10 @@ public class BackEndBoxStandardController extends BaseController {
             // 表示全部删除，返回成功信息
             return AjaxResult.success("删除成功");
         }
-        // 如果修改条数大于零，小于当前ids数组长度
-        else if (count>0&&count<ids.length){
-            // 表示只有部分箱子规格被删除，返回信息
-            return AjaxResult.success("部分删除");
-        }
         // 其余情况是一条也没删
         else {
-            // 返回失败信息
-            return AjaxResult.error("删除失败");
+            // 抛出异常
+            throw new CustomException("删除箱子规格失败，规格下仍有箱子");
         }
     }
 

@@ -36,10 +36,10 @@ public interface BackEndBoxStandardMapper {
 
     /**
      * 箱子规格删除
-     * @param boxStandard
+     * @param map
      * @return 结果
      */
-    int deleteBoxStandard(BoxStandard boxStandard);
+    int deleteBoxStandard(Map<String,Object> map);
 
     /**
      * 箱子规格下拉列表（非分页）

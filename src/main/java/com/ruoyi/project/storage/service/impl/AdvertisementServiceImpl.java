@@ -102,12 +102,17 @@ public class AdvertisementServiceImpl implements AdvertisementService {
      */
     @Override
     public int deleteAdvertisementByIds(Long[] ids) {
-        // 返回删除条数
+        /**
+         * 内嵌方法参数:
+         *      ids: 广告ids数组
+         * @return 返回删除条数
+         */
         return advertisementMapper.deleteAdvertisementByIds(ParameterUtil.getBatchUpdateMapByIds(ids));
     }
 
     @Override
     public int operateAdvertisementByIds(String operate, Long[] ids) {
+
         // 返回操作条数
         return advertisementMapper.operateAdvertisementByIds(ParameterUtil.getBatchUpdateMapByOperateIds(operate, ids));
     }

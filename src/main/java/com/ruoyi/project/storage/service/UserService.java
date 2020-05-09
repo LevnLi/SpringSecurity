@@ -12,7 +12,7 @@ public interface UserService {
 
     /**
      * 用户列表（分页）
-     * @param user
+     * @param customer
      * @return 用户列表
      */
     List<Customer> queryUserList(Customer customer);

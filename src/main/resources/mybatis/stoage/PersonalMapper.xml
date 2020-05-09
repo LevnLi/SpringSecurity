@@ -8,7 +8,7 @@
         SELECT
             password
         FROM
-            storage_dev.sys_user
+            sys_user
         WHERE
             user_id = #{id}
           and
@@ -17,7 +17,7 @@
 
     <insert id="updatePassword" parameterType="com.ruoyi.project.storage.domain.Personal" useGeneratedKeys="true" keyProperty="id">
         update
-            storage_dev.sys_user
+            sys_user
         set
             password = #{msg}
         where

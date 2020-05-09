@@ -72,20 +72,41 @@ public class ParameterUtil {
     }
 
     /**
-     * 通过传入id数组及操作返回Map<String, Object>
+     * 通过传入id及用户名、当前时间返回Map<String, Object>
      *
      * @param id
-     * @param msg
-     * @param userType
+     * @param updateBy
+     * @param updateTime
      * @return Map<String, Object>
      */
-    public static Map<String, Object> getMapByOperateIdsArray(Long[] id, String userName, Date updateTime){
+    public static Map<String, Object> getIdUpdateByUpdateTime(Long id, String updateBy, Date updateTime){
         // 初始化map
         Map<String, Object> map = new HashMap(3);
         // 设置id数组
-        map.put("ids", id);
+        map.put("id", id);
         // 设置操作类型
-        map.put("userName", userName);
+        map.put("updateBy", updateBy);
+        // 设置用户类型
+        map.put("updateTime",updateTime);
+        // 返回map
+        return map;
+    }
+
+    /**
+     * 通过传入id数组及用户名、当前时间返回Map<String, Object>
+     *
+     * @param ids
+     * @param updateBy
+     * @param updateTime
+     * @return Map<String, Object>
+     */
+    public static Map<String, Object> getIdsUpdateByUpdateTime(Long[] ids, String updateBy, Date updateTime){
+        // 初始化map
+        Map<String, Object> map = new HashMap(3);
+        // 设置id数组
+        map.put("ids", ids);
+        // 设置操作类型
+        map.put("updateBy", updateBy);
         // 设置用户类型
         map.put("updateTime",updateTime);
         // 返回map

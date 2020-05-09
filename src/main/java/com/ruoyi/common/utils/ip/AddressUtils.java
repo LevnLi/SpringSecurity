@@ -16,7 +16,7 @@ public class AddressUtils
 {
     private static final Logger log = LoggerFactory.getLogger(AddressUtils.class);
 
-    public static final String IP_URL = "http://ip.taobao.com/service/getIpInfo.php";
+    public static final String IP_URL = "http://api.pi.do/api/v1/queryip";
 
     public static String getRealAddressByIP(String ip)
     {
@@ -29,6 +29,7 @@ public class AddressUtils
         if (RuoYiConfig.isAddressEnabled())
         {
             String rspStr = HttpUtils.sendPost(IP_URL, "ip=" + ip);
+            System.out.println("获取地址信息==========="+rspStr);
             if (StringUtils.isEmpty(rspStr))
             {
                 log.error("获取地理位置异常 {}", ip);

@@ -110,14 +110,12 @@
         WHERE
             stand.id = #{ids}
             AND
-            info.is_used = '1'
-            AND
-            stand.del_flag = '0'
+            info.del_flag = '0'
             LIMIT 1;
     </select>
 
     <update id="deleteBoxStandard" parameterType="com.ruoyi.project.storage.domain.BoxStandard">
-        update storage_dev.t_box_standard
+        update t_box_standard
         set del_flag = '2',
         version = version + 1,
         update_time = #{updateTime},
@@ -131,13 +129,13 @@
             box_standard,
             box_unit_price
         FROM
-            storage_dev.t_box_standard
+            t_box_standard
         where
             del_flag = '0'
     </select>
 
     <select id="queryBox" parameterType="map" resultType="string">
-        SELECT 1 FROM storage_dev.t_box_standard WHERE box_standard = #{msg} and box_unit_price = #{id} LIMIT 1;
+        SELECT 1 FROM t_box_standard WHERE box_standard = #{msg} and box_unit_price = #{id} LIMIT 1;
     </select>
 
 

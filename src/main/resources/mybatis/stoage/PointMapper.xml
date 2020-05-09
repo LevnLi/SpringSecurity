@@ -21,7 +21,7 @@
     </resultMap>
 
     <sql id="point">
-        select id,user_id,way,points,advertisement_id,order_id,sort_no,create_time,create_by,update_time,update_by,version,del_flag from storage_dev.t_point_record
+        select id,user_id,way,points,advertisement_id,order_id,sort_no,create_time,create_by,update_time,update_by,version,del_flag from t_point_record
     </sql>
 
     <select id="queryPointList" parameterType="com.ruoyi.project.storage.domain.Point" resultMap="PointResult">
@@ -44,7 +44,7 @@
     </select>
 
     <insert id="insertPoint" parameterType="com.ruoyi.project.storage.domain.Point">
-        insert into storage_dev.t_point_record
+        insert into t_point_record
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="userId != null">user_id,</if>
             <if test="way != null">way,</if>

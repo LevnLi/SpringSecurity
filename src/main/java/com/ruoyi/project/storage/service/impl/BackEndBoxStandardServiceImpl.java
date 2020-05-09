@@ -86,17 +86,13 @@ public class BackEndBoxStandardServiceImpl implements BackEndBoxStandardService 
     /**
      * 箱子规格删除
      *
-     * @param boxStandard
+     * @param id
      * @return 结果
      */
     @Override
-    public int deleteBoxStandard(BoxStandard boxStandard) {
-        // 修改人
-        boxStandard.setUpdateBy("admin");
-        // 修改时间
-        boxStandard.setUpdateTime(DateUtils.getNowDate());
+    public int deleteBoxStandard(Long id) {
         // 返回修改条数
-        return backEndBoxStandardMapper.deleteBoxStandard(boxStandard);
+        return backEndBoxStandardMapper.deleteBoxStandard(ParameterUtil.getIdUpdateByUpdateTime(id,SecurityUtils.getUsername(),DateUtils.getNowDate()));
     }
 
     /**

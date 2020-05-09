@@ -39,7 +39,7 @@ public interface BackEndBoxStandardService {
      * @param boxStandard
      * @return 结果
      */
-    int deleteBoxStandard(BoxStandard boxStandard);
+    int deleteBoxStandard(Long id);
 
     /**
      * 箱子规格下拉列表（非分页）

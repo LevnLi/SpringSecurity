@@ -21,7 +21,7 @@
     </resultMap>
 
     <sql id="selectAdvertisementVo">
-        select id,title,content,img_url,points,is_enable,sort_no,create_time,create_by,update_time,update_by,version,del_flag from storage_dev.t_advertisement
+        select id,title,content,img_url,points,is_enable,sort_no,create_time,create_by,update_time,update_by,version,del_flag from t_advertisement
     </sql>
 
     <select id="selectAdvertisementList" resultMap="AdvertisementResult">

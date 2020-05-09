@@ -9,6 +9,7 @@ import com.ruoyi.project.storage.service.AdviceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +46,7 @@ public class AppAdviceController extends BaseController {
      */
     @Log(title = "【手机端】5.2.8 意见建议", businessType = BusinessType.INSERT)
     @PostMapping("/advice")
+    @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "【手机端】5.2.8 意见建议",notes = "新增意见")
     public AjaxResult insetAdvice(@RequestBody Advice advice){
         /**

@@ -21,7 +21,7 @@
     </resultMap>
 
     <sql id="selectAdvertisementVo">
-        select id,title,content,img_url,points,is_enable,sort_no,create_time,create_by,update_time,update_by,version,del_flag from storage_dev.t_advertisement
+        select id,title,content,img_url,points,is_enable,sort_no,create_time,create_by,update_time,update_by,version,del_flag from t_advertisement
     </sql>
 
     <select id="selectAdvertisementList" parameterType="com.ruoyi.project.storage.domain.Advertisement" resultMap="AdvertisementResult">
@@ -40,7 +40,7 @@
     </select>
 
     <insert id="insertAdvertisement" parameterType="com.ruoyi.project.storage.domain.Advertisement" useGeneratedKeys="true" keyProperty="id">
-        insert into storage_dev.t_advertisement
+        insert into t_advertisement
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="title != null and title != ''">title,</if>
             <if test="content != null and content != ''">content,</if>
@@ -68,7 +68,7 @@
     </insert>
 
     <update id="updateAdvertisement" parameterType="com.ruoyi.project.storage.domain.Advertisement">
-        update storage_dev.t_advertisement
+        update t_advertisement
         <trim prefix="SET" suffixOverrides=",">
             <if test="title != null and title != ''">title = #{title},</if>
             <if test="content != null and content != ''">content = #{content},</if>
@@ -84,7 +84,7 @@
     </update>
 
     <update id="deleteAdvertisementByIds" parameterType="Map">
-        update storage_dev.t_advertisement
+        update t_advertisement
         set del_flag = '2',
         version = version + 1,
         update_time = #{time},
@@ -98,7 +98,7 @@
     </update>
 
     <update id="operateAdvertisementByIds" parameterType="Map">
-        update storage_dev.t_advertisement
+        update t_advertisement
         set
         <if test="operate != null and operate == 'enable'.toString()">
             is_enable = 0,
