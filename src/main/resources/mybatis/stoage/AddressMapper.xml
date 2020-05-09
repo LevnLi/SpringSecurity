@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.storage.mapper.AddressServiceMapper">
+
+    <resultMap id="AddressResult" type="com.ruoyi.project.storage.domain.Address">
+        <id     property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="contacts" column="contacts"/>
+        <result property="contactsPhone" column="contacts_phone"/>
+        <result property="province" column="province"/>
+        <result property="provinceName" column="province_name"/>
+        <result property="city" column="city"/>
+        <result property="cityName" column="city_name"/>
+        <result property="area" column="area"/>
+        <result property="areaName" column="area_name"/>
+        <result property="address" column="address"/>
+        <result property="isDefault" column="is_default"/>
+        <result property="sortNo" column="sort_no"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="version" column="version"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <sql id="selectAddress">
+        select id,user_id,contacts,contacts_phone,province,province_name,city,city_name,area,area_name,address,is_default,sort_no,create_time,create_by,update_time,update_by,version,del_flag from t_customer_address
+    </sql>
+
+    <select id="selectAddressList" parameterType="com.ruoyi.project.storage.domain.Advertisement" resultMap="AddressResult">
+        <include refid="selectAddress"/>
+        <where>
+            and del_flag = '0'
+            and
+                user_id = #{userId}
+        </where>
+        order by create_time
+    </select>
+
+    <insert id="insertAddress" parameterType="com.ruoyi.project.storage.domain.Address" useGeneratedKeys="true" keyProperty="id">
+        insert into t_customer_address
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="contacts != null and contacts != ''">contacts,</if>
+            <if test="contactsPhone != null and contactsPhone != ''">contacts_phone,</if>
+            <if test="address != null and address != ''">address,</if>
+            <if test="isDefault != null">is_default,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="version != null">version,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="contacts != null and contacts != ''">#{contacts},</if>
+            <if test="contactsPhone != null and contactsPhone != ''">#{contactsPhone},</if>
+            <if test="address != null and address != ''">#{address},</if>
+            <if test="isDefault != null">#{isDefault},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="version != null">#{version},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAddress" parameterType="com.ruoyi.project.storage.domain.Advertisement">
+        update t_customer_address
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contacts != null and contacts != ''">contacts = #{contacts},</if>
+            <if test="contactsPhone != null and contactsPhone != ''">contacts_phone = #{contactsPhone},</if>
+            <if test="address != null and address != ''">address = #{address},</if>
+            <if test="isDefault != null">is_default = #{isDefault},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            version = version + 1,
+        </trim>
+        where id = #{id}
+        and
+            user_id = #{userId}
+        and
+            del_flag = '0'
+    </update>
+
+    <update id="deleteAddressById" parameterType="Map">
+        update t_customer_address
+        set del_flag = '2',
+        version = version + 1,
+        update_time = #{updateTime},
+        update_by = #{updateBy}
+        where del_flag = '0'
+        and id = #{id}
+    </update>
+
+    <update id="defaultAddressById" parameterType="Map">
+        update t_customer_address
+        set is_default = 0,
+        update_time = #{updateTime},
+        update_by = #{updateBy},
+        version = version + 1
+        where
+        id = #{id}
+        and
+        is_default = 1
+    </update>
+
+    <update id="removeDefaultAddress" parameterType="Map">
+        update t_customer_address
+        set is_default = 1,
+            update_time = #{updateTime},
+            update_by = #{updateBy},
+            version = version + 1
+        where
+            user_id = #{id}
+        and
+            is_default = 0
+    </update>
+
+    <select id="queryAddressByUserId" parameterType="long" resultType="string">
+        SELECT 1 FROM t_customer_address WHERE user_id = #{id}  LIMIT 1;
+    </select>
+</mapper>

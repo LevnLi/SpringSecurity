@@ -119,12 +119,12 @@ public class BackEndBoxStandardController extends BaseController {
         // 定义count变量接收修改条数
         Long count = 0L;
         // 如果箱子积分单价小于0
-        if (boxStandard.getBoxUnitPrice()<0){
+        if (boxStandard.getBoxUnitPrice()<0L){
             // 返回错误信息
             return AjaxResult.error("箱子积分单价小于0");
         }
         // 如果库存数量小于等于0
-        if (boxStandard.getInventoryNumber()<=0){
+        if (boxStandard.getInventoryNumber()<=0L){
             // 返回错误信息
             return AjaxResult.error("库存数量小于0");
         }
