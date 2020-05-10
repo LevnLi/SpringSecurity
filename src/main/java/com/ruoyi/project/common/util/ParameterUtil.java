@@ -93,6 +93,30 @@ public class ParameterUtil {
     }
 
     /**
+     * 通过传入id及数据、用户名、当前时间返回Map<String, Object>
+     *
+     * @param id
+     * @param data
+     * @param updateBy
+     * @param updateTime
+     * @return Map<String, Object>
+     */
+    public static Map<String, Object> getIdDataUpdateByUpdateTime(Long id,Long data, String updateBy, Date updateTime){
+        // 初始化map
+        Map<String, Object> map = new HashMap(4);
+        // 设置id
+        map.put("id", id);
+        // 数据
+        map.put("data", data);
+        // 更新人
+        map.put("updateBy", updateBy);
+        // 更新时间
+        map.put("updateTime",updateTime);
+        // 返回map
+        return map;
+    }
+
+    /**
      * 通过传入id数组及用户名、当前时间返回Map<String, Object>
      *
      * @param ids
@@ -105,9 +129,9 @@ public class ParameterUtil {
         Map<String, Object> map = new HashMap(3);
         // 设置id数组
         map.put("ids", ids);
-        // 设置操作类型
+        // 更新人
         map.put("updateBy", updateBy);
-        // 设置用户类型
+        // 更新时间
         map.put("updateTime",updateTime);
         // 返回map
         return map;

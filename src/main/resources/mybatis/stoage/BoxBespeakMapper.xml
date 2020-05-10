@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.storage.mapper.BoxBespeakMapper">
+
+    <resultMap id="AddressResult" type="com.ruoyi.project.storage.domain.Address">
+        <id     property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="contacts" column="contacts"/>
+        <result property="contactsPhone" column="contacts_phone"/>
+        <result property="province" column="province"/>
+        <result property="provinceName" column="province_name"/>
+        <result property="city" column="city"/>
+        <result property="cityName" column="city_name"/>
+        <result property="area" column="area"/>
+        <result property="areaName" column="area_name"/>
+        <result property="address" column="address"/>
+        <result property="isDefault" column="is_default"/>
+        <result property="sortNo" column="sort_no"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="version" column="version"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <resultMap id="BoxStandardResult" type="com.ruoyi.project.storage.domain.BoxStandardV1">
+        <id     property="id" column="id"/>
+        <result property="boxStandard" column="box_standard"/>
+        <result property="boxUnitPrice" column="box_unit_price"/>
+    </resultMap>
+
+    <sql id="selectAddress">
+        select id,user_id,contacts,contacts_phone,province,province_name,city,city_name,area,area_name,address,is_default,sort_no,create_time,create_by,update_time,update_by,version,del_flag from t_customer_address
+    </sql>
+
+    <select id="getDefaultAddress" parameterType="long" resultMap="AddressResult">
+        <include refid="selectAddress"/>
+        <where>
+            del_flag = '0'
+            and
+                user_id = #{userId}
+            and
+                is_default = 0
+        </where>
+    </select>
+
+    <select id="getStandardList" resultMap="BoxStandardResult">
+        SELECT
+            id,
+            box_standard,
+            box_unit_price
+        FROM
+            t_box_standard
+        where
+            del_flag = '0'
+    </select>
+
+    <select id="queryUserPoint" parameterType="long" resultType="long">
+        select current_points from sys_user where user_id = #{userId}
+    </select>
+
+    <select id="queryIsStandard" parameterType="string" resultType="string">
+        SELECT 1 FROM t_box_info WHERE is_used = 0 and del_flag = '0' and box_standard = #{boxStandard} LIMIT 1;
+    </select>
+
+    <select id="randGetBoxInfoByStandard" parameterType="map" resultType="com.ruoyi.project.storage.domain.BoxInfo">
+        SELECT
+            id,
+            box_code AS boxCode,
+            box_standard AS boxStandard,
+            box_unit_price AS boxUnitPrice,
+            version
+        FROM
+            t_box_info
+        WHERE
+          is_used = 0
+        AND del_flag = '0'
+        AND box_standard = #{msg}
+        AND box_unit_price = #{id}
+        ORDER BY RAND() LIMIT 1;
+    </select>
+
+    <update id="updateBoxInfo" parameterType="com.ruoyi.project.storage.domain.BoxInfo">
+        update t_box_info
+        set
+            used_by = #{usedBy},
+            is_used = #{isUsed},
+            update_by = #{usedBy},
+            update_time = #{updateTime},
+            version = version + 1
+        where
+            id = #{id}
+        and
+            version = #{version}
+    </update>
+
+    <insert id="createOrderRecord" parameterType="com.ruoyi.project.storage.domain.Order" useGeneratedKeys="true" keyProperty="id">
+        insert into t_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="status != null">status,</if>
+            <if test="orderCode != null">order_code,</if>
+            <if test="orderName != null and orderName != ''">order_name,</if>
+            <if test="emptyBoxOrderTime != null">empty_box_order_time,</if>
+            <if test="emptyBoxCallName != null and emptyBoxCallName != ''">empty_box_call_name,</if>
+            <if test="emptyBoxCallPhone != null and emptyBoxCallPhone != ''">empty_box_call_phone,</if>
+            <if test="emptyBoxCallAddress != null and emptyBoxCallAddress != ''">empty_box_call_address,</if>
+            <if test="emptyBoxCallTime != null">empty_box_call_time,</if>
+            <if test="emptyBoxCallInterval != null and emptyBoxCallInterval != ''">empty_box_call_interval,</if>
+            <if test="boxId != null">box_id,</if>
+            <if test="boxCode != null">box_code,</if>
+            <if test="boxStandard != null and boxStandard != ''">box_standard,</if>
+            <if test="boxUnitPrice != null">box_unit_price,</if>
+            <if test="leaseDuration != null">lease_duration,</if>
+            <if test="totalPrice != null">total_price,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="version != null">version,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="appDelFlag != null">app_del_flag,</if>
+            <if test="backendDelFlag != null">backend_del_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="orderCode != null">#{orderCode},</if>
+            <if test="orderName != null and orderName != ''">#{orderName},</if>
+            <if test="emptyBoxOrderTime != null">#{emptyBoxOrderTime},</if>
+            <if test="emptyBoxCallName != null and emptyBoxCallName != ''">#{emptyBoxCallName},</if>
+            <if test="emptyBoxCallPhone != null and emptyBoxCallPhone != ''">#{emptyBoxCallPhone},</if>
+            <if test="emptyBoxCallAddress != null and emptyBoxCallAddress != ''">#{emptyBoxCallAddress},</if>
+            <if test="emptyBoxCallTime != null">#{emptyBoxCallTime},</if>
+            <if test="emptyBoxCallInterval != null and emptyBoxCallInterval != ''">#{emptyBoxCallInterval},</if>
+            <if test="boxId != null">#{boxId},</if>
+            <if test="boxCode != null">#{boxCode},</if>
+            <if test="boxStandard != null and boxStandard != ''">#{boxStandard},</if>
+            <if test="boxUnitPrice != null">#{boxUnitPrice},</if>
+            <if test="leaseDuration != null">#{leaseDuration},</if>
+            <if test="totalPrice != null">#{totalPrice},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="version != null">#{version},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="appDelFlag != null">#{appDelFlag},</if>
+            <if test="backendDelFlag != null">#{backendDelFlag},</if>
+        </trim>
+    </insert>
+
+    <update id="subtractUserPoint" parameterType="map">
+        update sys_user
+        set
+            current_points = #{data},
+            update_by = #{updateBy},
+            update_Time = #{updateTime},
+            version = version + 1
+        where
+            user_id = #{id}
+    </update>
+
+</mapper>

@@ -13,9 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 class RuoYiApplicationTest {
 
     public static void main(String[] args) {
-
-        System.out.println(SeqGeneratorUtil.seqGenerator(DateUtils.getNowDateStr(),6));
-
+        Long a = 10L;
+        Long b = -1L;
+        System.out.println(a*b);
     }
 }
 

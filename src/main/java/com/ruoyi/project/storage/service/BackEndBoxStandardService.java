@@ -2,9 +2,7 @@ package com.ruoyi.project.storage.service;
 
 import com.ruoyi.project.storage.domain.BoxStandard;
 import com.ruoyi.project.storage.domain.BoxStandardV0;
-
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author :lihao
@@ -15,28 +13,28 @@ public interface BackEndBoxStandardService {
 
     /**
      * 箱子规格列表（分页）
-     * @param boxStandard
+     * @param boxStandard 箱子规格对象
      * @return 结果
      */
     List<BoxStandard> queryBoxStandardList(BoxStandard boxStandard);
 
     /**
      * 箱子规格新增
-     * @param boxStandard
+     * @param boxStandard 箱子规格对象
      * @return 结果
      */
     int insertBoxStandard(BoxStandard boxStandard);
 
     /**
      * 通过id查询当前箱子规格是否使用
-     * @param ids
-     * @return
+     * @param id 箱子规格id
+     * @return 结果
      */
     String queryBoxStandardById(Long id);
 
     /**
      * 箱子规格删除
-     * @param boxStandard
+     * @param id 箱子规格id
      * @return 结果
      */
     int deleteBoxStandard(Long id);

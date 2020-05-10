@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoyi.project.storage.mapper.OrderHistoryMapper">
+
+    <insert id="insertOrderHistory" parameterType="com.ruoyi.project.storage.domain.Order" useGeneratedKeys="true" keyProperty="id">
+        insert into t_order_his
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="status != null">status,</if>
+            <if test="orderCode != null">order_code,</if>
+            <if test="orderName != null and orderName != ''">order_name,</if>
+            <if test="emptyBoxOrderTime != null">empty_box_order_time,</if>
+            <if test="emptyBoxCallName != null and emptyBoxCallName != ''">empty_box_call_name,</if>
+            <if test="emptyBoxCallPhone != null and emptyBoxCallPhone != ''">empty_box_call_phone,</if>
+            <if test="emptyBoxCallAddress != null and emptyBoxCallAddress != ''">empty_box_call_address,</if>
+            <if test="emptyBoxCallTime != null">empty_box_call_time,</if>
+            <if test="emptyBoxCallInterval != null and emptyBoxCallInterval != ''">empty_box_call_interval,</if>
+            <if test="boxId != null">box_id,</if>
+            <if test="boxCode != null">box_code,</if>
+            <if test="boxStandard != null and boxStandard != ''">box_standard,</if>
+            <if test="boxUnitPrice != null">box_unit_price,</if>
+            <if test="leaseDuration != null">lease_duration,</if>
+            <if test="totalPrice != null">total_price,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="version != null">version,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="appDelFlag != null">app_del_flag,</if>
+            <if test="backendDelFlag != null">backend_del_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="orderCode != null">#{orderCode},</if>
+            <if test="orderName != null and orderName != ''">#{orderName},</if>
+            <if test="emptyBoxOrderTime != null">#{emptyBoxOrderTime},</if>
+            <if test="emptyBoxCallName != null and emptyBoxCallName != ''">#{emptyBoxCallName},</if>
+            <if test="emptyBoxCallPhone != null and emptyBoxCallPhone != ''">#{emptyBoxCallPhone},</if>
+            <if test="emptyBoxCallAddress != null and emptyBoxCallAddress != ''">#{emptyBoxCallAddress},</if>
+            <if test="emptyBoxCallTime != null">#{emptyBoxCallTime},</if>
+            <if test="emptyBoxCallInterval != null and emptyBoxCallInterval != ''">#{emptyBoxCallInterval},</if>
+            <if test="boxId != null">#{boxId},</if>
+            <if test="boxCode != null">#{boxCode},</if>
+            <if test="boxStandard != null and boxStandard != ''">#{boxStandard},</if>
+            <if test="boxUnitPrice != null">#{boxUnitPrice},</if>
+            <if test="leaseDuration != null">#{leaseDuration},</if>
+            <if test="totalPrice != null">#{totalPrice},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="version != null">#{version},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="appDelFlag != null">#{appDelFlag},</if>
+            <if test="backendDelFlag != null">#{backendDelFlag},</if>
+        </trim>
+    </insert>
+
+</mapper>

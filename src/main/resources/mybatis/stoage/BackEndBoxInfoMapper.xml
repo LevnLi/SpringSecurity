@@ -11,6 +11,7 @@
         <result property="boxUnitPrice" column="box_unit_price"/>
         <result property="usedBy" column="used_by"/>
         <result property="usedByName" column="used_by_name"/>
+        <result property="isUsed" column="is_used"/>
         <result property="remark" column="remark"/>
         <result property="sortNo" column="sort_no"/>
         <result property="createTime" column="create_time"/>
@@ -21,18 +22,38 @@
         <result property="delFlag" column="del_flag"/>
     </resultMap>
 
-    <sql id="BoxInfoVO">
-        select id,box_code,box_standard,box_unit_price,used_by,remark,sort_no,create_time,create_by,update_time,update_by,version,del_flag from t_box_info
-    </sql>
-
     <select id="queryBoxInfoList" parameterType="com.ruoyi.project.storage.domain.BoxInfo" resultMap="BoxInfoResult">
-        <include refid="BoxInfoVO"/>
-        where del_flag = '0'
-        <if test="searchValue != null and searchValue != ''">
-            and box_standard like concat(#{searchValue}, '%')
+        SELECT
+        info.id,
+        info.box_code,
+        info.box_standard,
+        info.box_unit_price,
+        info.used_by,
+        sys.nick_name as used_by_name,
+        info.is_used,
+        info.remark,
+        info.sort_no,
+        info.create_time,
+        info.create_by,
+        info.update_time,
+        info.update_by,
+        info.version,
+        info.del_flag
+        FROM
+        t_box_info info
+        LEFT JOIN sys_user sys ON info.used_by = sys.user_id
+        WHERE
+        info.del_flag = '0'
+        <if test="boxStandard != null and boxStandard != ''">
+            and info.box_standard = #{boxStandard}
         </if>
-        ORDER BY
-            box_standard
+        <if test="isUsed != null">
+            and info.is_used = #{isUsed}
+        </if>
+        <if test="usedByName != null and usedByName != ''">
+            AND sys.del_flag = '0'
+            AND sys.nick_name like concat(#{usedByName}, '%')
+        </if>
     </select>
 
     <insert id="insertBoxInfo" parameterType="com.ruoyi.project.storage.domain.BoxInfo">

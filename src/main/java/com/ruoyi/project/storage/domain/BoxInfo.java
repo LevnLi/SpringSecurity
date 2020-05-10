@@ -20,7 +20,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(value = "箱子信息对象", description = "箱子信息对象")
-public class BoxInfo extends BaseEntity {
+public class BoxInfo {
 
     /**
      * 序列化id

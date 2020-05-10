@@ -50,7 +50,7 @@
             <if test="way != null">way,</if>
             <if test="points != null">points,</if>
             <if test="advertisementId != null">advertisement_id,</if>
-            <if test="orderId != null">order_id</if>
+            <if test="orderId != null">order_id,</if>
             <if test="createTime != null">create_time,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="version != null">version,</if>

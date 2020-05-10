@@ -50,6 +50,8 @@ public class RegisterServiceImpl implements RegisterService {
         register.setStatus("0");
         // 设置未删除
         register.setDelFlag("0");
+        // 设置创建方式
+        register.setCreateBy("appRegister");
         // 设置版本号
         register.setVersion(0L);
         // 密码加密存放
