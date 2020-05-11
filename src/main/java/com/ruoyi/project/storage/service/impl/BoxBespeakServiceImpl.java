@@ -93,7 +93,7 @@ public class BoxBespeakServiceImpl implements BoxBespeakService {
             throw new CustomException("积分余额不足");
         }
         // 如果当前规格下没有可用箱子
-        if (queryIsStandard(order.getBoxStandard())==null){
+        if (queryIsStandard(order.getBoxStandard(),order.getBoxUnitPrice())==null){
             // 抛出异常
             throw new CustomException("当前规格无空余箱子");
         }
@@ -121,9 +121,9 @@ public class BoxBespeakServiceImpl implements BoxBespeakService {
      * @param boxStandard 箱子规格
      * @return 结果
      */
-    private String queryIsStandard(String boxStandard){
+    private String queryIsStandard(String boxStandard,Long boxUnitPrice){
         // 返回查询结果
-        return boxBespeakMapper.queryIsStandard(boxStandard);
+        return boxBespeakMapper.queryIsStandard(ParameterUtil.getMapByIdMsg(boxUnitPrice,boxStandard));
     }
 
     /**
@@ -223,6 +223,12 @@ public class BoxBespeakServiceImpl implements BoxBespeakService {
         return order.getId();
     }
 
+    /**
+     * 添加积分使用记录
+     * @param boxInfo 箱子信息对象
+     * @param order 预约对象
+     * @return 结果
+     */
     private int insertPoint(BoxInfo boxInfo,Order order){
         Point point = new Point();
         // 用户id

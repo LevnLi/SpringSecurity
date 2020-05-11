@@ -62,8 +62,17 @@
         select current_points from sys_user where user_id = #{userId}
     </select>
 
-    <select id="queryIsStandard" parameterType="string" resultType="string">
-        SELECT 1 FROM t_box_info WHERE is_used = 0 and del_flag = '0' and box_standard = #{boxStandard} LIMIT 1;
+    <select id="queryIsStandard" parameterType="map" resultType="string">
+        SELECT
+            1
+        FROM
+            t_box_info
+        WHERE
+            is_used = 0
+        AND del_flag = '0'
+        AND box_standard = #{msg}
+        AND box_unit_price =  #{id}
+            LIMIT 1;
     </select>
 
     <select id="randGetBoxInfoByStandard" parameterType="map" resultType="com.ruoyi.project.storage.domain.BoxInfo">

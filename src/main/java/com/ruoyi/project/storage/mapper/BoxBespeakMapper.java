@@ -36,10 +36,10 @@ public interface BoxBespeakMapper {
 
     /**
      * 查询当前规格下是否还有未使用的箱子
-     * @param boxStandard 箱子规格
+     * @param map 集合
      * @return 结果
      */
-    String queryIsStandard(String boxStandard);
+    String queryIsStandard(Map<String,Object> map);
 
     /**
      * 随机获取一个当前规格未使用的箱子信息

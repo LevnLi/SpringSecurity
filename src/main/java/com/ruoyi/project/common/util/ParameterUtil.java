@@ -146,7 +146,7 @@ public class ParameterUtil {
      */
     public static Map<String, Object> getMapByIdMsg(Long id, String msg){
         // 初始化map
-        Map<String, Object> map = new HashMap(3);
+        Map<String, Object> map = new HashMap(2);
         // 设置id
         map.put("id", id);
         // 设置操作类型
