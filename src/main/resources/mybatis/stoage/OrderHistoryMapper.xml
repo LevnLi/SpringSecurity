@@ -5,8 +5,8 @@
     <insert id="insertOrderHistory" parameterType="com.ruoyi.project.storage.domain.Order" useGeneratedKeys="true" keyProperty="id">
         insert into t_order_his
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="userId != null">user_id,</if>
             <if test="orderId != null">order_id,</if>
+            <if test="userId != null">user_id,</if>
             <if test="status != null">status,</if>
             <if test="orderCode != null">order_code,</if>
             <if test="orderName != null and orderName != ''">order_name,</if>
@@ -16,6 +16,12 @@
             <if test="emptyBoxCallAddress != null and emptyBoxCallAddress != ''">empty_box_call_address,</if>
             <if test="emptyBoxCallTime != null">empty_box_call_time,</if>
             <if test="emptyBoxCallInterval != null and emptyBoxCallInterval != ''">empty_box_call_interval,</if>
+            <if test="heavyBoxOrderTime != null">heavy_box_order_time,</if>
+            <if test="heavyBoxCallName != null and heavyBoxCallName != ''">heavy_box_call_name,</if>
+            <if test="heavyBoxCallPhone != null and heavyBoxCallPhone != ''">heavy_box_call_phone,</if>
+            <if test="heavyBoxCallAddress != null and heavyBoxCallAddress != ''">heavy_box_call_address,</if>
+            <if test="heavyBoxCallTime != null">heavy_box_call_time,</if>
+            <if test="heavyBoxCallInterval != null and heavyBoxCallInterval != ''">heavy_box_call_interval,</if>
             <if test="boxId != null">box_id,</if>
             <if test="boxCode != null">box_code,</if>
             <if test="boxStandard != null and boxStandard != ''">box_standard,</if>
@@ -30,8 +36,8 @@
             <if test="backendDelFlag != null">backend_del_flag,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="userId != null">#{userId},</if>
             <if test="orderId != null">#{orderId},</if>
+            <if test="userId != null">#{userId},</if>
             <if test="status != null">#{status},</if>
             <if test="orderCode != null">#{orderCode},</if>
             <if test="orderName != null and orderName != ''">#{orderName},</if>
@@ -41,6 +47,12 @@
             <if test="emptyBoxCallAddress != null and emptyBoxCallAddress != ''">#{emptyBoxCallAddress},</if>
             <if test="emptyBoxCallTime != null">#{emptyBoxCallTime},</if>
             <if test="emptyBoxCallInterval != null and emptyBoxCallInterval != ''">#{emptyBoxCallInterval},</if>
+            <if test="heavyBoxOrderTime != null">#{heavyBoxOrderTime},</if>
+            <if test="heavyBoxCallName != null and heavyBoxCallName != ''">#{heavyBoxCallName},</if>
+            <if test="heavyBoxCallPhone != null and heavyBoxCallPhone != ''">#{heavyBoxCallPhone},</if>
+            <if test="heavyBoxCallAddress != null and heavyBoxCallAddress != ''">#{heavyBoxCallAddress},</if>
+            <if test="heavyBoxCallTime != null">#{heavyBoxCallTime},</if>
+            <if test="heavyBoxCallInterval != null and heavyBoxCallInterval != ''">#{heavyBoxCallInterval},</if>
             <if test="boxId != null">#{boxId},</if>
             <if test="boxCode != null">#{boxCode},</if>
             <if test="boxStandard != null and boxStandard != ''">#{boxStandard},</if>

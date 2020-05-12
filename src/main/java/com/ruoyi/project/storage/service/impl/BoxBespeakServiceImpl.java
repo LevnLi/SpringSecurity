@@ -108,6 +108,8 @@ public class BoxBespeakServiceImpl implements BoxBespeakService {
         if(subtractUserPoint(userPoint - boxInfo.getBoxUnitPrice())<=0){
             throw new CustomException("扣除客户积分失败！！！");
         }
+        // 实付积分
+        order.setBoxUnitPrice(boxInfo.getBoxUnitPrice());
         // 如果没有添加积分记录
         if (insertPoint(boxInfo,order)<=0){
             // 抛出异常

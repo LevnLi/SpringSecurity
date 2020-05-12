@@ -135,6 +135,8 @@ public class Order {
     /**
      * 重箱提取下单时间（订单状态为6-10，显示）
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "重箱提取下单时间（订单状态为6-10，显示）")
     private Date heavyBoxOrderTime;
 

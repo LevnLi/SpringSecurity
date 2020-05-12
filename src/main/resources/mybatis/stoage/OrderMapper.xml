@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoyi.project.storage.mapper.OrderMapper">
+
+    <resultMap id="OrderResult" type="com.ruoyi.project.storage.domain.Order">
+        <id     property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="status" column="status"/>
+        <result property="orderCode" column="order_code"/>
+        <result property="orderName" column="order_name"/>
+        <result property="emptyBoxOrderTime" column="empty_box_order_time"/>
+        <result property="emptyBoxCallName" column="empty_box_call_name"/>
+        <result property="emptyBoxCallPhone" column="empty_box_call_phone"/>
+        <result property="emptyBoxCallAddress" column="empty_box_call_address"/>
+        <result property="emptyBoxCallTime" column="empty_box_call_time"/>
+        <result property="emptyBoxCallInterval" column="empty_box_call_interval"/>
+        <result property="heavyBoxOrderTime" column="heavy_box_order_time"/>
+        <result property="heavyBoxCallName" column="heavy_box_call_name"/>
+        <result property="heavyBoxCallPhone" column="heavy_box_call_phone"/>
+        <result property="heavyBoxCallAddress" column="heavy_box_call_address"/>
+        <result property="heavyBoxCallTime" column="heavy_box_call_time"/>
+        <result property="heavyBoxCallInterval" column="heavy_box_call_interval"/>
+        <result property="boxId" column="box_id"/>
+        <result property="boxCode" column="box_code"/>
+        <result property="boxStandard" column="box_standard"/>
+        <result property="boxUnitPrice" column="box_unit_price"/>
+        <result property="leaseDuration" column="lease_duration"/>
+        <result property="totalPrice" column="total_price"/>
+        <result property="sortNo" column="sort_no"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="version" column="version"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="appDelFlag" column="app_del_flag"/>
+        <result property="backendDelFlag" column="backend_del_flag"/>
+    </resultMap>
+
+    <sql id="OrderVO">
+        SELECT
+            `order`.id,
+            `user`.user_id,
+            `user`.nick_name,
+            `order`.`status`,
+            `order`.order_code,
+            `order`.order_name,
+            `order`.empty_box_order_time,
+            `order`.empty_box_call_name,
+            `order`.empty_box_call_phone,
+            `order`.empty_box_call_address,
+            `order`.empty_box_call_time,
+            `order`.empty_box_call_interval,
+            `order`.heavy_box_order_time,
+            `order`.heavy_box_call_name,
+            `order`.heavy_box_call_phone,
+            `order`.heavy_box_call_address,
+            `order`.heavy_box_call_time,
+            `order`.heavy_box_call_interval,
+            `order`.box_id,
+            `order`.box_code,
+            `order`.box_standard,
+            `order`.box_unit_price,
+            `order`.lease_duration,
+            `order`.total_price,
+            `order`.sort_no,
+            `order`.create_time,
+            `order`.create_by,
+            `order`.update_time,
+            `order`.update_by,
+            `order`.version,
+            `order`.del_flag,
+            `order`.app_del_flag,
+            `order`.backend_del_flag
+        from
+            t_order `order`
+                left join
+            sys_user `user`
+            on
+                `order`.user_id = `user`.user_id
+    </sql>
+
+    <select id="getOrderList" parameterType="com.ruoyi.project.storage.domain.Order" resultMap="OrderResult">
+        <include refid="OrderVO"/>
+        where
+            `order`.del_flag = '0'
+        <if test="userId != null">
+            and
+            `order`.user_id = #{userId}
+            and
+            `order`.app_del_flag = 0
+        </if>
+        <if test="userId == null">
+            and
+            `order`.backend_del_flag = 0
+        </if>
+        order by
+            `order`.create_time desc
+    </select>
+
+    <select id="getOrderInfoById" parameterType="map" resultMap="OrderResult">
+        <include refid="OrderVO"/>
+        where
+            `order`.id = #{id}
+        and
+            `order`.del_flag = '0'
+        <if test="msg == '2'.toString() ">
+            and
+                `order`.app_del_flag = 0
+            and
+                `user`.user_id = #{userId}
+        </if>
+        <if test="msg == '1'.toString() ">
+            and
+                `order`.backend_del_flag = 0
+        </if>
+    </select>
+
+    <update id="deleteOrder" parameterType="map">
+        update t_order
+        set
+            backend_del_flag = 2,
+            update_by = #{updateBy},
+            update_time = #{updateTime},
+            version = version + 1
+        where
+            del_flag = '0'
+        and `status` = 10
+        and backend_del_flag = 0
+        and id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>;
+
+    </update>
+
+    <update id="deleteOrderHis" parameterType="map">
+        update t_order_his
+        set
+        backend_del_flag = 2,
+        update_by = #{updateBy},
+        update_time = #{updateTime},
+        version = version + 1
+        where
+        del_flag = '0'
+        and backend_del_flag = 0
+        and order_id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>;
+
+    </update>
+
+    <select id="selectOrderInfo" parameterType="long" resultType="com.ruoyi.project.storage.domain.Order">
+        SELECT
+        id,
+        user_id as userId,
+        `status`,
+        order_code as orderCode,
+        order_name as orderName,
+        empty_box_order_time as emptyBoxOrderTime,
+        empty_box_call_name as emptyBoxCallName,
+        empty_box_call_phone as emptyBoxCallPhone,
+        empty_box_call_address as emptyBoxCallAddress,
+        empty_box_call_time as emptyBoxCallTime,
+        empty_box_call_interval as emptyBoxCallInterval,
+        heavy_box_order_time as heavyBoxOrderTime,
+        heavy_box_call_name as heavyBoxCallName,
+        heavy_box_call_phone as heavyBoxCallPhone,
+        heavy_box_call_address as heavyBoxCallAddress,
+        heavy_box_call_time as heavyBoxCallTime,
+        heavy_box_call_interval as heavyBoxCallInterval,
+        box_id as boxId,
+        box_code as boxCode,
+        box_standard as boxStandard,
+        box_unit_price as boxUnitPrice,
+        lease_duration as leaseDuration,
+        total_price as totalPrice,
+        sort_no as sortNo,
+        create_time as createTime,
+        create_by as createBy,
+        update_time as updateTime,
+        update_by as updateBy,
+        version,
+        del_flag as delFlag,
+        app_del_flag as appDelFlag,
+        backend_del_flag as backendDelFlag
+        from t_order
+        where id = #{id}
+        and user_id = #{userId}
+    </select>
+
+    <update id="updateOrderInfo" parameterType="com.ruoyi.project.storage.domain.Order">
+        update t_order
+        set `status` = #{status},
+        update_by = #{updateBy},
+        update_time = #{updateTime},
+        <if test="heavyBoxCallTime != null">
+            heavy_box_call_time = #{heavyBoxCallTime},
+        </if>
+        <if test="heavyBoxOrderTime != null">
+            heavy_box_order_time = #{heavyBoxOrderTime},
+        </if>
+        <if test="heavyBoxCallName != null and heavyBoxCallName != ''">
+            heavy_box_call_name = #{heavyBoxCallName},
+        </if>
+        <if test="heavyBoxCallPhone != null and heavyBoxCallPhone != ''">
+            heavy_box_call_phone = #{heavyBoxCallPhone},
+        </if>
+        <if test="heavyBoxCallAddress != null and heavyBoxCallAddress != ''">
+            heavy_box_call_address = #{heavyBoxCallAddress},
+        </if>
+        <if test="heavyBoxCallInterval != null and heavyBoxCallInterval != ''">
+            heavy_box_call_interval = #{heavyBoxCallInterval},
+        </if>
+        version = version + 1
+        where
+            version = #{version}
+        and id = #{id}
+    </update>
+
+    <update id="deleteOrderByPhone" parameterType="map">
+        update t_order
+        set
+        app_del_flag = 2,
+        update_by = #{updateBy},
+        update_time = #{updateTime},
+        version = version + 1
+        where
+        del_flag = '0'
+        and `status` = 10
+        and id = #{id}
+        and user_id = #{data}
+        and app_del_flag = 0
+    </update>
+
+</mapper>
