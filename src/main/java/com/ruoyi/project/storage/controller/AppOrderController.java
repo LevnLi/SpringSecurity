@@ -52,8 +52,9 @@ public class AppOrderController extends BaseController {
     public TableDataInfo list(Order order){
         // 获取分页信息
         startPage();
-        // 返回想用请求分页数据
+        // 装入客户id
         order.setUserId(SecurityUtils.getUserId());
+        // 返回想用请求分页数据
         return getDataTable(orderService.getOrderList(order));
     }
 

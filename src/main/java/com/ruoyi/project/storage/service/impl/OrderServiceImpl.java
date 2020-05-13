@@ -6,6 +6,7 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.project.common.util.ParameterUtil;
 import com.ruoyi.project.storage.domain.Order;
 import com.ruoyi.project.storage.domain.OrderV0;
+import com.ruoyi.project.storage.enums.OrderEnum;
 import com.ruoyi.project.storage.mapper.OrderHistoryMapper;
 import com.ruoyi.project.storage.mapper.OrderMapper;
 import com.ruoyi.project.storage.service.OrderService;
@@ -22,7 +23,28 @@ import java.util.List;
  */
 @Service
 @Slf4j
+@Transactional(rollbackFor = Exception.class)
 public class OrderServiceImpl implements OrderService {
+
+    /**
+     * 定义静态私有常量 SUCCESS表示操作成功
+     */
+    private static final int SUCCESS = 1;
+
+    /**
+     * 定义静态私有常量 ERROR表示操作失败
+     */
+    private static final int ERROR = 0;
+
+    /**
+     * 定义静态私有常量 BACKEND表示后台端
+     */
+    private static final String BACKEND = "backend";
+
+    /**
+     * 定义静态私有常量 APP表示手机端
+     */
+    private static final String APP = "app";
 
     /**
      * 订单mapper接口
@@ -75,26 +97,21 @@ public class OrderServiceImpl implements OrderService {
      * @return 操作结果
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public int orderOperation(OrderV0 orderV0) {
-        // 定义字符串: 后台端
-        String backend = "backend";
-        // 定义字符串: 手机端
-        String app = "app";
         // 获取当前id下的订单信息
         Order order = orderMapper.selectOrderInfo(orderV0.getId());
         // 如果是后台端操作
-        if (backend.equals(orderV0.getMsg())){
+        if (BACKEND.equals(orderV0.getMsg())){
             // 返回后台端处理结果
             return backendInto(order,orderV0);
         }
         // 如果是手机端操作
-        if (app.equals(orderV0.getMsg())){
+        if (APP.equals(orderV0.getMsg())){
             // 返回手机端处理结果
             return appInto(order,orderV0);
         }
         // 没通过以上指令，返回0，表示操作失败
-        return 0;
+        return ERROR;
     }
 
     /**
@@ -104,20 +121,197 @@ public class OrderServiceImpl implements OrderService {
      * @return 结果
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public int deleteOrder(Long[] ids) {
-        int count = 0;
+        // 定义记录变量
+        int count;
+        // 记录订单更改条数
         count = orderMapper.deleteOrder(ParameterUtil.getIdsUpdateByUpdateTime(ids,SecurityUtils.getUsername(), DateUtils.getNowDate()));
-        if (count < ids.length){
+        // 如果更改条数不等于数组长度
+        if (count != ids.length){
+            // 抛出异常
             throw new CustomException("删除失败");
         }
         // 删除订单历史记录
         count = orderMapper.deleteOrderHis(ParameterUtil.getIdsUpdateByUpdateTime(ids,SecurityUtils.getUsername(), DateUtils.getNowDate()));
-        if (count < ids.length){
+        // 如果更改条数不等于数组长度
+        if (count != ids.length){
+            // 抛出异常
             throw new CustomException("删除失败");
         }
         // 返回删除订单记录结果
-        return count;
+        return SUCCESS;
+    }
+
+    /**
+     * 手机端操作方法
+     * @param order 订单对象
+     * @param orderV0 前端传的订单信息
+     * @return 1: 操作成功  0: 操作失败
+     */
+    private int appInto(Order order,OrderV0 orderV0){
+        // 如果订单状态为 2 【手机端】待收空箱
+        if (order.getStatus() == OrderEnum.STATUS2.getValue()){
+            // 如果订单操作指令错误
+            if (orderV0.getOperate() != OrderEnum.STATUS3.getValue()){
+                // 抛出异常
+                throw new CustomException("操作失败: 状态2");
+            }
+            // 调用更新订单方法
+            updateOrder(order);
+            // 表示操作成功
+            return SUCCESS;
+        }
+        // 如果订单状态为 3 【手机端】待发重箱
+        if (order.getStatus() == OrderEnum.STATUS3.getValue()){
+            // 如果不是手机端用户且订单操作指令错误
+            if (orderV0.getOperate() != OrderEnum.STATUS4.getValue()){
+                // 抛出异常
+                throw new CustomException("操作失败: 状态3");
+            }
+            // 调用更新订单方法
+            updateOrder(order);
+            // 表示操作成功
+            return SUCCESS;
+        }
+        // 如果订单状态为 5 【手机端】待预约提取
+        if (order.getStatus() == OrderEnum.STATUS5.getValue()){
+            // 如果不是手机端用户且订单操作指令错误
+            if (orderV0.getOperate() != OrderEnum.STATUS6.getValue()){
+                // 抛出异常
+                throw new CustomException("操作失败: 状态5");
+            }
+            if (
+                // 提取时间不存在
+                orderV0.getHeavyBoxCallTime() == null ||
+                // 提取人姓名不存在或为空
+                orderV0.getHeavyBoxCallName() == null || "".equals(orderV0.getHeavyBoxCallName()) ||
+                // 提取人电话不存在或为空
+                orderV0.getHeavyBoxCallPhone() == null || "".equals(orderV0.getHeavyBoxCallPhone()) ||
+                // 提取地址不存在或为空
+                orderV0.getHeavyBoxCallAddress() == null || "".equals(orderV0.getHeavyBoxCallAddress()) ||
+                // 提取时间段不存在或为空
+                orderV0.getHeavyBoxCallInterval() == null || "".equals(orderV0.getHeavyBoxCallInterval())
+            ){
+                // 抛出异常
+                throw new CustomException("缺少重箱提取信息！！！");
+            }
+            // 填写重箱提取姓名
+            order.setHeavyBoxCallName(orderV0.getHeavyBoxCallName());
+            // 填写重箱提取时间
+            order.setHeavyBoxCallTime(orderV0.getHeavyBoxCallTime());
+            // 填写重箱提取电话
+            order.setHeavyBoxCallPhone(orderV0.getHeavyBoxCallPhone());
+            // 填写重箱提取下单时间
+            order.setHeavyBoxOrderTime(DateUtils.getNowDate());
+            // 填写重箱提取地址
+            order.setHeavyBoxCallAddress(orderV0.getHeavyBoxCallAddress());
+            // 填写重箱提取时间段
+            order.setHeavyBoxCallInterval(orderV0.getHeavyBoxCallInterval());
+            // 调用更新订单方法
+            updateOrder(order);
+            // 表示操作成功
+            return SUCCESS;
+        }
+        // 如果订单状态为 7 【手机端】待收重箱
+        if (order.getStatus() == OrderEnum.STATUS7.getValue()){
+            // 如果不是手机端用户且订单操作指令错误
+            if (orderV0.getOperate() != OrderEnum.STATUS8.getValue()){
+                // 抛出异常
+                throw new CustomException("操作失败: 状态7");
+            }
+            // 调用更新订单方法
+            updateOrder(order);
+            // 表示操作成功
+            return SUCCESS;
+        }
+        // 如果订单状态为 8 【手机端】待发空箱
+        if (order.getStatus() == OrderEnum.STATUS8.getValue()){
+            // 如果不是手机端用户且订单操作指令错误
+            if (orderV0.getOperate() != OrderEnum.STATUS9.getValue()){
+                // 抛出异常
+                throw new CustomException("操作失败: 状态8");
+            }
+            // 调用更新订单方法
+            updateOrder(order);
+            // 表示操作成功
+            return SUCCESS;
+        }
+        // 如果订单状态为 10 【手机端、后台端】可以删除订单
+        if (order.getStatus() == OrderEnum.STATUS10.getValue()){
+            // 如果订单操作指令错误
+            if (orderV0.getOperate() != OrderEnum.STATUS10.getValue()){
+                // 抛出异常
+                throw new CustomException("操作失败: 状态10");
+            }
+            // 定义变量接收删除手机端订单结果
+            int count = orderMapper.deleteOrderByPhone(ParameterUtil.getIdDataUpdateByUpdateTime(order.getId(),SecurityUtils.getUserId(),SecurityUtils.getUsername(),DateUtils.getNowDate()));
+            // 如果订单删除失败
+            if (count != SUCCESS){
+                // 抛出异常
+                throw new CustomException("订单删除失败");
+            }
+            // 表示操作成功
+            return SUCCESS;
+        }
+        return ERROR;
+    }
+
+    /**
+     * 后台端操作方法
+     * @param order 订单对象
+     * @param orderV0 前台传的操作信息
+     * @return 1: 操作成功  0: 操作失败
+     */
+    private int backendInto(Order order,OrderV0 orderV0){
+        // 如果订单状态为 1 【后台端】待发空箱
+        if (order.getStatus() == OrderEnum.STATUS1.getValue()){
+            // 如果不是后台端用户且订单操作指令错误
+            if (orderV0.getOperate() != OrderEnum.STATUS2.getValue()){
+                // 抛出异常
+                throw new CustomException("操作失败: 状态1");
+            }
+            // 调用更新订单方法
+            updateOrder(order);
+            // 表示操作成功
+            return SUCCESS;
+        }
+        // 如果订单状态为 4 【后台端】待收重箱
+        if (order.getStatus() == OrderEnum.STATUS4.getValue()){
+            // 如果不是后台端用户且订单操作指令错误
+            if (orderV0.getOperate() != OrderEnum.STATUS5.getValue()){
+                throw new CustomException("操作失败: 状态4");
+            }
+            // 调用更新订单方法
+            updateOrder(order);
+            // 表示操作成功
+            return SUCCESS;
+        }
+        // 如果订单状态为 6 【后台端】待发重箱
+        if (order.getStatus() == OrderEnum.STATUS6.getValue()){
+            // 如果不是后台端用户且订单操作指令错误
+            if (orderV0.getOperate() != OrderEnum.STATUS7.getValue()){
+                throw new CustomException("操作失败: 状态6");
+            }
+            // 调用更新订单方法
+            updateOrder(order);
+            // 表示操作成功
+            return SUCCESS;
+        }
+        // 如果订单状态为 9 【后台端】待收空箱
+        if (order.getStatus() == OrderEnum.STATUS9.getValue()){
+            // 如果不是后台端用户且订单操作指令错误
+            if (orderV0.getOperate() != OrderEnum.STATUS10.getValue()){
+                throw new CustomException("操作失败: 状态9");
+            }
+            // 调用更新订单方法
+            updateOrder(order);
+            // 调用清除箱子使用信息方法
+            clearBoxInfo(order.getBoxId());
+            // 表示操作成功
+            return SUCCESS;
+        }
+        // 没通过以上指令，返回0，表示操作失败
+        return ERROR;
     }
 
     /**
@@ -132,9 +326,13 @@ public class OrderServiceImpl implements OrderService {
         // 更新时间
         order.setUpdateTime(DateUtils.getNowDate());
         // 定义记录变量
-        int count = 0;
+        int count;
         // 记录订单更改条数
-        count += orderMapper.updateOrderInfo(order);
+        count = orderMapper.updateOrderInfo(order);
+        if (count != SUCCESS){
+            // 抛出异常
+            throw new CustomException("更新订单失败");
+        }
         // 创建时间
         order.setCreateTime(DateUtils.getNowDate());
         // 创建人
@@ -142,176 +340,27 @@ public class OrderServiceImpl implements OrderService {
         // 添加订单id
         order.setOrderId(order.getId());
         // 记录订单历史记录创建条数
-        count += orderHistoryMapper.insertOrderHistory(order);
+        count = orderHistoryMapper.insertOrderHistory(order);
         // 如果更新订单或插入订单历史记录失败
-        if (count < 2){
+        if (count != SUCCESS){
             // 抛出异常
             throw new CustomException("更新订单失败");
         }
     }
 
     /**
-     * 手机端操作方法
-     * @param order 订单对象
-     * @param orderV0 前端传的订单信息
-     * @return 1: 操作成功  0: 操作失败
+     * 清除箱子使用信息
+     * @param id 箱子id
      */
-    private int appInto(Order order,OrderV0 orderV0){
-        // 如果订单状态为 2 【手机端】待收空箱
-        if (order.getStatus() == 2){
-            // 如果订单操作指令错误
-            if (orderV0.getOperate() != 3){
-                // 抛出异常
-                throw new CustomException("操作失败: 状态2");
-            }
-            // 调用更新订单方法
-            updateOrder(order);
-            // 表示操作成功
-            return 1;
+    private void clearBoxInfo(Long id){
+        // 定义记录变量
+        int count;
+        // 记录更改条数
+        count = orderMapper.clearBoxInfo(ParameterUtil.getIdUpdateByUpdateTime(id,SecurityUtils.getUsername(),DateUtils.getNowDate()));
+        // 返回清除结果
+        if (count != SUCCESS){
+            // 抛出异常
+            throw new CustomException("清除箱子使用信息失败");
         }
-        // 如果订单状态为 3 【手机端】待发重箱
-        if (order.getStatus() == 3){
-            // 如果不是手机端用户且订单操作指令错误
-            if (orderV0.getOperate() != 4){
-                // 抛出异常
-                throw new CustomException("操作失败: 状态3");
-            }
-            // 调用更新订单方法
-            updateOrder(order);
-            // 表示操作成功
-            return 1;
-        }
-        // 如果订单状态为 5 【手机端】待预约提取
-        if (order.getStatus() == 5){
-            // 如果不是手机端用户且订单操作指令错误
-            if (orderV0.getOperate() != 6){
-                // 抛出异常
-                throw new CustomException("操作失败: 状态5");
-            }
-            if (
-                // 提取时间或下单时间不存在
-                    orderV0.getHeavyBoxCallTime() == null || orderV0.getHeavyBoxOrderTime() == null ||
-                            // 提取人姓名不存在或为空
-                            orderV0.getHeavyBoxCallName() == null || "".equals(orderV0.getHeavyBoxCallName()) ||
-                            // 提取人电话不存在或为空
-                            orderV0.getHeavyBoxCallPhone() == null || "".equals(orderV0.getHeavyBoxCallPhone()) ||
-                            // 提取地址不存在或为空
-                            orderV0.getHeavyBoxCallAddress() == null || "".equals(orderV0.getHeavyBoxCallAddress()) ||
-                            // 提取时间段不存在或为空
-                            orderV0.getHeavyBoxCallInterval() == null || "".equals(orderV0.getHeavyBoxCallInterval())
-            ){
-                // 抛出异常
-                throw new CustomException("缺少重箱提取信息！！！");
-            }
-            // 填写重箱提取姓名
-            order.setHeavyBoxCallName(orderV0.getHeavyBoxCallName());
-            // 填写重箱提取时间
-            order.setHeavyBoxCallTime(orderV0.getHeavyBoxCallTime());
-            // 填写重箱提取电话
-            order.setHeavyBoxCallPhone(orderV0.getHeavyBoxCallPhone());
-            // 填写重箱提取下单时间
-            order.setHeavyBoxOrderTime(orderV0.getHeavyBoxOrderTime());
-            // 填写重箱提取地址
-            order.setHeavyBoxCallAddress(orderV0.getHeavyBoxCallAddress());
-            // 填写重箱提取时间段
-            order.setHeavyBoxCallInterval(orderV0.getHeavyBoxCallInterval());
-            // 调用更新订单方法
-            updateOrder(order);
-            // 表示操作成功
-            return 1;
-        }
-        // 如果订单状态为 7 【手机端】待收重箱
-        if (order.getStatus() == 7){
-            // 如果不是手机端用户且订单操作指令错误
-            if (orderV0.getOperate() != 8){
-                // 抛出异常
-                throw new CustomException("操作失败: 状态7");
-            }
-            // 调用更新订单方法
-            updateOrder(order);
-            // 表示操作成功
-            return 1;
-        }
-        // 如果订单状态为 8 【手机端】待发空箱
-        if (order.getStatus() == 8){
-            // 如果不是手机端用户且订单操作指令错误
-            if (orderV0.getOperate() != 9){
-                // 抛出异常
-                throw new CustomException("操作失败: 状态8");
-            }
-            // 调用更新订单方法
-            updateOrder(order);
-            // 表示操作成功
-            return 1;
-        }
-        // 如果订单状态为 10 【手机端、后台端】可以删除订单
-        if (order.getStatus() == 10){
-            // 定义变量接收删除手机端订单结果
-            int count = orderMapper.deleteOrderByPhone(ParameterUtil.getIdDataUpdateByUpdateTime(order.getId(),SecurityUtils.getUserId(),SecurityUtils.getUsername(),DateUtils.getNowDate()));
-            // 如果小于表示订单删除失败
-            if (count < 1){
-                // 抛出异常
-                throw new CustomException("操作失败: 状态10");
-            }
-            // 表示操作成功
-            return 1;
-        }
-        return 0;
-    }
-
-    /**
-     * 后台端操作方法
-     * @param order 订单对象
-     * @param orderV0 前台传的操作信息
-     * @return 1: 操作成功  0: 操作失败
-     */
-    private int backendInto(Order order,OrderV0 orderV0){
-        // 如果订单状态为 1 【后台端】待发空箱
-        if (order.getStatus() == 1){
-            // 如果不是后台端用户且订单操作指令错误
-            if (orderV0.getOperate() != 2){
-                // 抛出异常
-                throw new CustomException("操作失败: 状态1");
-            }
-            // 调用更新订单方法
-            updateOrder(order);
-            // 表示操作成功
-            return 1;
-        }
-        // 如果订单状态为 4 【后台端】待收重箱
-        if (order.getStatus() == 4){
-            // 如果不是后台端用户且订单操作指令错误
-            if (orderV0.getOperate() != 5){
-                throw new CustomException("操作失败: 状态4");
-            }
-            // 调用更新订单方法
-            updateOrder(order);
-            // 表示操作成功
-            return 1;
-        }
-        // 如果订单状态为 6 【后台端】待发重箱
-        if (order.getStatus() == 6){
-            // 如果不是后台端用户且订单操作指令错误
-            if (orderV0.getOperate() != 7){
-                throw new CustomException("操作失败: 状态6");
-            }
-            // 调用更新订单方法
-            updateOrder(order);
-            // 表示操作成功
-            return 1;
-        }
-        // 如果订单状态为 9 【后台端】待收空箱
-        if (order.getStatus() == 9){
-            // 如果不是后台端用户且订单操作指令错误
-            if (orderV0.getOperate() != 10){
-                throw new CustomException("操作失败: 状态9");
-            }
-            // 调用更新订单方法
-            updateOrder(order);
-            // 表示操作成功
-            return 1;
-        }
-        // 没通过以上指令，返回0，表示操作失败
-        return 0;
     }
 }

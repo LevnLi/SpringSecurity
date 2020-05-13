@@ -62,4 +62,11 @@ public interface OrderMapper {
      */
     int deleteOrderByPhone(Map<String,Object> map);
 
+    /**
+     * 清除箱子使用信息
+     * @param map 集合
+     * @return 结果
+     */
+    int clearBoxInfo(Map<String,Object> map);
+
 }

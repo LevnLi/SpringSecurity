@@ -188,7 +188,6 @@
         backend_del_flag as backendDelFlag
         from t_order
         where id = #{id}
-        and user_id = #{userId}
     </select>
 
     <update id="updateOrderInfo" parameterType="com.ruoyi.project.storage.domain.Order">
@@ -233,6 +232,18 @@
         and id = #{id}
         and user_id = #{data}
         and app_del_flag = 0
+    </update>
+
+    <update id="clearBoxInfo" parameterType="map">
+        update t_box_info
+        set used_by = null,
+            is_used = 0,
+            update_by = #{updateBy},
+            update_time = #{updateTime},
+            version = version + 1
+        where
+            id = #{id}
+        and `status` = 10
     </update>
 
 </mapper>

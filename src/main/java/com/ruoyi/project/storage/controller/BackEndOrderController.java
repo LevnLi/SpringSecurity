@@ -99,6 +99,7 @@ public class BackEndOrderController extends BaseController {
             return orderService.orderOperation(orderV0)>0 ?
                     AjaxResult.success("操作成功") :
                     AjaxResult.error("操作失败");
+        // 处理异常
         }catch (Exception e){
             // 返回异常信息
             return AjaxResult.error(e.getMessage());
@@ -114,16 +115,19 @@ public class BackEndOrderController extends BaseController {
     @DeleteMapping("/delete/{ids}")
     @ApiOperation(value = "5.3.6.4 订单删除",notes = "订单删除")
     public AjaxResult deleteOrder(@PathVariable Long[] ids){
-        /**
-         * 删除订单结果:
-         *   大于0，删除成功
-         *   否则，删除失败
-         */
+        // 捕获异常
         try{
+            /**
+             * 删除订单结果:
+             *   大于0，删除成功
+             *   否则，删除失败
+             */
             return orderService.deleteOrder(ids)>0 ?
                     AjaxResult.success("删除成功") :
                     AjaxResult.error("删除失败");
+        // 处理异常
         }catch (Exception e){
+            //返回异常信息
             return AjaxResult.error(e.getMessage());
         }
     }
