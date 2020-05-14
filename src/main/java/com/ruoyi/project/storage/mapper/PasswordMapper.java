@@ -1,17 +1,16 @@
 package com.ruoyi.project.storage.mapper;
 
-import com.ruoyi.project.storage.domain.Personal;
+import com.ruoyi.project.storage.domain.User;
 import org.apache.ibatis.annotations.Mapper;
-
 import java.util.Map;
 
 /**
  * @author :lihao
  * @date :2020/05/04
- * @description :个人Mapper接口
+ * @description :密码mapper接口
  */
 @Mapper
-public interface PersonalMapper {
+public interface PasswordMapper {
 
     /**
      * 查询旧密码
@@ -22,8 +21,8 @@ public interface PersonalMapper {
 
     /**
      * 更新密码
-     * @param map
+     * @param user 用户对象
      * @return 返回结果
      */
-    int updatePassword (Map<String, Object> map);
+    int updatePassword (User user);
 }

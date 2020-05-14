@@ -35,7 +35,7 @@ public class AppAddressController extends BaseController {
 
     /**
      * 通过构造方法注入
-     * @param addressService
+     * @param addressService 地址Service
      */
     @Autowired
     public AppAddressController(AddressService addressService) {

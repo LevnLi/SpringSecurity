@@ -28,6 +28,16 @@ public class BaseController
     protected final Logger logger = LoggerFactory.getLogger(BaseController.class);
 
     /**
+     * 静态常量指令: 停用
+     */
+    public static final String DISABLE = "disable";
+
+    /**
+     * 静态常量指令: 启用
+     */
+    public static final String ENABLE = "enable";
+
+    /**
      * 将前台传递过来的日期格式的字符串，自动转化为Date类型
      */
     @InitBinder

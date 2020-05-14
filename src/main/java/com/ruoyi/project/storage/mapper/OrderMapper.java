@@ -1,6 +1,7 @@
 package com.ruoyi.project.storage.mapper;
 
 import com.ruoyi.project.storage.domain.Order;
+import com.ruoyi.project.storage.domain.OrderV1;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +15,10 @@ public interface OrderMapper {
 
     /**
      * 订单列表
-     * @param order 订单对象
+     * @param orderV1 订单对象
      * @return 结果
      */
-    List<Order> getOrderList(Order order);
+    List<Order> getOrderList(OrderV1 orderV1);
 
     /**
      * 通过id查订单信息

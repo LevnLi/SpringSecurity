@@ -81,22 +81,35 @@
                 `order`.user_id = `user`.user_id
     </sql>
 
-    <select id="getOrderList" parameterType="com.ruoyi.project.storage.domain.Order" resultMap="OrderResult">
+    <select id="getOrderList" parameterType="com.ruoyi.project.storage.domain.OrderV1" resultMap="OrderResult">
         <include refid="OrderVO"/>
-        where
-            `order`.del_flag = '0'
+        where `order`.del_flag = '0'
         <if test="userId != null">
-            and
-            `order`.user_id = #{userId}
-            and
-            `order`.app_del_flag = 0
+            and `order`.user_id = #{userId}
+            and `order`.app_del_flag = 0
         </if>
         <if test="userId == null">
-            and
-            `order`.backend_del_flag = 0
+            and `order`.backend_del_flag = 0
         </if>
-        order by
-            `order`.create_time desc
+        <if test="nickName != null and nickName != ''">
+            and `user`.nick_name like concat(#{nickName} , '%')
+        </if>
+        <if test="status != null">
+            and `order`.`status` = #{status}
+        </if>
+        <if test="emptyBoxOrderTimeStart != null and emptyBoxOrderTimeStart != ''">
+            and `order`.empty_box_order_time <![CDATA[ >= ]]> #{emptyBoxOrderTimeStart}
+        </if>
+        <if test="emptyBoxOrderTimeEnd != null and emptyBoxOrderTimeEnd != ''">
+            and `order`.empty_box_order_time <![CDATA[ <= ]]> #{emptyBoxOrderTimeEnd}
+        </if>
+        <if test="heavyBoxOrderTimeStart != null and heavyBoxOrderTimeStart != ''">
+            and `order`.heavy_box_order_time <![CDATA[ >= ]]> #{heavyBoxOrderTimeStart}
+        </if>
+        <if test="heavyBoxOrderTimeEnd != null and heavyBoxOrderTimeEnd != ''">
+            and `order`.heavy_box_order_time <![CDATA[ <= ]]> #{heavyBoxOrderTimeEnd}
+        </if>
+        order by `order`.create_time desc
     </select>
 
     <select id="getOrderInfoById" parameterType="map" resultMap="OrderResult">

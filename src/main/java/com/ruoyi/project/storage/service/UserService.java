@@ -1,6 +1,7 @@
 package com.ruoyi.project.storage.service;
 
-import com.ruoyi.project.storage.domain.Customer;
+import com.ruoyi.project.storage.domain.User;
+
 import java.util.List;
 
 /**
@@ -12,43 +13,43 @@ public interface UserService {
 
     /**
      * 用户列表（分页）
-     * @param customer
+     * @param user 用户实体类
      * @return 用户列表
      */
-    List<Customer> queryUserList(Customer customer);
+    List<User> queryUserList(User user);
 
     /**
      * 用户新增
-     * @param customer
+     * @param user 用户实体类
      * @return 结果
      */
-    int insertUser(Customer customer);
+    int insertUser(User user);
 
     /**
      * 用户编辑
-     * @param customer
+     * @param user 用户实体类
      * @return 结果
      */
-    int updateUser(Customer customer);
+    int updateUser(User user);
 
     /**
      * 用户删除 : 通过ID批量操作 （0代表存在 2代表删除）
-     * @param ids
+     * @param ids 用户id数组
      * @return 结果
      */
     int deleteUserByIds(Long[] ids);
 
     /**
      * 用户启用/停用 : 帐号状态（0正常 1停用）
-     * @param operate
-     * @param ids
+     * @param operate 指令
+     * @param ids 用户id数组
      * @return 结果
      */
     int operateUserByIds(String operate,Long[] ids);
 
     /**
      * 重置用户密码 : 重置为初始密码【12345678】
-     * @param ids
+     * @param ids 用户id数组
      * @return 结果
      */
     int resetUserPassword(Long[] ids);

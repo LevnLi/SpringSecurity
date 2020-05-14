@@ -1,6 +1,6 @@
 package com.ruoyi.project.storage.mapper;
 
-import com.ruoyi.project.storage.domain.Customer;
+import com.ruoyi.project.storage.domain.User;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -16,24 +16,24 @@ public interface CustomerMapper {
 
     /**
      * 客户列表（分页）
-     * @param customer
+     * @param user
      * @return 客户列表
      */
-    List<Customer> queryCustomerList(Customer customer);
+    List<User> queryCustomerList(User user);
 
     /**
      * 客户新增
-     * @param customer
+     * @param user
      * @return 结果
      */
-    int insertCustomer(Customer customer);
+    int insertCustomer(User user);
 
     /**
      * 客户编辑
-     * @param customer
+     * @param user
      * @return 结果
      */
-    int updateCustomer(Customer customer);
+    int updateCustomer(User user);
 
     /**
      * 批量客户删除 : 通过ID批量操作 （0代表存在 2代表删除）

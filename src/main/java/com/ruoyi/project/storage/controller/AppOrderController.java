@@ -8,6 +8,7 @@ import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.storage.domain.Order;
 import com.ruoyi.project.storage.domain.OrderV0;
+import com.ruoyi.project.storage.domain.OrderV1;
 import com.ruoyi.project.storage.service.OrderService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class AppOrderController extends BaseController {
 
     /**
      * 查询订单列表（分页）
-     * @param order 订单实体类
+     * @param orderV1 订单实体类
      * @return 分页结果
      */
     @Log(title = "5.2.4.1 订单列表（分页）", businessType = BusinessType.OTHER)
@@ -49,13 +50,13 @@ public class AppOrderController extends BaseController {
             @ApiImplicitParam(paramType = "query",name = "pageNum",dataType = "int",value = "当前页数",defaultValue = "1"),
             @ApiImplicitParam(paramType = "query",name = "pageSize",dataType = "int",value = "每页显示记录数",defaultValue = "10")
     })
-    public TableDataInfo list(Order order){
+    public TableDataInfo list(OrderV1 orderV1){
         // 获取分页信息
         startPage();
         // 装入客户id
-        order.setUserId(SecurityUtils.getUserId());
+        orderV1.setUserId(SecurityUtils.getUserId());
         // 返回想用请求分页数据
-        return getDataTable(orderService.getOrderList(order));
+        return getDataTable(orderService.getOrderList(orderV1));
     }
 
 

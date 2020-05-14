@@ -4,14 +4,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.project.storage.mapper.CustomerMapper">
 
-    <resultMap id="CustomerResult" type="com.ruoyi.project.storage.domain.Customer">
+    <resultMap id="CustomerResult" type="com.ruoyi.project.storage.domain.User">
         <result property="userId" column="user_id"/>
         <result property="deptId" column="dept_id"/>
         <result property="userName" column="user_name"/>
         <result property="nickName" column="nick_name"/>
         <result property="userType" column="user_type"/>
         <result property="email" column="email"/>
-        <result property="phoneNumber" column="phonenumber"/>
+        <result property="phonenumber" column="phonenumber"/>
         <result property="sex" column="sex"/>
         <result property="avatar" column="avatar"/>
         <result property="password" column="password"/>
@@ -29,10 +29,10 @@
     </resultMap>
 
     <sql id="customer">
-        select user_id,user_name,user_type,email,phonenumber,sex,avatar,password,status,del_flag,login_ip,login_date,create_by,create_time,update_by,update_time,remark,current_points,version from sys_user
+        select user_id,user_name,user_type,email,phonenumber,sex,avatar,`password`,`status`,del_flag,login_ip,login_date,create_by,create_time,update_by,update_time,remark,current_points,version from sys_user
     </sql>
 
-    <select id="queryCustomerList" parameterType="com.ruoyi.project.storage.domain.Customer" resultMap="CustomerResult">
+    <select id="queryCustomerList" parameterType="com.ruoyi.project.storage.domain.User" resultMap="CustomerResult">
         <include refid="customer"/>
         <where>
             user_type = '02'
@@ -40,7 +40,7 @@
             <if test="searchValue != null and searchValue != ''">
                 and (
                 user_name like concat(#{searchValue}, '%')
-                or user_type like concat(#{searchValue}, '%')
+                or nick_name like concat(#{searchValue}, '%')
                 or phonenumber like concat(#{searchValue}, '%')
                 )
             </if>
@@ -48,7 +48,7 @@
         order by create_time desc
     </select>
 
-    <insert id="insertCustomer" parameterType="com.ruoyi.project.storage.domain.Customer" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertCustomer" parameterType="com.ruoyi.project.storage.domain.User" useGeneratedKeys="true" keyProperty="id">
         insert into sys_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="userId != null">user_id,</if>
@@ -56,7 +56,7 @@
             <if test="nickName != null and nickName != ''">nick_name,</if>
             <if test="userType != null and userType != ''">user_type,</if>
             <if test="email != null and email != ''">email,</if>
-            <if test="phoneNumber != null and phoneNumber != ''">phonenumber,</if>
+            <if test="phonenumber != null and phonenumber != ''">phonenumber,</if>
             <if test="sex != null and sex != ''">sex,</if>
             <if test="avatar != null and avatar != ''">avatar,</if>
             <if test="password != null and password != ''">password,</if>
@@ -74,7 +74,7 @@
             <if test="nickName != null and nickName != ''">#{nickName},</if>
             <if test="userType != null and userType != ''">#{userType},</if>
             <if test="email != null and email != ''">#{email},</if>
-            <if test="phoneNumber != null and phoneNumber != ''">#{phoneNumber},</if>
+            <if test="phonenumber != null and phonenumber != ''">#{phonenumber},</if>
             <if test="sex != null and sex != ''">#{sex},</if>
             <if test="avatar != null and avatar != ''">#{avatar},</if>
             <if test="password != null and password != ''">#{password},</if>
@@ -88,12 +88,12 @@
         </trim>
     </insert>
 
-    <update id="updateCustomer" parameterType="com.ruoyi.project.storage.domain.Customer" >
+    <update id="updateCustomer" parameterType="com.ruoyi.project.storage.domain.User" >
         update sys_user
         <trim prefix="SET" suffixOverrides=",">
             <if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
             <if test="email != null and email != ''">email = #{email},</if>
-            <if test="phoneNumber != null and phoneNumber != ''">phonenumber = #{phoneNumber},</if>
+            <if test="phonenumber != null and phonenumber != ''">phonenumber = #{phonenumber},</if>
             <if test="sex != null and sex != ''">sex = #{sex},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
@@ -111,10 +111,10 @@
         update sys_user
         set del_flag = '2',
         version = version + 1,
-        update_time = #{time},
-        update_by = #{user}
+        update_time = #{updateTime},
+        update_by = #{updateBy}
         where
-            status = 1
+            `status` = 1
         and
             user_type = '02'
         and
@@ -128,20 +128,24 @@
         update sys_user
         set
         <if test="operate != null and operate == 'enable'.toString()">
-            status = 0,
+            `status` = 0,
         </if>
         <if test="operate != null and operate == 'disable'.toString()">
-            status = 1,
+            `status` = 1,
         </if>
         version = version + 1,
-        update_time = #{time},
-        update_by = #{user}
+        update_time = #{updateTime},
+        update_by = #{updateBy}
         where
             del_flag = '0'
-        and
-            user_type = '02'
-        and
-            user_id in
+        and user_type = '02'
+        <if test="operate != null and operate == 'enable'.toString()">
+            and `status` = 1
+        </if>
+        <if test="operate != null and operate == 'disable'.toString()">
+            and `status` = 0
+        </if>
+        and user_id in
         <foreach item="id" collection="ids" open="(" separator="," close=")">
             #{id}
         </foreach>
@@ -150,10 +154,10 @@
     <update id="resetCustomerPassword" parameterType="Map">
         update sys_user
         set
-            password = #{operate},
+            `password` = #{operate},
             version = version + 1,
-            update_time = #{time},
-            update_by = #{user}
+            update_time = #{updateTime},
+            update_by = #{updateBy}
         where
             del_flag = '0'
         and

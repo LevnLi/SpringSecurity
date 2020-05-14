@@ -1,22 +1,19 @@
 package com.ruoyi.project.storage.controller;
 
-import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.Log;
 import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
 import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.domain.AjaxResult;
-import com.ruoyi.project.storage.service.PersonalService;
+import com.ruoyi.project.storage.service.PasswordService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import javax.annotation.Resource;
 
 /**
  * @author :lihao
  * @date :2020/05/04
- * @description : 手机端个人中心
+ * @description : 手机端修改密码
  */
 @RestController
 @RequestMapping("/app/personal")
@@ -24,17 +21,17 @@ import javax.annotation.Resource;
 public class AppPersonalController extends BaseController {
 
     /**
-     * 个人service接口
+     * 密码service接口
      */
-    private final PersonalService personalService;
+    private final PasswordService passwordService;
 
     /**
      * 通过构造方法注入
-     * @param personalService
+     * @param passwordService 密码service
      */
     @Autowired
-    public AppPersonalController(PersonalService personalService) {
-        this.personalService = personalService;
+    public AppPersonalController(PasswordService passwordService) {
+        this.passwordService = passwordService;
     }
 
     /**
@@ -45,52 +42,22 @@ public class AppPersonalController extends BaseController {
      */
     @Log(title = "5.2.5.1 修改密码", businessType = BusinessType.UPDATE)
     @PutMapping("/updatePassword/{oldPassword}/{newPassword}")
-    @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "5.2.5.1 修改密码",notes = "修改密码")
     public AjaxResult updatePassword(@PathVariable String oldPassword,@PathVariable String newPassword){
-        // 如果输入的旧密码和数据库中的旧密码不一样
-        if (
-            !SecurityUtils.matchesPassword(
-                // 旧密码
-                oldPassword,
-                // 查询数据库中旧密码
-                personalService.queryOldPassword(
-                    SecurityUtils.getUserId(),
-                    SecurityUtils.getUserType()
-                )
-            )
-        ){
-            // 返回旧密码错误
-            return AjaxResult.error("旧密码错误");
-        }
-        // 如果输入旧密码正确但是新密码与数据库旧密码相同
-        if(
-            SecurityUtils.matchesPassword(
-                // 新密码
-                newPassword,
-                // 查询数据库中新密码
-                personalService.queryOldPassword(
-                    SecurityUtils.getUserId(),
-                    SecurityUtils.getUserType()
-                )
-            )
-        ){
-            // 返回错误码，和错误信息
-            return AjaxResult.error(500,"修改密码失败，新密码不能与旧密码相同");
-        }
-        // 以上都成功，更新数据库当前用户密码
-        return personalService.updatePassword(
-                // 当前用户id
-                SecurityUtils.getUserId(),
-                // 加密后的新密码
-                SecurityUtils.encryptPassword(newPassword),
-                // 当前用户类型
-                SecurityUtils.getUserType()
+        // 捕获异常
+        try{
             /**
-             * 更新结果:
-             *  大于0: 返回操作成功
-             *  否则: 返回操作失败
+             * 密码更新结果
+             *   大于0，返回密码修改成功
+             *   否则，返回密码修改失败
              */
-        )>0? AjaxResult.success("操作成功") : AjaxResult.error("操作失败");
+            return passwordService.updatePassword(oldPassword,newPassword)>0?
+                    AjaxResult.success("密码修改成功") :
+                    AjaxResult.error("密码修改失败");
+            // 处理异常
+        }catch (Exception e){
+            // 返回异常信息
+            return AjaxResult.error(e.getMessage());
+        }
     }
 }

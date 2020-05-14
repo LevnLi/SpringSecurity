@@ -56,32 +56,22 @@
         </if>
     </select>
 
-    <insert id="insertBoxInfo" parameterType="com.ruoyi.project.storage.domain.BoxInfo">
-        insert into t_box_info
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="boxCode != null">box_code,</if>
-            <if test="boxStandard != null and boxStandard != ''">box_standard,</if>
-            <if test="boxUnitPrice != null">box_unit_price,</if>
-            <if test="isUsed != null">is_used,</if>
-            <if test="remark != null and remark != ''">remark,</if>
-            <if test="sortNo != null">sort_no,</if>
-            <if test="createBy != null and createBy != ''">create_by,</if>
-            <if test="createTime != null">create_time,</if>
-            <if test="version != null">version,</if>
-            <if test="delFlag != null and delFlag != ''">del_flag,</if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="boxCode != null">#{boxCode},</if>
-            <if test="boxStandard != null and boxStandard != ''">#{boxStandard},</if>
-            <if test="boxUnitPrice != null">#{boxUnitPrice},</if>
-            <if test="isUsed != null">#{isUsed},</if>
-            <if test="remark != null and remark != ''">#{remark},</if>
-            <if test="sortNo != null">#{sortNo},</if>
-            <if test="createBy != null and createBy != ''">#{createBy},</if>
-            <if test="createTime != null">#{createTime},</if>
-            <if test="version != null">#{version},</if>
-            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
-        </trim>
+    <insert id="insertBoxInfo" parameterType="list" useGeneratedKeys="true" keyProperty="id">
+        insert into t_box_info(box_code,box_standard,box_unit_price,is_used,remark,create_by,create_time,version,del_flag)
+        values
+        <foreach item="item" collection="list" index="index" separator=",">
+            (
+            #{item.boxCode},
+            #{item.boxStandard},
+            #{item.boxUnitPrice},
+            #{item.isUsed},
+            #{item.remark},
+            #{item.createBy},
+            #{item.createTime},
+            #{item.version},
+            #{item.delFlag}
+            )
+        </foreach>
     </insert>
 
     <update id="deleteBoxInfo" parameterType="map">

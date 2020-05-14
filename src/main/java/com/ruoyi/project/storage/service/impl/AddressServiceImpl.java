@@ -28,7 +28,7 @@ public class AddressServiceImpl implements AddressService {
 
     /**
      * 通过构造方法注入
-     * @param addressServiceMapper
+     * @param addressServiceMapper 地址mapper
      */
     @Autowired
     public AddressServiceImpl(AddressServiceMapper addressServiceMapper) {

@@ -6,9 +6,11 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.project.common.util.ParameterUtil;
 import com.ruoyi.project.storage.domain.Order;
 import com.ruoyi.project.storage.domain.OrderV0;
+import com.ruoyi.project.storage.domain.OrderV1;
 import com.ruoyi.project.storage.enums.OrderEnum;
 import com.ruoyi.project.storage.mapper.OrderHistoryMapper;
 import com.ruoyi.project.storage.mapper.OrderMapper;
+import com.ruoyi.project.storage.msg.Msg;
 import com.ruoyi.project.storage.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,27 +26,7 @@ import java.util.List;
 @Service
 @Slf4j
 @Transactional(rollbackFor = Exception.class)
-public class OrderServiceImpl implements OrderService {
-
-    /**
-     * 定义静态私有常量 SUCCESS表示操作成功
-     */
-    private static final int SUCCESS = 1;
-
-    /**
-     * 定义静态私有常量 ERROR表示操作失败
-     */
-    private static final int ERROR = 0;
-
-    /**
-     * 定义静态私有常量 BACKEND表示后台端
-     */
-    private static final String BACKEND = "backend";
-
-    /**
-     * 定义静态私有常量 APP表示手机端
-     */
-    private static final String APP = "app";
+public class OrderServiceImpl extends Msg implements OrderService {
 
     /**
      * 订单mapper接口
@@ -70,12 +52,12 @@ public class OrderServiceImpl implements OrderService {
     /**
      * 订单列表
      *
-     * @param order 订单对象
+     * @param orderV1 订单对象
      * @return 结果
      */
     @Override
-    public List<Order> getOrderList(Order order) {
-        return orderMapper.getOrderList(order);
+    public List<Order> getOrderList(OrderV1 orderV1) {
+        return orderMapper.getOrderList(orderV1);
     }
 
     /**

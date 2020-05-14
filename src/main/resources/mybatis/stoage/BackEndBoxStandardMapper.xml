@@ -83,7 +83,6 @@
             <if test="boxStandard != null and boxStandard != ''">box_standard,</if>
             <if test="boxUnitPrice != null">box_unit_price,</if>
             <if test="remark != null and remark != ''">remark,</if>
-            <if test="sortNo != null">sort_no,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="version != null">version,</if>
@@ -93,7 +92,6 @@
             <if test="boxStandard != null and boxStandard != ''">#{boxStandard},</if>
             <if test="boxUnitPrice != null">#{boxUnitPrice},</if>
             <if test="remark != null and remark != ''">#{remark},</if>
-            <if test="sortNo != null">#{sortNo},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="version != null">#{version},</if>
@@ -121,7 +119,10 @@
         update_time = #{updateTime},
         update_by = #{updateBy}
         where del_flag = '0'
-        and id = #{id}
+        and id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
     </update>
 
     <select id="selectBoxStandard" resultMap="BoxStandard">
@@ -134,8 +135,13 @@
             del_flag = '0'
     </select>
 
-    <select id="queryBox" parameterType="map" resultType="string">
-        SELECT 1 FROM t_box_standard WHERE box_standard = #{msg} and box_unit_price = #{id} LIMIT 1;
+    <select id="queryBox" parameterType="string" resultType="com.ruoyi.project.storage.domain.BoxStandardV1">
+        SELECT
+            id,
+            box_standard as boxStandard ,
+            box_unit_price as boxUnitPrice
+        FROM t_box_standard
+        WHERE box_standard = #{boxStandard}
     </select>
 
 

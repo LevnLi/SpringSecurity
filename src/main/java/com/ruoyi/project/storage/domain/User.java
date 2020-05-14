@@ -19,8 +19,8 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "客户对象", description = "客户对象")
-public class Customer extends BaseEntity {
+@ApiModel(value = "个人对象", description = "个人对象")
+public class User extends BaseEntity {
 
     /**
      * 序列化id
@@ -67,7 +67,7 @@ public class Customer extends BaseEntity {
      * 手机号码
      */
     @ApiModelProperty(value = "手机号码")
-    private String phoneNumber;
+    private String phonenumber;
 
     /**
      * 用户性别（0男 1女 2未知）

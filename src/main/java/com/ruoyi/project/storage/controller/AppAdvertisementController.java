@@ -39,8 +39,8 @@ public class AppAdvertisementController extends BaseController {
 
     /**
      * 通过构造方法注入
-     * @param appAdvertisementService
-     * @param pointService
+     * @param appAdvertisementService 广告Service
+     * @param pointService 广告Service
      */
     @Autowired
     public AppAdvertisementController(AppAdvertisementService appAdvertisementService, PointService pointService) {

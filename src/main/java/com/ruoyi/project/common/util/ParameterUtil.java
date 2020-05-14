@@ -138,6 +138,30 @@ public class ParameterUtil {
     }
 
     /**
+     * 通过传入id数组及用户名、当前时间返回Map<String, Object>
+     *
+     * @param ids id数组
+     * @param operate 指令
+     * @param updateBy 更新人
+     * @param updateTime 更新时间
+     * @return Map<String, Object>
+     */
+    public static Map<String, Object> getIdsOperateUpdateByUpdateTime(Long[] ids,String operate, String updateBy, Date updateTime){
+        // 初始化map
+        Map<String, Object> map = new HashMap(4);
+        // 设置id数组
+        map.put("ids", ids);
+        // 设置指令
+        map.put("operate", operate);
+        // 更新人
+        map.put("updateBy", updateBy);
+        // 更新时间
+        map.put("updateTime",updateTime);
+        // 返回map
+        return map;
+    }
+
+    /**
      * 通过传入id及操作返回Map<String, Object>
      *
      * @param id

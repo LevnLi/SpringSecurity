@@ -29,8 +29,8 @@ public interface BackEndBoxInfoMapper {
 
     /**
      * 添加箱子信息
-     * @param boxInfo
+     * @param list
      * @return 结果
      */
-    int insertBoxInfo(BoxInfo boxInfo);
+    int insertBoxInfo(List<BoxInfo> list);
 }
