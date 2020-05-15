@@ -10,7 +10,7 @@ import java.util.Map;
  * @date :2020/05/09
  * @description :地址mapper接口
  */
-public interface AddressServiceMapper {
+public interface AddressMapper {
 
     /**
      * 查询地址列表
@@ -56,7 +56,7 @@ public interface AddressServiceMapper {
 
     /**
      * 通过用户ID查是否存在地址信息
-     * @param id
+     * @param id 用户id
      * @return 结果
      */
     String queryAddressByUserId(Long id);

@@ -12,21 +12,15 @@ public interface PointService {
 
     /**
      * 查询积分记录列表
-     * @param point
+     * @param point 积分实体
      * @return 结果
      */
     List<Point> queryPointList(Point point);
 
     /**
-     * 查询用户积分
+     * 获取当前用户积分
      * @return 返回积分总和
      */
-    String queryUserPoint();
+    Long queryUserPoint();
 
-    /**
-     * 添加积分记录
-     * @param point
-     * @return 结果
-     */
-    int insertPoint(Point point);
 }

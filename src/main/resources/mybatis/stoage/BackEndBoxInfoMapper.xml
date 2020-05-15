@@ -51,8 +51,8 @@
             and info.is_used = #{isUsed}
         </if>
         <if test="usedByName != null and usedByName != ''">
-            AND sys.del_flag = '0'
-            AND sys.nick_name like concat(#{usedByName}, '%')
+            and sys.del_flag = '0'
+            and sys.nick_name like concat(#{usedByName}, '%')
         </if>
     </select>
 

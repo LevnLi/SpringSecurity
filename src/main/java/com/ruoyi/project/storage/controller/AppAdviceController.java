@@ -9,7 +9,6 @@ import com.ruoyi.project.storage.service.AdviceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +31,7 @@ public class AppAdviceController extends BaseController {
 
     /**
      * 通过构造方法注入
-     * @param adviceService
+     * @param adviceService 意见service
      */
     @Autowired
     public AppAdviceController(AdviceService adviceService) {
@@ -46,14 +45,9 @@ public class AppAdviceController extends BaseController {
      */
     @Log(title = "【手机端】5.2.8 意见建议", businessType = BusinessType.INSERT)
     @PostMapping("/advice")
-    @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "【手机端】5.2.8 意见建议",notes = "新增意见")
     public AjaxResult insetAdvice(@RequestBody Advice advice){
-        /**
-         * 意见新增结果:
-         *  大于0，返回新增成功
-         *  否则，返回新增失败
-         */
+        // 意见新增结果: 大于0，返回新增成功  否则，返回新增失败
         return adviceService.insertAdvice(advice)>0 ? AjaxResult.success("新增成功") : AjaxResult.error("新增失败");
     }
 }

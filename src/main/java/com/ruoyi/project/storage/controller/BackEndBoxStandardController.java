@@ -66,21 +66,10 @@ public class BackEndBoxStandardController extends BaseController {
     @PutMapping("/delete/{ids}")
     @ApiOperation(value = "5.3.4.3 箱子规格删除",notes = "箱子规格删除")
     public AjaxResult remove(@PathVariable Long[] ids){
-        // 捕获异常
-        try{
-            /**
-             * 删除箱子规格结果:
-             *   大于0,返回删除成功
-             *   否则，返回删除失败
-             */
-            return standardService.deleteBoxStandard(ids)>0 ?
-                    AjaxResult.success("删除成功") :
-                    AjaxResult.success("删除失败");
-        // 处理异常
-        }catch (Exception e){
-            // 返回异常信息
-            return AjaxResult.error(e.getMessage());
-        }
+        // 删除箱子规格结果: 大于0,返回删除成功  否则，返回删除失败
+        return standardService.deleteBoxStandard(ids)>0 ?
+                AjaxResult.success("删除成功") :
+                AjaxResult.success("删除失败");
     }
 
     /**
@@ -92,21 +81,10 @@ public class BackEndBoxStandardController extends BaseController {
     @PostMapping("/create")
     @ApiOperation(value = "5.3.4.2 箱子规格新增",notes = "箱子规格新增")
     public AjaxResult add(@RequestBody BoxStandard boxStandard){
-        // 捕获异常
-        try {
-            /**
-             * 新增箱子规格结果:
-             *   大于0,返回新增成功
-             *   否则，返回新增失败
-             */
-            return standardService.insertBoxStandard(boxStandard)>0 ?
-                    AjaxResult.success("新增成功") :
-                    AjaxResult.success("新增失败");
-        //处理异常
-        }catch (Exception e){
-            // 返回异常信息
-            return AjaxResult.error(e.getMessage());
-        }
+        // 新增箱子规格结果: 大于0,返回新增成功  否则，返回新增失败
+        return standardService.insertBoxStandard(boxStandard)>0 ?
+                AjaxResult.success("新增成功") :
+                AjaxResult.success("新增失败");
     }
 
     @Log(title = "5.3.4.4 箱子规格下拉列表（非分页", businessType = BusinessType.OTHER)

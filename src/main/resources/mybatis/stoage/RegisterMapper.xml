@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.project.storage.mapper.RegisterMapper">
 
-    <insert id="registerUser" parameterType="com.ruoyi.project.storage.domain.Register">
+    <insert id="registerUser" parameterType="com.ruoyi.project.storage.domain.Register" useGeneratedKeys="true" keyProperty="userId">
         insert into sys_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="userName != null and userName != ''">user_name,</if>
@@ -16,6 +16,7 @@
             <if test="sex != null">sex,</if>
             <if test="status != null and status != ''">status,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="currentPoints != null">current_points,</if>
             <if test="version != null">version,</if>
@@ -30,6 +31,7 @@
             <if test="sex != null">#{sex},</if>
             <if test="status != null and status != ''">#{status},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="currentPoints != null">#{currentPoints},</if>
             <if test="version != null">#{version},</if>
@@ -46,10 +48,6 @@
 
     <select id="queryByEmail" parameterType="com.ruoyi.project.storage.domain.Register" resultType="string">
         SELECT 1 FROM sys_user WHERE email = #{email}  LIMIT 1;
-    </select>
-
-    <select id="queryIdByName" parameterType="string" resultType="long">
-        SELECT user_id FROM sys_user WHERE user_name = #{userName}
     </select>
 
 </mapper>

@@ -1,19 +1,17 @@
 package com.ruoyi.project.storage.service.impl;
 
-import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.project.common.util.ParameterUtil;
 import com.ruoyi.project.storage.domain.Advertisement;
 import com.ruoyi.project.storage.mapper.AdvertisementMapper;
+import com.ruoyi.project.storage.msg.Msg;
 import com.ruoyi.project.storage.service.AdvertisementService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -23,7 +21,8 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class AdvertisementServiceImpl implements AdvertisementService {
+@Transactional(rollbackFor = Exception.class)
+public class AdvertisementServiceImpl extends Msg implements AdvertisementService {
 
     /**
      * 广告Mapper接口
@@ -32,7 +31,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     /**
      * 通过构造方法注入
-     * @param advertisementMapper
+     * @param advertisementMapper 广告Mapper
      */
     @Autowired
     public AdvertisementServiceImpl(AdvertisementMapper advertisementMapper) {
@@ -57,6 +56,11 @@ public class AdvertisementServiceImpl implements AdvertisementService {
      */
     @Override
     public int insertAdvertisement(Advertisement advertisement) {
+        // 如果可获积分小于等于0
+        if (advertisement.getPoints().intValue() <= ERROR){
+            // 抛出异常
+            throw new CustomException("广告可获得积分不能小于等于0");
+        }
         // 设置创建时间
         advertisement.setCreateTime(DateUtils.getNowDate());
         // 设置创建人
@@ -68,7 +72,14 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         // 设置未删除
         advertisement.setDelFlag("0");
         // 返回插入条数
-        return advertisementMapper.insertAdvertisement(advertisement);
+        int count = advertisementMapper.insertAdvertisement(advertisement);
+        // 如果更新客户积分失败
+        if (count == ERROR){
+            // 抛出异常
+            throw new CustomException("新增广告信息失败");
+        }
+        // 返回成功
+        return SUCCESS;
     }
 
     /**
@@ -77,22 +88,25 @@ public class AdvertisementServiceImpl implements AdvertisementService {
      * @return 结果
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public int updateAdvertisement(Advertisement advertisement) {
+        // 如果可获积分小于等于0
+        if (advertisement.getPoints().intValue() <= ERROR){
+            // 抛出异常
+            throw new CustomException("广告可获得积分不能小于等于0");
+        }
         // 设置更新时间
         advertisement.setUpdateTime(DateUtils.getNowDate());
         // 设置更新人
         advertisement.setUpdateBy(SecurityUtils.getUsername());
         // 修改条数
         int count = advertisementMapper.updateAdvertisement(advertisement);
-        // 乐观锁判断
-        if (count == 0){
-            log.error("AdvertisementServiceImpl.updateAdvertisement failed: 乐观锁");
-            // 抛出异常标记乐观锁
-            throw new CustomException("广告【" + advertisement.getTitle() + "】已被他人率先修改，请刷新后重试", HttpStatus.ERROR);
+        // 如果更新客户积分失败
+        if (count == ERROR){
+            // 抛出异常
+            throw new CustomException("新增广告信息失败");
         }
         // 返回修改条数
-        return count;
+        return SUCCESS;
     }
 
     /**
@@ -102,18 +116,50 @@ public class AdvertisementServiceImpl implements AdvertisementService {
      */
     @Override
     public int deleteAdvertisementByIds(Long[] ids) {
-        /**
-         * 内嵌方法参数:
-         *      ids: 广告ids数组
-         * @return 返回删除条数
-         */
-        return advertisementMapper.deleteAdvertisementByIds(ParameterUtil.getBatchUpdateMapByIds(ids));
+        // 定义变量接收更新条数
+        int count = advertisementMapper.deleteAdvertisementByIds(ParameterUtil.getBatchUpdateMapByIds(ids));
+        // 如果更新客户积分失败
+        if (count != ids.length){
+            // 抛出异常
+            throw new CustomException("新增广告信息失败");
+        }
+        // 返回成功
+        return SUCCESS;
     }
 
+    /**
+     * 停用或启用广告
+     * @param operate 操作类型（“enable”: 启用; "disable": 停用
+     * @param ids     需要启用/停用的广告ID数组
+     * @return 结果
+     */
     @Override
     public int operateAdvertisementByIds(String operate, Long[] ids) {
-
-        // 返回操作条数
-        return advertisementMapper.operateAdvertisementByIds(ParameterUtil.getBatchUpdateMapByOperateIds(operate, ids));
+        // 如果是停用指令
+        if (DISABLE.equals(operate)){
+            // 定义变量接收操作条数
+            int count = advertisementMapper.operateAdvertisementByIds(ParameterUtil.getBatchUpdateMapByOperateIds(operate, ids));
+            // 如果更新条数不等于数组长度
+            if (count != ids.length){
+                // 抛异常
+                throw new CustomException("停用失败");
+            }
+            // 返回成功信息
+            return SUCCESS;
+        }
+        // 如果是启用指令
+        if (ENABLE.equals(operate)){
+            // 定义变量接收操作条数
+            int count = advertisementMapper.operateAdvertisementByIds(ParameterUtil.getBatchUpdateMapByOperateIds(operate, ids));
+            // 如果更新条数不等于数组长度
+            if (count != ids.length){
+                // 抛异常
+                throw new CustomException("启用失败");
+            }
+            // 返回成功信息
+            return SUCCESS;
+        }
+        // 返回成功
+        return SUCCESS;
     }
 }

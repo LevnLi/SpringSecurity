@@ -3,7 +3,6 @@ package com.ruoyi.project.storage.controller;
 import com.ruoyi.framework.aspectj.lang.annotation.Log;
 import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
 import com.ruoyi.framework.web.controller.BaseController;
-import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.storage.domain.Advice;
 import com.ruoyi.project.storage.service.AdviceService;
@@ -13,8 +12,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
 
 /**
  * @author :lihao
@@ -33,7 +30,7 @@ public class BackEndAdviceController extends BaseController {
 
     /**
      * 通过构造方法注入
-     * @param adviceService
+     * @param adviceService 意见service
      */
     @Autowired
     public BackEndAdviceController(AdviceService adviceService) {

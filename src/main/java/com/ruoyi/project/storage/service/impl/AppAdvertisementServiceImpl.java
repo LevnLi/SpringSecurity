@@ -1,13 +1,22 @@
 package com.ruoyi.project.storage.service.impl;
 
+import com.ruoyi.common.exception.CustomException;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.project.common.util.ParameterUtil;
 import com.ruoyi.project.storage.domain.Advertisement;
+import com.ruoyi.project.storage.domain.Point;
+import com.ruoyi.project.storage.domain.Register;
+import com.ruoyi.project.storage.domain.User;
 import com.ruoyi.project.storage.mapper.AppAdvertisementMapper;
+import com.ruoyi.project.storage.mapper.PointMapper;
+import com.ruoyi.project.storage.msg.Msg;
 import com.ruoyi.project.storage.service.AppAdvertisementService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -18,20 +27,28 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class AppAdvertisementServiceImpl implements AppAdvertisementService {
+@Transactional(rollbackFor = Exception.class)
+public class AppAdvertisementServiceImpl extends Msg implements AppAdvertisementService {
 
     /**
-     * 广告Mapper接口
+     * 手机端广告Mapper接口
      */
     private final AppAdvertisementMapper appAdvertisementMapper;
 
     /**
+     * 积分记录mapper接口
+     */
+    private final PointMapper pointMapper;
+
+    /**
      * 通过构造方法注入
-     * @param appAdvertisementMapper
+     * @param appAdvertisementMapper 手机端广告mapper
+     * @param pointMapper 积分记录mapper
      */
     @Autowired
-    public AppAdvertisementServiceImpl(AppAdvertisementMapper appAdvertisementMapper) {
+    public AppAdvertisementServiceImpl(AppAdvertisementMapper appAdvertisementMapper, PointMapper pointMapper) {
         this.appAdvertisementMapper = appAdvertisementMapper;
+        this.pointMapper = pointMapper;
     }
 
     /**
@@ -53,7 +70,62 @@ public class AppAdvertisementServiceImpl implements AppAdvertisementService {
      */
     @Override
     public int getAdvertisementPoints(Long id, Long points) {
+        // 广告不存在或积分错误
+        if (appAdvertisementMapper.queryByIdPoints(id,points) == null){
+            // 抛出异常
+            throw new CustomException("广告不存在或积分错误");
+        }
         // 返回操作条数
-        return appAdvertisementMapper.getAdvertisementPoints(ParameterUtil.getMapByMsg(SecurityUtils.getUserId(),points,SecurityUtils.getUsername()));
+        int count =  appAdvertisementMapper.getAdvertisementPoints(
+                        // 封装map集合
+                        ParameterUtil.getIdDataUpdateByUpdateTime(
+                                // 客户id
+                                SecurityUtils.getUserId(),
+                                // 可获积分
+                                points,
+                                // 更新人
+                                SecurityUtils.getUsername(),
+                                // 更新时间
+                                DateUtils.getNowDate()));
+        // 如果更新客户积分失败
+        if (count == ERROR){
+            // 抛出异常
+            throw new CustomException("更新客户积分失败");
+        }
+        // 调用添加积分记录方法
+        insertPoint(id,points);
+        // 返回成功信息
+        return SUCCESS;
+    }
+
+    /**
+     * 添加积分记录
+     * @param id 广告id
+     * @param points 可获积分
+     */
+    private void insertPoint(Long id, Long points){
+        // new一个积分对象
+        Point point = new Point();
+        // 创建人
+        point.setCreateBy(SecurityUtils.getUsername());
+        // 创建时间
+        point.setCreateTime(DateUtils.getNowDate());
+        // 客户id
+        point.setUserId(SecurityUtils.getUserId());
+        // 广告id
+        point.setAdvertisementId(id);
+        // 获取方式
+        point.setWay(2);
+        // 获得积分
+        point.setPoints(points);
+        // 版本号
+        point.setVersion(0L);
+        // 未删除
+        point.setDelFlag("0");
+        // 向积分表添加记录
+        if (pointMapper.insertPoint(point) == ERROR){
+            // 抛出异常
+            throw new CustomException("添加积分记录失败");
+        }
     }
 }

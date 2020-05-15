@@ -34,7 +34,7 @@ public class BackEndBoxInfoController extends BaseController {
 
     /**
      * 通过构造方法注入
-     * @param infoService
+     * @param infoService 箱子信息service
      */
     @Autowired
     public BackEndBoxInfoController(BackEndBoxInfoService infoService) {
@@ -70,11 +70,7 @@ public class BackEndBoxInfoController extends BaseController {
     @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "5.3.5.2 箱子信息新增",notes = "箱子信息新增")
     public AjaxResult add(@RequestBody BoxInfo boxInfo){
-        /**
-         * 箱子信息新增结果:
-         *  大于0，返回信息：新增成功
-         *  否则，返回信息：新增失败
-         */
+        // 箱子信息新增结果: 大于0，返回信息：新增成功  否则，返回信息：新增失败
         return infoService.insertBoxInfo(boxInfo)>0?
                 AjaxResult.success("新增成功") :
                 AjaxResult.error("新增失败");
@@ -90,11 +86,7 @@ public class BackEndBoxInfoController extends BaseController {
     @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "5.3.5.3 箱子信息删除",notes = "箱子信息删除")
     public AjaxResult remove(@PathVariable Long[] ids){
-        /**
-         * 箱子信息删除结果:
-         *  大于0，返回信息：删除成功
-         *  否则，返回信息：删除失败
-         */
+        // 箱子信息删除结果: 大于0，返回信息：删除成功  否则，返回信息：删除失败
         return infoService.deleteBoxInfo(ids)>0?
                 AjaxResult.success("删除成功"):
                 AjaxResult.error("删除失败");

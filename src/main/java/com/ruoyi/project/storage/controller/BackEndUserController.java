@@ -66,21 +66,10 @@ public class BackEndUserController extends BaseController {
     @PostMapping("/create")
     @ApiOperation(value = "5.3.3.2 用户新增",notes = "新增用户")
     public AjaxResult add(@RequestBody User user){
-        // 捕获异常
-        try {
-            /**
-             * 用户新增结果:
-             *  大于0，返回新增成功
-             *  否则，返回新增失败
-             */
-            return userService.insertUser(user)>0 ?
-                    AjaxResult.success("新增成功") :
-                    AjaxResult.error("新增失败");
-        // 处理异常
-        }catch (Exception e){
-            // 返回异常信息
-            return AjaxResult.error(e.getMessage());
-        }
+        // 用户新增结果:
+        return userService.insertUser(user)>0 ?
+                AjaxResult.success("新增成功") :
+                AjaxResult.error("新增失败");
     }
 
     /**
@@ -92,21 +81,10 @@ public class BackEndUserController extends BaseController {
     @PutMapping("/update")
     @ApiOperation(value = "5.3.3.2 用户编辑",notes = "修改用户")
     public AjaxResult edit(@RequestBody User user){
-        // 捕获异常
-        try{
-            /**
-             * 用户修改结果:
-             *  大于0，返回修改成功
-             *  否则，返回修改失败
-             */
-            return userService.updateUser(user)>0 ?
-                    AjaxResult.success("修改成功") :
-                    AjaxResult.error("修改失败");
-        // 处理异常
-        }catch (Exception e){
-            // 返回异常信息
-            return AjaxResult.error(e.getMessage());
-        }
+        // 用户修改结果: 大于0，返回修改成功  否则，返回修改失败
+        return userService.updateUser(user)>0 ?
+                AjaxResult.success("修改成功") :
+                AjaxResult.error("修改失败");
     }
 
     /**
@@ -118,20 +96,10 @@ public class BackEndUserController extends BaseController {
     @PutMapping("/delete/{ids}")
     @ApiOperation(value = "5.3.3.4 用户删除",notes = "删除用户")
     public AjaxResult deleteCustomer(@PathVariable Long[] ids){
-        try{
-            /**
-             * 用户删除结果:
-             *  大于0，返回删除成功
-             *  否则，返回删除失败
-             */
-            return userService.deleteUserByIds(ids)>0 ?
-                    AjaxResult.success("删除成功") :
-                    AjaxResult.error("删除失败");
-        // 处理异常
-        }catch (Exception e){
-            // 返回异常信息
-            return AjaxResult.error(e.getMessage());
-        }
+        // 用户删除结果: 大于0，返回删除成功  否则，返回删除失败
+        return userService.deleteUserByIds(ids)>0 ?
+                AjaxResult.success("删除成功") :
+                AjaxResult.error("删除失败");
     }
 
     /**
@@ -143,20 +111,10 @@ public class BackEndUserController extends BaseController {
     @PutMapping("/reset/{userIds}")
     @ApiOperation(value = "5.3.3.5 用户重置密码",notes = "用户重置密码")
     public AjaxResult resetCustomerPassword(@PathVariable Long[] userIds){
-        try{
-            /**
-             * 用户重置密码结果:
-             *  大于0，返回密码重置成功
-             *  否则，返回密码重置失败
-             */
-            return userService.resetUserPassword(userIds)>0 ?
-                    AjaxResult.success("密码重置成功") :
-                    AjaxResult.error("密码重置失败");
-        // 处理异常
-        }catch (Exception e){
-            // 返回异常信息
-            return AjaxResult.error(e.getMessage());
-        }
+        // 用户重置密码结果: 大于0，返回密码重置成功  否则，返回密码重置失败
+        return userService.resetUserPassword(userIds)>0 ?
+                AjaxResult.success("密码重置成功") :
+                AjaxResult.error("密码重置失败");
     }
 
     /**
@@ -169,33 +127,18 @@ public class BackEndUserController extends BaseController {
     @PutMapping("/{operate}/{ids}")
     @ApiOperation(value = "5.3.3.6 用户启用/停用",notes = "启用/停用用户")
     public AjaxResult operateCustomer(@PathVariable String operate, @PathVariable Long[] ids){
-        // 捕获异常
-        try{
-            if(ENABLE.equals(operate)){
-                /**
-                 * 用户启用结果:
-                 *  大于0，返回启用成功
-                 *  否则，返回启用失败
-                 */
-                return userService.operateUserByIds(operate, ids)>0 ?
-                        AjaxResult.success("启用成功") :
-                        AjaxResult.error("启用失败");
-            }
-            if (DISABLE.equals(operate)){
-                /**
-                 * 用户停用密码结果:
-                 *  大于0，返回停用成功
-                 *  否则，返回停用失败
-                 */
-                return userService.operateUserByIds(operate, ids)>0 ?
-                        AjaxResult.success("停用成功") :
-                        AjaxResult.error("停用失败");
-            }
-            return AjaxResult.error("操作失败");
-        // 处理异常
-        }catch (Exception e){
-            // 返回异常信息
-            return AjaxResult.error(e.getMessage());
+        if(ENABLE.equals(operate)){
+            // 用户启用结果: 大于0，返回启用成功  否则，返回启用失败
+            return userService.operateUserByIds(operate, ids)>0 ?
+                    AjaxResult.success("启用成功") :
+                    AjaxResult.error("启用失败");
         }
+        if (DISABLE.equals(operate)){
+            // 用户停用密码结果: 大于0，返回停用成功  否则，返回停用失败
+            return userService.operateUserByIds(operate, ids)>0 ?
+                    AjaxResult.success("停用成功") :
+                    AjaxResult.error("停用失败");
+        }
+        return AjaxResult.error("操作失败");
     }
 }

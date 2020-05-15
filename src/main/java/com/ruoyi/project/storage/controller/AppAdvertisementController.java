@@ -33,19 +33,12 @@ public class AppAdvertisementController extends BaseController {
     private final AppAdvertisementService appAdvertisementService;
 
     /**
-     * 积分记录service接口
-     */
-    private final PointService pointService;
-
-    /**
      * 通过构造方法注入
      * @param appAdvertisementService 广告Service
-     * @param pointService 广告Service
      */
     @Autowired
-    public AppAdvertisementController(AppAdvertisementService appAdvertisementService, PointService pointService) {
+    public AppAdvertisementController(AppAdvertisementService appAdvertisementService) {
         this.appAdvertisementService = appAdvertisementService;
-        this.pointService = pointService;
     }
 
     /**
@@ -68,22 +61,12 @@ public class AppAdvertisementController extends BaseController {
      */
     @Log(title = "5.2.2.2 广告积分获取", businessType = BusinessType.UPDATE)
     @PutMapping("/points")
-    @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "5.2.2.2 广告积分获取",notes = "广告积分获取")
     public AjaxResult getPoints(Long id,Long points){
-        // new一个积分对象
-        Point point = new Point();
-        // 创建人
-        point.setCreateBy(SecurityUtils.getUsername());
-        // 广告id
-        point.setAdvertisementId(id);
-        // 获得积分
-        point.setPoints(points);
-        // 获得方式
-        point.setWay(2);
-        // 向积分表添加数据
-        pointService.insertPoint(point);
-        return appAdvertisementService.getAdvertisementPoints(id, points)>0 ? AjaxResult.success("获取积分成功") : AjaxResult.error("获取积分失败");
+        // 广告积分获取结果
+        return appAdvertisementService.getAdvertisementPoints(id, points)>0 ?
+                AjaxResult.success("获取积分成功") :
+                AjaxResult.error("获取积分失败");
     }
 
 }

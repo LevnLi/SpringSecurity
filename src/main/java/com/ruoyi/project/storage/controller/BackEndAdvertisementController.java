@@ -31,7 +31,7 @@ public class BackEndAdvertisementController extends BaseController {
 
     /**
      * 通过构造方法注入
-     * @param advertisementService
+     * @param advertisementService 广告Service
      */
     @Autowired
     public BackEndAdvertisementController(AdvertisementService advertisementService) {
@@ -64,14 +64,9 @@ public class BackEndAdvertisementController extends BaseController {
      */
     @Log(title = "5.3.7.2 广告新增", businessType = BusinessType.INSERT)
     @PostMapping("/create")
-    @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "5.3.7.2 广告新增",notes = "新增广告")
     public AjaxResult add(@RequestBody Advertisement advertisement){
-        /**
-         * 广告新增结果:
-         *  大于0，返回新增成功
-         *  否则，返回新增失败
-         */
+        // 广告新增结果
         return advertisementService.insertAdvertisement(advertisement)>0 ?
                 AjaxResult.success("新增成功") :
                 AjaxResult.error("新增失败");
@@ -84,14 +79,9 @@ public class BackEndAdvertisementController extends BaseController {
      */
     @Log(title = "5.3.7.3 广告编辑", businessType = BusinessType.UPDATE)
     @PutMapping("/update")
-    @Transactional(rollbackFor = Exception.class)
-    @ApiOperation(value = "5.3.7.2 广告编辑",notes = "修改广告")
+    @ApiOperation(value = "5.3.7.3 广告编辑",notes = "修改广告")
     public AjaxResult edit(@RequestBody Advertisement advertisement){
-        /**
-         * 广告修改结果:
-         *  大于0，返回新增成功
-         *  否则，返回新增失败
-         */
+        // 广告修改结果
         return advertisementService.updateAdvertisement(advertisement)>0 ?
                 AjaxResult.success("修改成功") :
                 AjaxResult.error("修改失败");
@@ -104,14 +94,9 @@ public class BackEndAdvertisementController extends BaseController {
      */
     @Log(title = "5.3.7.4 广告删除", businessType = BusinessType.DELETE)
     @PutMapping("/delete/{ids}")
-    @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "5.3.7.4 广告删除",notes = "删除广告")
     public AjaxResult remove(@PathVariable Long[] ids){
-        /**
-         * 广告删除结果:
-         *  大于0，返回删除成功
-         *  否则，返回删除失败
-         */
+        // 广告删除结果
         return advertisementService.deleteAdvertisementByIds(ids)>0 ?
                 AjaxResult.success("删除成功") :
                 AjaxResult.error("删除失败");
@@ -125,31 +110,18 @@ public class BackEndAdvertisementController extends BaseController {
      */
     @Log(title = "5.3.7.5 广告启用/停用", businessType = BusinessType.UPDATE)
     @PutMapping("/{operate}/{ids}")
-    @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "5.3.7.5 广告启用/停用",notes = "启用/停用广告")
     public AjaxResult remove(@PathVariable String operate, @PathVariable Long[] ids){
-        // 定义字符串: "disable"
-        String disable = "disable";
-        // 定义字符串: "enable"
-        String enable = "enable";
         // 如果是停用指令
-        if (disable.equals(operate)){
-            /**
-             * 广告操作结果:
-             *  大于0，返回停用成功
-             *  否则，返回停用失败
-             */
+        if (DISABLE.equals(operate)){
+            // 广告操作结果
             return advertisementService.operateAdvertisementByIds(operate, ids)>0 ?
                     AjaxResult.success("停用成功") :
                     AjaxResult.error("停用失败");
         }
         // 如果是启用指令
-        if (enable.equals(operate)){
-            /**
-             * 广告操作结果:
-             *  大于0，返回启用成功
-             *  否则，返回启用失败
-             */
+        if (ENABLE.equals(operate)){
+            // 广告操作结果
             return advertisementService.operateAdvertisementByIds(operate, ids)>0 ?
                     AjaxResult.success("启用成功") :
                     AjaxResult.error("启用失败");

@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import javax.annotation.Resource;
 
 /**
  * @author :lihao
@@ -34,7 +33,7 @@ public class AppPointController extends BaseController {
 
     /**
      * 通过构造方法注入
-     * @param pointService
+     * @param pointService 积分记录service
      */
     @Autowired
     public AppPointController(PointService pointService) {

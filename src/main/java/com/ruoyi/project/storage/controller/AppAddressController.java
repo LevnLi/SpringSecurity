@@ -1,21 +1,17 @@
 package com.ruoyi.project.storage.controller;
 
-import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.Log;
 import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
 import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.storage.domain.Address;
-import com.ruoyi.project.storage.domain.Advertisement;
 import com.ruoyi.project.storage.service.AddressService;
-import com.ruoyi.project.storage.service.AdvertisementService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -68,22 +64,9 @@ public class AppAddressController extends BaseController {
      */
     @Log(title = "5.3.6.2 地址新增", businessType = BusinessType.INSERT)
     @PostMapping("/create")
-    @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "5.3.6.2 地址新增",notes = "新增地址")
     public AjaxResult add(@RequestBody Address address){
-        // 如果新添地址为默认地址
-        if (address.getIsDefault() == 0){
-            // 如果手机端客户存在地址信息
-            if (addressService.queryAddressByUserId()!=null){
-                // 将手机端客户的默认地址改为普通地址
-                addressService.removeDefaultAddress();
-            }
-        }
-        /**
-         * 地址新增结果:
-         *  大于0，返回新增成功
-         *  否则，返回新增失败
-         */
+        // 地址新增结果: 大于0，返回新增成功  否则，返回新增失败
         return addressService.insertAddress(address)>0 ?
                 AjaxResult.success("新增成功") :
                 AjaxResult.error("新增失败");
@@ -96,22 +79,9 @@ public class AppAddressController extends BaseController {
      */
     @Log(title = "5.3.6.3 地址编辑", businessType = BusinessType.UPDATE)
     @PutMapping("/update")
-    @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "5.3.6.2 地址编辑",notes = "修改地址")
     public AjaxResult edit(@RequestBody Address address){
-        // 如果更改地址为默认地址
-        if (address.getIsDefault() == 0){
-            /**
-             * 移除之前的默认地址
-             * 默认至少有一条当前用户的地址信息
-             */
-            addressService.removeDefaultAddress();
-        }
-        /**
-         * 地址修改结果:
-         *  大于0，返回修改成功
-         *  否则，返回修改失败
-         */
+        // 地址修改结果: 大于0，返回修改成功  否则，返回修改失败
         return addressService.updateAddress(address)>0 ?
                 AjaxResult.success("修改成功") :
                 AjaxResult.error("修改失败");
@@ -124,14 +94,9 @@ public class AppAddressController extends BaseController {
      */
     @Log(title = "5.3.6.4 地址删除", businessType = BusinessType.DELETE)
     @DeleteMapping("/delete/{id}")
-    @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "5.3.6.4 地址删除",notes = "删除地址")
     public AjaxResult remove(@PathVariable Long id){
-        /**
-         * 地址删除结果:
-         *  大于0，返回删除成功
-         *  否则，返回删除失败
-         */
+        // 地址删除结果: 大于0，返回删除成功  否则，返回删除失败
         return addressService.deleteAddressById(id)>0 ?
                 AjaxResult.success("删除成功") :
                 AjaxResult.error("删除失败");
@@ -144,16 +109,9 @@ public class AppAddressController extends BaseController {
      */
     @Log(title = "5.2.6.5 设置默认地址", businessType = BusinessType.UPDATE)
     @PutMapping("/default/{id}")
-    @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "5.2.6.5 设置默认地址",notes = "设置默认地址")
     public AjaxResult defaultAddress(@PathVariable Long id){
-        // 移除之前的默认地址
-        addressService.removeDefaultAddress();
-        /**
-         * 设置默认地址结果:
-         *  大于0，返回删除成功
-         *  否则，返回删除失败
-         */
+        // 设置默认地址结果: 大于0，返回删除成功  否则，返回删除失败
         return addressService.defaultAddressById(id)>0 ?
                 AjaxResult.success("设置默认成功") :
                 AjaxResult.error("设置默认失败");

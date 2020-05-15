@@ -28,7 +28,7 @@ public class AppBoxBespeakController extends BaseController {
 
     /**
      * 通过构造方法注入
-     * @param boxBespeakService
+     * @param boxBespeakService 空箱预约service
      */
     @Autowired
     public AppBoxBespeakController(BoxBespeakService boxBespeakService) {
@@ -47,6 +47,10 @@ public class AppBoxBespeakController extends BaseController {
         return AjaxResult.success("查询成功",boxBespeakService.getDefaultAddress());
     }
 
+    /**
+     * 有效箱子规格选择（非分页）
+     * @return 箱子规格
+     */
     @Log(title = "5.2.3.2 有效箱子规格选择（非分页）", businessType = BusinessType.OTHER)
     @GetMapping("/select")
     @ApiOperation(value = "5.2.3.2 有效箱子规格选择（非分页）",notes = "有效箱子规格选择（非分页）")
@@ -55,24 +59,18 @@ public class AppBoxBespeakController extends BaseController {
         return AjaxResult.success("查询成功",boxBespeakService.getStandardList());
     }
 
+    /**
+     * 空箱预约
+     * @param order 预约对象
+     * @return 预约结果
+     */
     @Log(title = "5.2.3.3 预约", businessType = BusinessType.OTHER)
     @PostMapping("/order")
     @ApiOperation(value = "5.2.3.3 预约",notes = "预约")
     public AjaxResult boxOrder(@RequestBody Order order){
-        // 捕获异常
-        try{
-            /**
-             * 空箱预约结果:
-             *   大于0: 预约成功
-             *   否则: 预约失败
-             */
-            return boxBespeakService.boxOrder(order)>0 ?
-                    AjaxResult.success("预约成功") :
-                    AjaxResult.error("预约失败");
-        // 异常处理
-        }catch (Exception e){
-            // 输出异常信息
-            return AjaxResult.error(e.getMessage());
-        }
+        // 空箱预约结果: 大于0: 预约成功 否则: 预约失败
+        return boxBespeakService.boxOrder(order)>0 ?
+                AjaxResult.success("预约成功") :
+                AjaxResult.error("预约失败");
     }
 }

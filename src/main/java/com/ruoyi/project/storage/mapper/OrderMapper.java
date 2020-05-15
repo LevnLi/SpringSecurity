@@ -36,13 +36,6 @@ public interface OrderMapper {
     int deleteOrder(Map<String,Object> map);
 
     /**
-     * 批量删除订单历史
-     * @param map 集合
-     * @return 结果
-     */
-    int deleteOrderHis(Map<String,Object> map);
-
-    /**
      * 通过订单id查订单状态
      * @param id 订单id
      * @return 订单状态

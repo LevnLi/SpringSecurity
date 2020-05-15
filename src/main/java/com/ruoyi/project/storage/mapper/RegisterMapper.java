@@ -39,10 +39,4 @@ public interface RegisterMapper {
      */
     String queryByEmail(String email);
 
-    /**
-     * 通过id查用户名
-     * @param userName 用户名
-     * @return 结果
-     */
-    Long queryIdByName(String userName);
 }

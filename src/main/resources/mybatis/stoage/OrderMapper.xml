@@ -148,23 +148,6 @@
 
     </update>
 
-    <update id="deleteOrderHis" parameterType="map">
-        update t_order_his
-        set
-        backend_del_flag = 2,
-        update_by = #{updateBy},
-        update_time = #{updateTime},
-        version = version + 1
-        where
-        del_flag = '0'
-        and backend_del_flag = 0
-        and order_id in
-        <foreach item="id" collection="ids" open="(" separator="," close=")">
-            #{id}
-        </foreach>;
-
-    </update>
-
     <select id="selectOrderInfo" parameterType="long" resultType="com.ruoyi.project.storage.domain.Order">
         SELECT
         id,
@@ -256,7 +239,6 @@
             version = version + 1
         where
             id = #{id}
-        and `status` = 10
     </update>
 
 </mapper>

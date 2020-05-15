@@ -15,6 +15,8 @@ import com.ruoyi.project.storage.service.BackEndBoxInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
+@Transactional(rollbackFor = Exception.class)
 public class BackEndBoxInfoServiceImpl extends Msg implements BackEndBoxInfoService {
 
     /**
@@ -121,7 +124,7 @@ public class BackEndBoxInfoServiceImpl extends Msg implements BackEndBoxInfoServ
         // 创建时间
         boxInfo.setCreateTime(DateUtils.getNowDate());
         // 创建人
-        boxInfo.setCreateBy("admin");
+        boxInfo.setCreateBy(SecurityUtils.getUsername());
         // 版本号
         boxInfo.setVersion(0L);
         // 未删除

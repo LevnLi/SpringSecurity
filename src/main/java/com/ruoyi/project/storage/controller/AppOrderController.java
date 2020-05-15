@@ -6,7 +6,6 @@ import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
 import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.framework.web.page.TableDataInfo;
-import com.ruoyi.project.storage.domain.Order;
 import com.ruoyi.project.storage.domain.OrderV0;
 import com.ruoyi.project.storage.domain.OrderV1;
 import com.ruoyi.project.storage.service.OrderService;
@@ -61,7 +60,7 @@ public class AppOrderController extends BaseController {
 
 
     /**
-     * 订单操作
+     * 手机端订单操作
      * @param id 订单id
      * @param operate 操作指令
      * @param version 订单版本号
@@ -70,7 +69,7 @@ public class AppOrderController extends BaseController {
     @Log(title = "5.2.4.3 订单操作", businessType = BusinessType.UPDATE)
     @PutMapping("/operate/{id}/{operate}/{version}")
     @ApiOperation(value = "5.2.4.3 订单操作",notes = "订单操作")
-    public AjaxResult orderOperation(@PathVariable Long id, @PathVariable Integer operate, @PathVariable Long version, OrderV0 orderV0){
+    public AjaxResult orderOperation(@PathVariable Long id, @PathVariable Integer operate, @PathVariable Long version,@RequestBody OrderV0 orderV0){
         // 装入订单id
         orderV0.setId(id);
         // 装入订单状态
@@ -79,23 +78,11 @@ public class AppOrderController extends BaseController {
         orderV0.setVersion(version);
         // 转入信息
         orderV0.setMsg("app");
-        // 捕获异常
-        try {
-            /**
-             * 订单操作结果:
-             *   大于0，操作成功
-             *   否则，操作失败
-             */
-            return orderService.orderOperation(orderV0)>0 ?
-                    AjaxResult.success("操作成功") :
-                    AjaxResult.error("操作失败");
-        // 处理异常
-        }catch (Exception e){
-            // 输出异常信息
-            return AjaxResult.error(e.getMessage());
-        }
+        // 订单操作结果: 大于0，操作成功  否则，操作失败
+        return orderService.orderOperation(orderV0)>0 ?
+                AjaxResult.success("操作成功") :
+                AjaxResult.error("操作失败");
     }
-
 
     /**
      * 订单详情

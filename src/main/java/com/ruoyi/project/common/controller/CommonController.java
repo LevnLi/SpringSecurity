@@ -135,9 +135,9 @@ public class CommonController {
      * @return 结果
      */
     @Log(title = "5.1.1 登录", businessType = BusinessType.OTHER)
-    @GetMapping("/login")
+    @PostMapping("/login")
     @ApiOperation(value = "5.1.1 登录", notes = "登录方法")
-    public AjaxResult login(LoginBody loginBody) {
+    public AjaxResult login(@RequestBody LoginBody loginBody) {
         // 返回成功消息
         AjaxResult ajax = AjaxResult.success();
         // 生成令牌

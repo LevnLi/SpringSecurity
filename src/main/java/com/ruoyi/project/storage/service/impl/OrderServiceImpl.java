@@ -113,8 +113,10 @@ public class OrderServiceImpl extends Msg implements OrderService {
             // 抛出异常
             throw new CustomException("删除失败");
         }
-        // 删除订单历史记录
-        count = orderMapper.deleteOrderHis(ParameterUtil.getIdsUpdateByUpdateTime(ids,SecurityUtils.getUsername(), DateUtils.getNowDate()));
+        for (Long id: ids) {
+            // 删除订单历史记录
+            count = orderHistoryMapper.insertOrderHistory(id);
+        }
         // 如果更改条数不等于数组长度
         if (count != ids.length){
             // 抛出异常
@@ -228,10 +230,20 @@ public class OrderServiceImpl extends Msg implements OrderService {
             // 定义变量接收删除手机端订单结果
             int count = orderMapper.deleteOrderByPhone(ParameterUtil.getIdDataUpdateByUpdateTime(order.getId(),SecurityUtils.getUserId(),SecurityUtils.getUsername(),DateUtils.getNowDate()));
             // 如果订单删除失败
-            if (count != SUCCESS){
+            if (count == ERROR){
+                // 抛出异常
+                log.error("手机端删除订单失败");
+                throw new CustomException("订单删除失败");
+            }
+            log.info("==> 手机端删除订单成功");
+            // 添加订单删除记录
+            count = orderHistoryMapper.insertOrderHistory(order.getId());
+            // 订单历史添加失败
+            if (count == ERROR){
                 // 抛出异常
                 throw new CustomException("订单删除失败");
             }
+            log.info("==> 订单历史记录添加成功");
             // 表示操作成功
             return SUCCESS;
         }
@@ -319,12 +331,10 @@ public class OrderServiceImpl extends Msg implements OrderService {
         order.setCreateTime(DateUtils.getNowDate());
         // 创建人
         order.setCreateBy(SecurityUtils.getUsername());
-        // 添加订单id
-        order.setOrderId(order.getId());
         // 记录订单历史记录创建条数
-        count = orderHistoryMapper.insertOrderHistory(order);
+        count = orderHistoryMapper.insertOrderHistory(order.getId());
         // 如果更新订单或插入订单历史记录失败
-        if (count != SUCCESS){
+        if (count == ERROR){
             // 抛出异常
             throw new CustomException("更新订单失败");
         }

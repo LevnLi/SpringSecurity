@@ -44,20 +44,9 @@ public class AppPersonalController extends BaseController {
     @PutMapping("/updatePassword/{oldPassword}/{newPassword}")
     @ApiOperation(value = "5.2.5.1 修改密码",notes = "修改密码")
     public AjaxResult updatePassword(@PathVariable String oldPassword,@PathVariable String newPassword){
-        // 捕获异常
-        try{
-            /**
-             * 密码更新结果
-             *   大于0，返回密码修改成功
-             *   否则，返回密码修改失败
-             */
-            return passwordService.updatePassword(oldPassword,newPassword)>0?
-                    AjaxResult.success("密码修改成功") :
-                    AjaxResult.error("密码修改失败");
-            // 处理异常
-        }catch (Exception e){
-            // 返回异常信息
-            return AjaxResult.error(e.getMessage());
-        }
+        // 密码更新结果
+        return passwordService.updatePassword(oldPassword,newPassword)>0?
+                AjaxResult.success("密码修改成功") :
+                AjaxResult.error("密码修改失败");
     }
 }

@@ -6,8 +6,7 @@ spring:
         druid:
             # 主库数据源
             master:
-                # storage_prod
-                url: jdbc:mysql://39.97.228.142:3306/storage_dev?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                url: jdbc:mysql://39.97.228.142:3306/storage_prod?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 username: root
                 password: root
             # 从库数据源
@@ -56,7 +55,13 @@ spring:
                 wall:
                     config:
                         multi-statement-allow: true
+
 # 项目相关配置
 ruoyi:
     # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
     profile: /home/ruoyi/uploadPath
+
+# 正式环境配置
+server:
+    # 服务器的HTTP端口，默认为51110
+    port: 51110

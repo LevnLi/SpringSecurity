@@ -36,10 +36,15 @@
         UPDATE
             sys_user
         SET
-            current_points = current_points + #{id} ,
-            update_by = #{msg} ,
+            current_points = current_points + #{data},
+            update_by = #{updateBy},
+            update_time = #{updateTime},
             version = version + 1
         WHERE
-            user_id = #{userId}
+            user_id = #{id}
     </update>
+
+    <select id="queryByIdPoints" parameterType="long" resultType="string">
+        select 1 from t_advertisement where id = #{id} and points = #{points}
+    </select>
 </mapper>

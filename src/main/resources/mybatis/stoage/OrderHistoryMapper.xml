@@ -2,70 +2,75 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ruoyi.project.storage.mapper.OrderHistoryMapper">
 
-    <insert id="insertOrderHistory" parameterType="com.ruoyi.project.storage.domain.Order" useGeneratedKeys="true" keyProperty="id">
-        insert into t_order_his
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="orderId != null">order_id,</if>
-            <if test="userId != null">user_id,</if>
-            <if test="status != null">status,</if>
-            <if test="orderCode != null">order_code,</if>
-            <if test="orderName != null and orderName != ''">order_name,</if>
-            <if test="emptyBoxOrderTime != null">empty_box_order_time,</if>
-            <if test="emptyBoxCallName != null and emptyBoxCallName != ''">empty_box_call_name,</if>
-            <if test="emptyBoxCallPhone != null and emptyBoxCallPhone != ''">empty_box_call_phone,</if>
-            <if test="emptyBoxCallAddress != null and emptyBoxCallAddress != ''">empty_box_call_address,</if>
-            <if test="emptyBoxCallTime != null">empty_box_call_time,</if>
-            <if test="emptyBoxCallInterval != null and emptyBoxCallInterval != ''">empty_box_call_interval,</if>
-            <if test="heavyBoxOrderTime != null">heavy_box_order_time,</if>
-            <if test="heavyBoxCallName != null and heavyBoxCallName != ''">heavy_box_call_name,</if>
-            <if test="heavyBoxCallPhone != null and heavyBoxCallPhone != ''">heavy_box_call_phone,</if>
-            <if test="heavyBoxCallAddress != null and heavyBoxCallAddress != ''">heavy_box_call_address,</if>
-            <if test="heavyBoxCallTime != null">heavy_box_call_time,</if>
-            <if test="heavyBoxCallInterval != null and heavyBoxCallInterval != ''">heavy_box_call_interval,</if>
-            <if test="boxId != null">box_id,</if>
-            <if test="boxCode != null">box_code,</if>
-            <if test="boxStandard != null and boxStandard != ''">box_standard,</if>
-            <if test="boxUnitPrice != null">box_unit_price,</if>
-            <if test="leaseDuration != null">lease_duration,</if>
-            <if test="totalPrice != null">total_price,</if>
-            <if test="createTime != null">create_time,</if>
-            <if test="createBy != null and createBy != ''">create_by,</if>
-            <if test="version != null">version,</if>
-            <if test="delFlag != null and delFlag != ''">del_flag,</if>
-            <if test="appDelFlag != null">app_del_flag,</if>
-            <if test="backendDelFlag != null">backend_del_flag,</if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="orderId != null">#{orderId},</if>
-            <if test="userId != null">#{userId},</if>
-            <if test="status != null">#{status},</if>
-            <if test="orderCode != null">#{orderCode},</if>
-            <if test="orderName != null and orderName != ''">#{orderName},</if>
-            <if test="emptyBoxOrderTime != null">#{emptyBoxOrderTime},</if>
-            <if test="emptyBoxCallName != null and emptyBoxCallName != ''">#{emptyBoxCallName},</if>
-            <if test="emptyBoxCallPhone != null and emptyBoxCallPhone != ''">#{emptyBoxCallPhone},</if>
-            <if test="emptyBoxCallAddress != null and emptyBoxCallAddress != ''">#{emptyBoxCallAddress},</if>
-            <if test="emptyBoxCallTime != null">#{emptyBoxCallTime},</if>
-            <if test="emptyBoxCallInterval != null and emptyBoxCallInterval != ''">#{emptyBoxCallInterval},</if>
-            <if test="heavyBoxOrderTime != null">#{heavyBoxOrderTime},</if>
-            <if test="heavyBoxCallName != null and heavyBoxCallName != ''">#{heavyBoxCallName},</if>
-            <if test="heavyBoxCallPhone != null and heavyBoxCallPhone != ''">#{heavyBoxCallPhone},</if>
-            <if test="heavyBoxCallAddress != null and heavyBoxCallAddress != ''">#{heavyBoxCallAddress},</if>
-            <if test="heavyBoxCallTime != null">#{heavyBoxCallTime},</if>
-            <if test="heavyBoxCallInterval != null and heavyBoxCallInterval != ''">#{heavyBoxCallInterval},</if>
-            <if test="boxId != null">#{boxId},</if>
-            <if test="boxCode != null">#{boxCode},</if>
-            <if test="boxStandard != null and boxStandard != ''">#{boxStandard},</if>
-            <if test="boxUnitPrice != null">#{boxUnitPrice},</if>
-            <if test="leaseDuration != null">#{leaseDuration},</if>
-            <if test="totalPrice != null">#{totalPrice},</if>
-            <if test="createTime != null">#{createTime},</if>
-            <if test="createBy != null and createBy != ''">#{createBy},</if>
-            <if test="version != null">#{version},</if>
-            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
-            <if test="appDelFlag != null">#{appDelFlag},</if>
-            <if test="backendDelFlag != null">#{backendDelFlag},</if>
-        </trim>
+    <insert id="insertOrderHistory" parameterType="long" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_order_his (
+            order_id,
+            user_id,
+            `status`,
+            order_code,
+            order_name,
+            empty_box_order_time,
+            empty_box_call_name,
+            empty_box_call_phone,
+            empty_box_call_address,
+            empty_box_call_time,
+            empty_box_call_interval,
+            heavy_box_order_time,
+            heavy_box_call_name,
+            heavy_box_call_phone,
+            heavy_box_call_address,
+            heavy_box_call_time,
+            heavy_box_call_interval,
+            box_id,
+            box_code,
+            box_standard,
+            box_unit_price,
+            lease_duration,
+            total_price,
+            sort_no,
+            create_time,
+            create_by,
+            update_time,
+            update_by,
+            version,
+            del_flag,
+            app_del_flag,
+            backend_del_flag)
+        SELECT
+            id as order_id,
+            user_id,
+            `status`,
+            order_code,
+            order_name,
+            empty_box_order_time,
+            empty_box_call_name,
+            empty_box_call_phone,
+            empty_box_call_address,
+            empty_box_call_time,
+            empty_box_call_interval,
+            heavy_box_order_time,
+            heavy_box_call_name,
+            heavy_box_call_phone,
+            heavy_box_call_address,
+            heavy_box_call_time,
+            heavy_box_call_interval,
+            box_id,
+            box_code,
+            box_standard,
+            box_unit_price,
+            lease_duration,
+            total_price,
+            sort_no,
+            create_time,
+            create_by,
+            update_time,
+            update_by,
+            version,
+            del_flag,
+            app_del_flag,
+            backend_del_flag
+        from t_order
+        where id = #{id}
     </insert>
 
 </mapper>

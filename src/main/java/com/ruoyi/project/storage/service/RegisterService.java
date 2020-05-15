@@ -15,33 +15,4 @@ public interface RegisterService {
      * @return 结果
      */
     int registerUser(Register register);
-
-    /**
-     * 账号是否存在
-     * @param register
-     * @return 结果
-     */
-    String queryByUserName(Register register);
-
-    /**
-     * 姓名是否存在
-     * @param register
-     * @return 结果
-     */
-    String queryByPhoneNumber(Register register);
-
-    /**
-     * 邮箱是否存在
-     * @param register
-     * @return 结果
-     */
-    String queryByEmail(Register register);
-
-    /**
-     * 通过id查用户名
-     * @param register
-     * @return 结果
-     */
-    Long queryIdByName(Register register);
-
 }

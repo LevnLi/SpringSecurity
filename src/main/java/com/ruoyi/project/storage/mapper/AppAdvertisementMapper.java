@@ -3,7 +3,6 @@ package com.ruoyi.project.storage.mapper;
 import com.ruoyi.project.storage.domain.Advertisement;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Map;
@@ -24,9 +23,17 @@ public interface AppAdvertisementMapper {
 
     /**
      * 广告积分获取
-     * @param map
+     * @param map 集合
      * @return 结果
      */
     int getAdvertisementPoints(Map<String,Object> map);
+
+    /**
+     * 查询当前id和积分下广告是否存在
+     * @param id 广告id
+     * @param points 积分
+     * @return 结果
+     */
+    String queryByIdPoints(@Param("id") Long id,@Param("points") Long points);
 
 }

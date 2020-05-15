@@ -9,6 +9,7 @@ import com.ruoyi.project.storage.domain.*;
 import com.ruoyi.project.storage.mapper.BoxBespeakMapper;
 import com.ruoyi.project.storage.mapper.OrderHistoryMapper;
 import com.ruoyi.project.storage.mapper.PointMapper;
+import com.ruoyi.project.storage.msg.Msg;
 import com.ruoyi.project.storage.service.BoxBespeakService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ import java.util.Map;
  */
 @Service
 @Slf4j
-public class BoxBespeakServiceImpl implements BoxBespeakService {
+public class BoxBespeakServiceImpl extends Msg implements BoxBespeakService {
 
     /**
      * 积分记录mapper接口
@@ -87,8 +88,8 @@ public class BoxBespeakServiceImpl implements BoxBespeakService {
     public int boxOrder(Order order) {
         // 获取当前用户积分
         Long userPoint = boxBespeakMapper.queryUserPoint(SecurityUtils.getUserId());
-        // 如果当前用户积分小于所需积分
-        if (userPoint<order.getBoxUnitPrice()){
+        // 如果当前用户积分不能存在或未零或小于所需积分
+        if (userPoint == null || userPoint.intValue() == 0 || userPoint<order.getBoxUnitPrice() * order.getLeaseDuration()){
             // 抛出异常
             throw new CustomException("积分余额不足");
         }
@@ -100,22 +101,22 @@ public class BoxBespeakServiceImpl implements BoxBespeakService {
         // 接收获得箱子信息
         BoxInfo boxInfo = randGetBoxInfoByStandard(ParameterUtil.getMapByIdMsg(order.getBoxUnitPrice(),order.getBoxStandard()));
         // 如果没有箱子信息更新条数
-        if (updateBoxInfo(boxInfo)<=0){
+        if (updateBoxInfo(boxInfo)<=ERROR){
             // 抛出异常
             throw new CustomException("更新箱子信息失败！！！");
         }
         // 如果没有扣除客户积分
-        if(subtractUserPoint(userPoint - boxInfo.getBoxUnitPrice())<=0){
+        if(subtractUserPoint(userPoint - boxInfo.getBoxUnitPrice() * order.getLeaseDuration())<=ERROR){
             throw new CustomException("扣除客户积分失败！！！");
         }
         // 实付积分
-        order.setBoxUnitPrice(boxInfo.getBoxUnitPrice());
+        order.setTotalPrice(boxInfo.getBoxUnitPrice() * order.getLeaseDuration());
         // 如果没有添加积分记录
-        if (insertPoint(boxInfo,order)<=0){
+        if (insertPoint(boxInfo,order)<=ERROR){
             // 抛出异常
             throw new CustomException("添加积分记录失败！！！");
         }
-        return 1;
+        return SUCCESS;
     }
 
     /**
@@ -214,10 +215,8 @@ public class BoxBespeakServiceImpl implements BoxBespeakService {
             // 抛出异常
             throw new CustomException("创建订单失败！！！");
         }
-        // 添加订单id
-        order.setOrderId(order.getId());
         // 如果订单历史记录创建失败
-        if (orderHistoryMapper.insertOrderHistory(order)<=0){
+        if (orderHistoryMapper.insertOrderHistory(order.getId()) == ERROR){
             //抛出异常
             throw new CustomException("创建订单历史记录失败！！！");
         }
@@ -238,7 +237,7 @@ public class BoxBespeakServiceImpl implements BoxBespeakService {
         // 方式: 3 积分使用
         point.setWay(3);
         // 积分记录
-        point.setPoints(boxInfo.getBoxUnitPrice()*-1L);
+        point.setPoints(boxInfo.getBoxUnitPrice() * order.getLeaseDuration() * -1L);
         // 订单id
         point.setOrderId(createOrderRecord(boxInfo,order));
         // 创建时间

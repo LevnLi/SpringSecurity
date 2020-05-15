@@ -110,6 +110,12 @@
         update_time = #{time},
         update_by = #{user}
         where del_flag = '0'
+        <if test="operate != null and operate == 'enable'.toString()">
+            and is_enable = 1
+        </if>
+        <if test="operate != null and operate == 'disable'.toString()">
+            and is_enable = 0
+        </if>
         and id in
         <foreach item="id" collection="ids" open="(" separator="," close=")">
             #{id}

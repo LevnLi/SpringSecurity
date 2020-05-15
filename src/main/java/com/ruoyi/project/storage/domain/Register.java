@@ -28,6 +28,12 @@ public class Register extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 用户ID
+     */
+    @ApiModelProperty(value = "用户ID")
+    private Long userId;
+
+    /**
      * 用户账号
      */
     @ApiModelProperty(value = "用户账号")

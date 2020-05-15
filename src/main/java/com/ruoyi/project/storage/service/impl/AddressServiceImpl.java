@@ -1,15 +1,17 @@
 package com.ruoyi.project.storage.service.impl;
 
+import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.project.common.util.ParameterUtil;
 import com.ruoyi.project.storage.domain.Address;
-import com.ruoyi.project.storage.domain.Advertisement;
-import com.ruoyi.project.storage.mapper.AddressServiceMapper;
+import com.ruoyi.project.storage.mapper.AddressMapper;
+import com.ruoyi.project.storage.msg.Msg;
 import com.ruoyi.project.storage.service.AddressService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
@@ -19,20 +21,21 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class AddressServiceImpl implements AddressService {
+@Transactional(rollbackFor = Exception.class)
+public class AddressServiceImpl extends Msg implements AddressService {
 
     /**
      * 地址mapper接口
      */
-    private final AddressServiceMapper addressServiceMapper;
+    private final AddressMapper addressMapper;
 
     /**
      * 通过构造方法注入
-     * @param addressServiceMapper 地址mapper
+     * @param addressMapper 地址mapper
      */
     @Autowired
-    public AddressServiceImpl(AddressServiceMapper addressServiceMapper) {
-        this.addressServiceMapper = addressServiceMapper;
+    public AddressServiceImpl(AddressMapper addressMapper) {
+        this.addressMapper = addressMapper;
     }
 
     /**
@@ -46,7 +49,7 @@ public class AddressServiceImpl implements AddressService {
         // 设置用户id
         address.setUserId(SecurityUtils.getUserId());
         // 返回查询结果
-        return addressServiceMapper.selectAddressList(address);
+        return addressMapper.selectAddressList(address);
     }
 
     /**
@@ -57,6 +60,8 @@ public class AddressServiceImpl implements AddressService {
      */
     @Override
     public int insertAddress(Address address) {
+        // 调用是否为默认地址处理方法
+        isDefault(address);
         // 用户id
         address.setUserId(SecurityUtils.getUserId());
         // 创建人
@@ -67,8 +72,15 @@ public class AddressServiceImpl implements AddressService {
         address.setDelFlag("0");
         // 版本号
         address.setVersion(0L);
-        // 返回添加结果
-        return addressServiceMapper.insertAddress(address);
+        // 添加结果
+        int count = addressMapper.insertAddress(address);
+        // 如果添加地址失败
+        if (count == ERROR){
+            // 抛出异常
+            throw new CustomException("修改为普通地址失败");
+        }
+        // 返回成功信息
+        return SUCCESS;
     }
 
     /**
@@ -79,14 +91,21 @@ public class AddressServiceImpl implements AddressService {
      */
     @Override
     public int updateAddress(Address address) {
+        // 调用是否为默认地址处理方法
+        isDefault(address);
         // 设置用户id
         address.setUserId(SecurityUtils.getUserId());
         // 设置更新人
         address.setUpdateBy(SecurityUtils.getUsername());
         // 设置更新时间
         address.setUpdateTime(DateUtils.getNowDate());
-        // 返回操作条数
-        return addressServiceMapper.updateAddress(address);
+        // 如果更新地址失败
+        if (addressMapper.updateAddress(address) == ERROR){
+            // 抛出异常
+            throw new CustomException("更新地址失败");
+        }
+        // 返回成功信息
+        return SUCCESS;
     }
 
     /**
@@ -97,14 +116,14 @@ public class AddressServiceImpl implements AddressService {
      */
     @Override
     public int deleteAddressById(Long id) {
-        /**
-         * 内嵌方法参数:
-         *      id: 地址id
-         *      updateBy: 更新人
-         *      updateTime: 更新时间
-         * @return map
-         */
-        return addressServiceMapper.deleteAddressById(ParameterUtil.getIdUpdateByUpdateTime(id,SecurityUtils.getUsername(),DateUtils.getNowDate()));
+        int count = addressMapper.deleteAddressById(ParameterUtil.getIdUpdateByUpdateTime(id,SecurityUtils.getUsername(),DateUtils.getNowDate()));
+        // 如果删除地址失败
+        if (count == ERROR){
+            // 抛出异常
+            throw new CustomException("删除地址失败");
+        }
+        // 返回成功信息
+        return SUCCESS;
     }
 
     /**
@@ -115,41 +134,35 @@ public class AddressServiceImpl implements AddressService {
      */
     @Override
     public int defaultAddressById(Long id) {
-        /**
-         * 内嵌方法参数:
-         *      id: 地址id
-         *      updateBy: 更新人
-         *      updateTime: 更新时间
-         * @return map
-         */
-        return addressServiceMapper.defaultAddressById(ParameterUtil.getIdUpdateByUpdateTime(id,SecurityUtils.getUsername(),DateUtils.getNowDate()));
+        int count = addressMapper.defaultAddressById(ParameterUtil.getIdUpdateByUpdateTime(id,SecurityUtils.getUsername(),DateUtils.getNowDate()));
+        // 如果设置默认地址失败
+        if (count == ERROR){
+            // 抛出异常
+            throw new CustomException("设置默认地址失败");
+        }
+        // 返回成功信息
+        return SUCCESS;
     }
 
     /**
-     * 移除默认地址
-     *
-     * @return 结果
+     * 如果是默认地址，移除
+     * @param address 地址实体
      */
-    @Override
-    public int removeDefaultAddress() {
-        /**
-         * 内嵌方法参数:
-         *      userId: 当前客户id
-         *      updateBy: 更新人
-         *      updateTime: 更新时间
-         * @return map
-         */
-        return addressServiceMapper.removeDefaultAddress(ParameterUtil.getIdUpdateByUpdateTime(SecurityUtils.getUserId(),SecurityUtils.getUsername(),DateUtils.getNowDate()));
-    }
-
-    /**
-     * 通过用户ID查是否存在地址信息
-     *
-     * @return 结果
-     */
-    @Override
-    public String queryAddressByUserId() {
-        // 返回查询结果
-        return addressServiceMapper.queryAddressByUserId(SecurityUtils.getUserId());
+    private void isDefault(Address address){
+        // 定义变量记录更新条数
+        int count;
+        // 如果新添地址为默认地址
+        if (address.getIsDefault() == 0){
+            // 如果手机端客户存在地址信息
+            if (addressMapper.queryAddressByUserId(SecurityUtils.getUserId())!=null){
+                // 将手机端客户的默认地址改为普通地址
+                count = addressMapper.removeDefaultAddress(ParameterUtil.getIdUpdateByUpdateTime(SecurityUtils.getUserId(),SecurityUtils.getUsername(),DateUtils.getNowDate()));
+                // 如果修改失败
+                if (count == ERROR){
+                    // 抛出异常
+                    throw new CustomException("修改为普通地址失败");
+                }
+            }
+        }
     }
 }

@@ -47,16 +47,4 @@ public interface AddressService {
      */
     int defaultAddressById(Long id);
 
-    /**
-     * 移除默认地址
-     * @return 结果
-     */
-    int removeDefaultAddress();
-
-    /**
-     * 通过用户ID查是否存在地址信息
-     * @return
-     */
-    String queryAddressByUserId();
-
 }

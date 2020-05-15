@@ -66,21 +66,10 @@ public class BackEndCustomerController extends BaseController {
     @PostMapping("/create")
     @ApiOperation(value = "5.3.3.2 客户新增",notes = "新增客户")
     public AjaxResult add(@RequestBody User user){
-        // 捕获异常
-        try {
-            /**
-             * 客户新增结果:
-             *  大于0，返回新增成功
-             *  否则，返回新增失败
-             */
-            return customerService.insertCustomer(user)>0 ?
-                    AjaxResult.success("新增成功") :
-                    AjaxResult.error("新增失败");
-        // 处理异常
-        }catch (Exception e){
-            // 返回异常信息
-            return AjaxResult.error(e.getMessage());
-        }
+        // 客户新增结果:
+        return customerService.insertCustomer(user)>0 ?
+                AjaxResult.success("新增成功") :
+                AjaxResult.error("新增失败");
     }
 
     /**
@@ -92,21 +81,10 @@ public class BackEndCustomerController extends BaseController {
     @PutMapping("/update")
     @ApiOperation(value = "5.3.3.2 客户编辑",notes = "修改客户")
     public AjaxResult edit(@RequestBody User user){
-        // 捕获异常
-        try{
-            /**
-             * 客户修改结果:
-             *  大于0，返回修改成功
-             *  否则，返回修改失败
-             */
-            return customerService.updateCustomer(user)>0 ?
-                    AjaxResult.success("修改成功") :
-                    AjaxResult.error("修改失败");
-        // 处理异常
-        }catch (Exception e){
-            // 返回异常信息
-            return AjaxResult.error(e.getMessage());
-        }
+        // 客户修改结果:
+        return customerService.updateCustomer(user)>0 ?
+                AjaxResult.success("修改成功") :
+                AjaxResult.error("修改失败");
     }
 
     /**
@@ -118,21 +96,10 @@ public class BackEndCustomerController extends BaseController {
     @PutMapping("/delete/{ids}")
     @ApiOperation(value = "5.3.3.4 客户删除",notes = "删除客户")
     public AjaxResult deleteCustomer(@PathVariable Long[] ids){
-        // 捕获异常
-        try{
-            /**
-             * 客户删除结果:
-             *  大于0，返回删除成功
-             *  否则，返回删除失败
-             */
-            return customerService.deleteCustomerByIds(ids)>0 ?
-                    AjaxResult.success("删除成功") :
-                    AjaxResult.error("删除失败");
-        // 处理异常
-        }catch (Exception e){
-            // 返回异常信息
-            return AjaxResult.error(e.getMessage());
-        }
+        // 客户删除结果:
+        return customerService.deleteCustomerByIds(ids)>0 ?
+                AjaxResult.success("删除成功") :
+                AjaxResult.error("删除失败");
     }
 
     /**
@@ -144,21 +111,10 @@ public class BackEndCustomerController extends BaseController {
     @PutMapping("/reset/{userIds}")
     @ApiOperation(value = "5.3.3.5 客户重置密码",notes = "客户重置密码")
     public AjaxResult resetCustomerPassword(@PathVariable Long[] userIds){
-        // 捕获异常
-        try{
-            /**
-             * 客户重置密码结果:
-             *  大于0，返回密码重置成功
-             *  否则，返回密码重置失败
-             */
-            return customerService.resetCustomerPassword(userIds)>0 ?
-                    AjaxResult.success("密码重置成功") :
-                    AjaxResult.error("密码重置失败");
-        // 处理异常
-        }catch (Exception e){
-            // 返回异常信息
-            return AjaxResult.error(e.getMessage());
-        }
+        // 客户重置密码结果:
+        return customerService.resetCustomerPassword(userIds)>0 ?
+                AjaxResult.success("密码重置成功") :
+                AjaxResult.error("密码重置失败");
     }
 
     /**
@@ -171,33 +127,18 @@ public class BackEndCustomerController extends BaseController {
     @PutMapping("/{operate}/{ids}")
     @ApiOperation(value = "5.3.3.6 客户启用/停用",notes = "启用/停用客户")
     public AjaxResult operateCustomer(@PathVariable String operate, @PathVariable Long[] ids){
-        // 捕获异常
-        try{
-            if(ENABLE.equals(operate)){
-                /**
-                 * 客户启用结果:
-                 *  大于0，返回启用成功
-                 *  否则，返回启用失败
-                 */
-                return customerService.operateCustomerByIds(operate, ids)>0 ?
-                        AjaxResult.success("启用成功") :
-                        AjaxResult.error("启用失败");
-            }
-            if (DISABLE.equals(operate)){
-                /**
-                 * 客户停用密码结果:
-                 *  大于0，返回停用成功
-                 *  否则，返回停用失败
-                 */
-                return customerService.operateCustomerByIds(operate, ids)>0 ?
-                        AjaxResult.success("停用成功") :
-                        AjaxResult.error("停用失败");
-            }
-            return AjaxResult.error("操作失败");
-        // 处理异常
-        }catch (Exception e){
-            // 返回异常信息
-            return AjaxResult.error(e.getMessage());
+        if(ENABLE.equals(operate)){
+            // 客户启用结果:
+            return customerService.operateCustomerByIds(operate, ids)>0 ?
+                    AjaxResult.success("启用成功") :
+                    AjaxResult.error("启用失败");
         }
+        if (DISABLE.equals(operate)){
+            // 客户停用密码结果:
+            return customerService.operateCustomerByIds(operate, ids)>0 ?
+                    AjaxResult.success("停用成功") :
+                    AjaxResult.error("停用失败");
+        }
+        return AjaxResult.error("操作失败");
     }
 }

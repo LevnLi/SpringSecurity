@@ -1,13 +1,17 @@
 package com.ruoyi.project.storage.service.impl;
 
+import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.project.storage.domain.Advice;
 import com.ruoyi.project.storage.mapper.AdviceMapper;
+import com.ruoyi.project.storage.msg.Msg;
 import com.ruoyi.project.storage.service.AdviceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -18,7 +22,8 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class AdviceServiceImpl implements AdviceService {
+@Transactional(rollbackFor = Exception.class)
+public class AdviceServiceImpl extends Msg implements AdviceService {
 
     /**
      * 意见mapper接口
@@ -27,7 +32,7 @@ public class AdviceServiceImpl implements AdviceService {
 
     /**
      * 通过构造方法注入
-     * @param adviceMapper
+     * @param adviceMapper 意见mapper
      */
     @Autowired
     public AdviceServiceImpl(AdviceMapper adviceMapper) {
@@ -36,7 +41,7 @@ public class AdviceServiceImpl implements AdviceService {
 
     /**
      * 查询未删除的意见建议
-     * @param advice
+     * @param advice 意见实体
      * @return 查询结果
      */
     @Override
@@ -47,8 +52,8 @@ public class AdviceServiceImpl implements AdviceService {
 
     /**
      * 插入一条建议
-     * @param advice
-     * @return
+     * @param advice 意见实体
+     * @return 结果
      */
     @Override
     public int insertAdvice(Advice advice) {
@@ -62,7 +67,12 @@ public class AdviceServiceImpl implements AdviceService {
         advice.setVersion(0L);
         // 设置未删除
         advice.setDelFlag("0");
-        // 返回插入条数
-        return adviceMapper.insertAdvice(advice);
+        // 如果插入失败
+        if (adviceMapper.insertAdvice(advice) == ERROR){
+            // 抛出异常
+            throw new CustomException("新增失败");
+        }
+        // 返回成功信息
+        return SUCCESS;
     }
 }

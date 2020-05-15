@@ -1,17 +1,14 @@
 package com.ruoyi.project.storage.service.impl;
 
-import com.ruoyi.common.constant.HttpStatus;
-import com.ruoyi.common.exception.CustomException;
-import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.project.storage.domain.Point;
 import com.ruoyi.project.storage.mapper.PointMapper;
+import com.ruoyi.project.storage.msg.Msg;
 import com.ruoyi.project.storage.service.PointService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
@@ -21,7 +18,8 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class PointServiceImpl implements PointService {
+@Transactional(rollbackFor = Exception.class)
+public class PointServiceImpl extends Msg implements PointService {
 
     /**
      * 积分列表Mapper接口
@@ -30,8 +28,9 @@ public class PointServiceImpl implements PointService {
 
     /**
      * 通过构造方法注入
-     * @param pointMapper
+     * @param pointMapper 积分列表Mapper
      */
+    @Autowired
     public PointServiceImpl(PointMapper pointMapper) {
         this.pointMapper = pointMapper;
     }
@@ -39,7 +38,7 @@ public class PointServiceImpl implements PointService {
     /**
      * 查询积分记录列表
      *
-     * @param point
+     * @param point 积分记录对象
      * @return 结果
      */
     @Override
@@ -50,36 +49,14 @@ public class PointServiceImpl implements PointService {
         return pointMapper.queryPointList(point);
     }
 
-    @Override
-    public String queryUserPoint() {
-        // 返回查询结果
-        return pointMapper.queryUserPoint(SecurityUtils.getUserId());
-    }
-
     /**
-     * 添加积分记录
-     *
-     * @param point
-     * @return 结果
+     * 获取当前用户积分
+     * @return 积分
      */
     @Override
-    public int insertPoint(Point point) {
-        // 创建时间
-        point.setCreateTime(DateUtils.getNowDate());
-        // 版本号
-        point.setVersion(0L);
-        // 未删除
-        point.setDelFlag("0");
-        // 修改条数
-        int count = pointMapper.insertPoint(point);
-        // 乐观锁判断
-        if (count == 0){
-            log.error("PointServiceImpl.insertPoint failed: 乐观锁");
-            // 抛出异常标记乐观锁
-            throw new CustomException("积分记录失败，请刷新后重试", HttpStatus.ERROR);
-        }
-        // 返回修改条数
-        return count;
+    public Long queryUserPoint() {
+        // 返回查询结果
+        return pointMapper.queryUserPoint(SecurityUtils.getUserId());
     }
 
 }
