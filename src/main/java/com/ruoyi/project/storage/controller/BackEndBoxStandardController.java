@@ -63,7 +63,7 @@ public class BackEndBoxStandardController extends BaseController {
      * @return 结果
      */
     @Log(title = "5.3.4.3 箱子规格删除", businessType = BusinessType.DELETE)
-    @PutMapping("/delete/{ids}")
+    @DeleteMapping("/delete/{ids}")
     @ApiOperation(value = "5.3.4.3 箱子规格删除",notes = "箱子规格删除")
     public AjaxResult remove(@PathVariable Long[] ids){
         // 删除箱子规格结果: 大于0,返回删除成功  否则，返回删除失败

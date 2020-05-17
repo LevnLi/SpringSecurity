@@ -93,7 +93,7 @@ public class BackEndUserController extends BaseController {
      * @return 结果
      */
     @Log(title = "5.3.2.4 用户删除", businessType = BusinessType.DELETE)
-    @PutMapping("/delete/{ids}")
+    @DeleteMapping("/delete/{ids}")
     @ApiOperation(value = "5.3.3.4 用户删除",notes = "删除用户")
     public AjaxResult deleteCustomer(@PathVariable Long[] ids){
         // 用户删除结果: 大于0，返回删除成功  否则，返回删除失败

@@ -93,7 +93,7 @@ public class BackEndCustomerController extends BaseController {
      * @return 结果
      */
     @Log(title = "5.3.3.4 客户删除", businessType = BusinessType.DELETE)
-    @PutMapping("/delete/{ids}")
+    @DeleteMapping("/delete/{ids}")
     @ApiOperation(value = "5.3.3.4 客户删除",notes = "删除客户")
     public AjaxResult deleteCustomer(@PathVariable Long[] ids){
         // 客户删除结果:

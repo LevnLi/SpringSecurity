@@ -82,7 +82,7 @@ public class BackEndBoxInfoController extends BaseController {
      * @return 结果
      */
     @Log(title = "5.3.5.3 箱子信息删除", businessType = BusinessType.DELETE)
-    @PutMapping("/delete/{ids}")
+    @DeleteMapping("/delete/{ids}")
     @Transactional(rollbackFor = Exception.class)
     @ApiOperation(value = "5.3.5.3 箱子信息删除",notes = "箱子信息删除")
     public AjaxResult remove(@PathVariable Long[] ids){

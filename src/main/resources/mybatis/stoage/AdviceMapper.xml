@@ -7,6 +7,7 @@
     <resultMap id="AdviceResult" type="com.ruoyi.project.storage.domain.Advice">
         <id     property="id" column="id"/>
         <result property="userId" column="user_id"/>
+        <result property="nickName" column="nick_name"/>
         <result property="title" column="title"/>
         <result property="content" column="content"/>
         <result property="sortNo" column="sort_no"/>
@@ -19,22 +20,37 @@
     </resultMap>
 
     <sql id="adviceVO">
-        select id,user_id,title,content,sort_no,create_time,create_by,update_time,update_by,version,del_flag from t_advice
+        SELECT
+            advic.id,
+            advic.user_id,
+            `user`.nick_name,
+            advic.title,
+            advic.content,
+            advic.sort_no,
+            advic.create_time,
+            advic.create_by,
+            advic.update_time,
+            advic.update_by,
+            advic.version,
+            advic.del_flag
+        FROM
+            t_advice advic
+        LEFT JOIN sys_user `user` ON advic.user_id = `user`.user_id
     </sql>
 
     <select id="queryAllAdvice" parameterType="com.ruoyi.project.storage.domain.Advice" resultMap="AdviceResult">
         <include refid="adviceVO"/>
         <where>
-            and del_flag = '0'
+            and advic.del_flag = '0'
             <if test="searchValue != null and searchValue != ''">
                 and (
-                title like concat(#{searchValue}, '%')
-                or content like concat(#{searchValue}, '%')
-                or create_by like concat(#{searchValue}, '%')
+                advic.title like concat(#{searchValue}, '%')
+                or advic.content like concat(#{searchValue}, '%')
+                or advic.create_by like concat(#{searchValue}, '%')
                 )
             </if>
         </where>
-        order by create_time desc
+        order by advic.create_time desc
     </select>
 
     <insert id="insertAdvice" parameterType="com.ruoyi.project.storage.domain.Advice" useGeneratedKeys="true" keyProperty="id">

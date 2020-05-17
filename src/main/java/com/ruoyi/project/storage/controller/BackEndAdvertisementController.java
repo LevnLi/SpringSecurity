@@ -93,7 +93,7 @@ public class BackEndAdvertisementController extends BaseController {
      * @return 结果
      */
     @Log(title = "5.3.7.4 广告删除", businessType = BusinessType.DELETE)
-    @PutMapping("/delete/{ids}")
+    @DeleteMapping("/delete/{ids}")
     @ApiOperation(value = "5.3.7.4 广告删除",notes = "删除广告")
     public AjaxResult remove(@PathVariable Long[] ids){
         // 广告删除结果

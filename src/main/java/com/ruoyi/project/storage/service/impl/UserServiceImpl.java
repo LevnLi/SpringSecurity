@@ -113,7 +113,7 @@ public class UserServiceImpl extends Msg implements UserService {
      */
     @Override
     public int updateUser(User user) {
-        // 如果当前账号存在
+        /*// 如果当前账号存在
         if (registerMapper.queryByUserName(user.getUserName())!=null){
             // 抛异常
             throw new CustomException("用户名已存在");
@@ -127,7 +127,7 @@ public class UserServiceImpl extends Msg implements UserService {
         if (registerMapper.queryByPhoneNumber(user.getPhonenumber())!=null){
             // 抛异常
             throw new CustomException("手机号已存在");
-        }
+        }*/
         // 设置更新时间
         user.setUpdateTime(DateUtils.getNowDate());
         // 设置更新人
@@ -200,7 +200,7 @@ public class UserServiceImpl extends Msg implements UserService {
     }
 
     /**
-     * 重置用户密码 : 重置为初始密码【12345678】
+     * 重置用户密码 : 重置为初始密码【Abc,123456】
      *
      * @param ids 用户id数组
      * @return 结果
@@ -208,7 +208,7 @@ public class UserServiceImpl extends Msg implements UserService {
     @Override
     public int resetUserPassword(Long[] ids) {
         // 定义变量接收操作条数
-        int count = userMapper.resetUserPassword(ParameterUtil.getBatchUpdateMapByOperateIds(SecurityUtils.encryptPassword("12345678"),ids));
+        int count = userMapper.resetUserPassword(ParameterUtil.getBatchUpdateMapByOperateIds(SecurityUtils.encryptPassword("Abc,123456"),ids));
         // 如果更新条数不等于数组长度
         if (count != ids.length){
             // 抛异常

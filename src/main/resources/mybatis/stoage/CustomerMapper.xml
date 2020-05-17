@@ -29,7 +29,7 @@
     </resultMap>
 
     <sql id="customer">
-        select user_id,user_name,user_type,email,phonenumber,sex,avatar,`password`,`status`,del_flag,login_ip,login_date,create_by,create_time,update_by,update_time,remark,current_points,version from sys_user
+        select user_id,dept_id,user_name,nick_name,user_type,email,phonenumber,sex,avatar,`password`,`status`,del_flag,login_ip,login_date,create_by,create_time,update_by,update_time,remark,current_points,version from sys_user
     </sql>
 
     <select id="queryCustomerList" parameterType="com.ruoyi.project.storage.domain.User" resultMap="CustomerResult">
