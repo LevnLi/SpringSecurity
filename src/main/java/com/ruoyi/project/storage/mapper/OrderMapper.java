@@ -26,7 +26,7 @@ public interface OrderMapper {
      * @param map 集合
      * @return 结果
      */
-    List<Order> getOrderInfoById(Map<String,Object> map);
+    Order getOrderInfoById(Map<String,Object> map);
 
     /**
      * 批量删除订单

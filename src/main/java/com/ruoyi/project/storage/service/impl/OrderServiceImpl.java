@@ -68,7 +68,7 @@ public class OrderServiceImpl extends Msg implements OrderService {
      * @return 订单对象
      */
     @Override
-    public List<Order> getOrderInfoById(Long id,String msg) {
+    public Order getOrderInfoById(Long id,String msg) {
         return orderMapper.getOrderInfoById(ParameterUtil.getMapByMsg(SecurityUtils.getUserId(),id,msg));
     }
 
@@ -273,6 +273,7 @@ public class OrderServiceImpl extends Msg implements OrderService {
         if (order.getStatus() == OrderEnum.STATUS4.getValue()){
             // 如果不是后台端用户且订单操作指令错误
             if (orderV0.getOperate() != OrderEnum.STATUS5.getValue()){
+                // 抛出异常
                 throw new CustomException("操作失败: 状态4");
             }
             // 调用更新订单方法

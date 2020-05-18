@@ -60,6 +60,8 @@ public class AddressServiceImpl extends Msg implements AddressService {
      */
     @Override
     public int insertAddress(Address address) {
+        // 调用地址信息判空方法
+        isNullInfo(address);
         // 调用是否为默认地址处理方法
         isDefault(address);
         // 用户id
@@ -91,6 +93,8 @@ public class AddressServiceImpl extends Msg implements AddressService {
      */
     @Override
     public int updateAddress(Address address) {
+        // 调用地址信息判空方法
+        isNullInfo(address);
         // 调用是否为默认地址处理方法
         isDefault(address);
         // 设置用户id
@@ -134,7 +138,20 @@ public class AddressServiceImpl extends Msg implements AddressService {
      */
     @Override
     public int defaultAddressById(Long id) {
-        int count = addressMapper.defaultAddressById(ParameterUtil.getIdUpdateByUpdateTime(id,SecurityUtils.getUsername(),DateUtils.getNowDate()));
+        // 定义变量记录
+        int count;
+        // 如果手机端客户存在默认地址信息
+        if (addressMapper.queryAddressByUserId(SecurityUtils.getUserId())!=null){
+            // 将手机端客户的默认地址改为普通地址
+            count = addressMapper.removeDefaultAddress(ParameterUtil.getIdUpdateByUpdateTime(SecurityUtils.getUserId(),SecurityUtils.getUsername(),DateUtils.getNowDate()));
+            // 如果修改失败
+            if (count == ERROR){
+                // 抛出异常
+                throw new CustomException("修改为普通地址失败");
+            }
+        }
+        // 记录修改条数
+        count = addressMapper.defaultAddressById(ParameterUtil.getIdUpdateByUpdateTime(id,SecurityUtils.getUsername(),DateUtils.getNowDate()));
         // 如果设置默认地址失败
         if (count == ERROR){
             // 抛出异常
@@ -153,7 +170,7 @@ public class AddressServiceImpl extends Msg implements AddressService {
         int count;
         // 如果新添地址为默认地址
         if (address.getIsDefault() == 0){
-            // 如果手机端客户存在地址信息
+            // 如果手机端客户存在默认地址信息
             if (addressMapper.queryAddressByUserId(SecurityUtils.getUserId())!=null){
                 // 将手机端客户的默认地址改为普通地址
                 count = addressMapper.removeDefaultAddress(ParameterUtil.getIdUpdateByUpdateTime(SecurityUtils.getUserId(),SecurityUtils.getUsername(),DateUtils.getNowDate()));
@@ -163,6 +180,19 @@ public class AddressServiceImpl extends Msg implements AddressService {
                     throw new CustomException("修改为普通地址失败");
                 }
             }
+        }
+    }
+
+    private void isNullInfo(Address address){
+        // 如果地址信息不完整
+        if (
+            address.getContacts() == null || "".equals(address.getContacts()) ||
+            address.getContactsPhone() == null || "".equals(address.getContactsPhone()) ||
+            address.getAddress() == null || "".equals(address.getAddress())||
+            address.getIsDefault() == null || address.getIsDefault() > 1 || address.getIsDefault() < 0
+        ){
+            // 抛出异常
+            throw new CustomException("地址信息不完整");
         }
     }
 }

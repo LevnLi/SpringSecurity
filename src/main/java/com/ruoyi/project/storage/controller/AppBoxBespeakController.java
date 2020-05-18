@@ -52,7 +52,7 @@ public class AppBoxBespeakController extends BaseController {
      * @return 箱子规格
      */
     @Log(title = "5.2.3.2 有效箱子规格选择（非分页）", businessType = BusinessType.OTHER)
-    @GetMapping("/select")
+    @GetMapping("/standard/select")
     @ApiOperation(value = "5.2.3.2 有效箱子规格选择（非分页）",notes = "有效箱子规格选择（非分页）")
     public AjaxResult selectBoxStandard(){
         // 返回当前箱子规格下拉列表

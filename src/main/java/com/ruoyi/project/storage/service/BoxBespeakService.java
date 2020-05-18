@@ -17,7 +17,7 @@ public interface BoxBespeakService {
      * 获取当前用户默认收货地址
      * @return 结果
      */
-    List<Address> getDefaultAddress();
+    Address getDefaultAddress();
 
     /**
      * 有效箱子规格选择（非分页）

@@ -26,7 +26,7 @@ public interface OrderService {
      * @param msg 信息
      * @return 订单信息
      */
-    List<Order> getOrderInfoById(Long id,String msg);
+    Order getOrderInfoById(Long id,String msg);
 
     /**
      * 订单操作对象

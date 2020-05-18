@@ -61,7 +61,7 @@ public class BoxBespeakServiceImpl extends Msg implements BoxBespeakService {
      * @return 结果
      */
     @Override
-    public List<Address> getDefaultAddress() {
+    public Address getDefaultAddress() {
         // 返回查询结果
         return boxBespeakMapper.getDefaultAddress(SecurityUtils.getUserId());
     }

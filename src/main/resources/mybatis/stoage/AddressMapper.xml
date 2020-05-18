@@ -37,7 +37,7 @@
             and
                 user_id = #{userId}
         </where>
-        order by create_time
+        order by is_default
     </select>
 
     <insert id="insertAddress" parameterType="com.ruoyi.project.storage.domain.Address" useGeneratedKeys="true" keyProperty="id">
@@ -78,10 +78,8 @@
             version = version + 1,
         </trim>
         where id = #{id}
-        and
-            user_id = #{userId}
-        and
-            del_flag = '0'
+        and user_id = #{userId}
+        and del_flag = '0'
     </update>
 
     <update id="deleteAddressById" parameterType="Map">
@@ -100,10 +98,9 @@
         update_time = #{updateTime},
         update_by = #{updateBy},
         version = version + 1
-        where
-        id = #{id}
-        and
-        is_default = 1
+        where id = #{id}
+        and is_default = 1
+        and del_flag = '0'
     </update>
 
     <update id="removeDefaultAddress" parameterType="Map">
@@ -112,13 +109,13 @@
             update_time = #{updateTime},
             update_by = #{updateBy},
             version = version + 1
-        where
-            user_id = #{id}
-        and
-            is_default = 0
+        where user_id = #{id}
+        and is_default = 0
+        and del_flag = '0'
     </update>
 
     <select id="queryAddressByUserId" parameterType="long" resultType="string">
-        SELECT 1 FROM t_customer_address WHERE user_id = #{id}  LIMIT 1;
+        SELECT 1 FROM t_customer_address WHERE user_id = #{id} and is_default = 0  LIMIT 1;
     </select>
+
 </mapper>

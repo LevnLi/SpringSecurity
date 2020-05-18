@@ -15,10 +15,10 @@ public interface BoxBespeakMapper {
 
     /**
      * 获取当前用户默认收货地址
-     * @param userId
+     * @param userId 用户id
      * @return map集合
      */
-    List<Address> getDefaultAddress(Long userId);
+    Address getDefaultAddress(Long userId);
 
     /**
      * 有效箱子规格选择（非分页）

@@ -1,7 +1,6 @@
 package com.ruoyi.project.storage.mapper;
 
 import com.ruoyi.project.storage.domain.Address;
-import com.ruoyi.project.storage.domain.Advertisement;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +48,7 @@ public interface AddressMapper {
 
     /**
      * 移除默认地址
-     * @param map
+     * @param map 集合
      * @return 结果
      */
     int removeDefaultAddress(Map<String,Object> map);
