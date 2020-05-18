@@ -113,7 +113,7 @@ public class AppAddressController extends BaseController {
     public AjaxResult defaultAddress(@PathVariable Long id){
         // 设置默认地址结果: 大于0，返回删除成功  否则，返回删除失败
         return addressService.defaultAddressById(id)>0 ?
-                AjaxResult.success("设置默认成功") :
-                AjaxResult.error("设置默认失败");
+                AjaxResult.success("设置默认地址成功") :
+                AjaxResult.error("设置默认地址失败");
     }
 }

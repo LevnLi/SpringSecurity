@@ -79,7 +79,7 @@ public class AddressServiceImpl extends Msg implements AddressService {
         // 如果添加地址失败
         if (count == ERROR){
             // 抛出异常
-            throw new CustomException("修改为普通地址失败");
+            throw new CustomException("新增地址失败");
         }
         // 返回成功信息
         return SUCCESS;
@@ -120,6 +120,7 @@ public class AddressServiceImpl extends Msg implements AddressService {
      */
     @Override
     public int deleteAddressById(Long id) {
+        // 定义变量接收修改条数
         int count = addressMapper.deleteAddressById(ParameterUtil.getIdUpdateByUpdateTime(id,SecurityUtils.getUsername(),DateUtils.getNowDate()));
         // 如果删除地址失败
         if (count == ERROR){
@@ -133,7 +134,7 @@ public class AddressServiceImpl extends Msg implements AddressService {
     /**
      * 设置默认地址
      *
-     * @param id 需要为默认地址的地址ip
+     * @param id 设置为默认地址的地址ip
      * @return 结果
      */
     @Override
@@ -177,12 +178,16 @@ public class AddressServiceImpl extends Msg implements AddressService {
                 // 如果修改失败
                 if (count == ERROR){
                     // 抛出异常
-                    throw new CustomException("修改为普通地址失败");
+                    throw new CustomException("移除默认地址失败");
                 }
             }
         }
     }
 
+    /**
+     * 是否存在空地址信息
+     * @param address 地址对象
+     */
     private void isNullInfo(Address address){
         // 如果地址信息不完整
         if (
