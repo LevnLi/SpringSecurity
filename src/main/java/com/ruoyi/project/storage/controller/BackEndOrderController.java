@@ -1,5 +1,6 @@
 package com.ruoyi.project.storage.controller;
 
+import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.framework.aspectj.lang.annotation.Log;
 import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
 import com.ruoyi.framework.web.controller.BaseController;
@@ -14,6 +15,8 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import java.text.ParseException;
+import static com.ruoyi.project.storage.msg.Msg.BACKEND;
 
 /**
  * @author :lihao
@@ -51,7 +54,7 @@ public class BackEndOrderController extends BaseController {
             @ApiImplicitParam(paramType = "query",name = "pageNum",dataType = "int",value = "当前页数",defaultValue = "1"),
             @ApiImplicitParam(paramType = "query",name = "pageSize",dataType = "int",value = "每页显示记录数",defaultValue = "10")
     })
-    public TableDataInfo list(OrderV1 orderV1){
+    public TableDataInfo list(OrderV1 orderV1) throws ParseException {
         // 获取分页信息
         startPage();
         // 返回想用请求分页数据
@@ -67,7 +70,7 @@ public class BackEndOrderController extends BaseController {
     @GetMapping("/info/{id}")
     @ApiOperation(value = "5.2.6.2 订单详情",notes = "订单详情")
     public AjaxResult orderInfo(@PathVariable Long id){
-        return AjaxResult.success("200",orderService.getOrderInfoById(id,"1"));
+        return AjaxResult.success(orderService.getOrderInfoById(id,"1"));
     }
 
     /**
@@ -80,6 +83,10 @@ public class BackEndOrderController extends BaseController {
     @PutMapping("/operate/{id}/{operate}/{version}")
     @ApiOperation(value = "5.2.6.3 订单操作",notes = "订单操作")
     public AjaxResult orderOperation(@PathVariable Long id, @PathVariable Integer operate, @PathVariable Long version){
+        // 空值判断
+        if (id == null || operate == null || version == null){
+            throw new CustomException("订单id/订单操作/版本号不存在");
+        }
         OrderV0 orderV0 = new OrderV0();
         // 装入订单id
         orderV0.setId(id);
@@ -88,7 +95,7 @@ public class BackEndOrderController extends BaseController {
         // 装入订单版本号
         orderV0.setVersion(version);
         // 转入信息
-        orderV0.setMsg("backend");
+        orderV0.setMsg(BACKEND);
         // 订单操作结果: 大于0，操作成功  否则，操作失败
         return orderService.orderOperation(orderV0)>0 ?
                 AjaxResult.success("操作成功") :

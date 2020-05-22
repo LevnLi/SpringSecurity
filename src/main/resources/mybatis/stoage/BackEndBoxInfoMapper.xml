@@ -54,6 +54,7 @@
             and sys.del_flag = '0'
             and sys.nick_name like concat(#{usedByName}, '%')
         </if>
+        order by update_time desc , create_time desc
     </select>
 
     <insert id="insertBoxInfo" parameterType="list" useGeneratedKeys="true" keyProperty="id">

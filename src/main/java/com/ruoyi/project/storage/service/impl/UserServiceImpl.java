@@ -7,14 +7,17 @@ import com.ruoyi.project.common.util.ParameterUtil;
 import com.ruoyi.project.storage.domain.User;
 import com.ruoyi.project.storage.mapper.RegisterMapper;
 import com.ruoyi.project.storage.mapper.UserMapper;
+import com.ruoyi.project.storage.mapper.UserRoleMapper;
 import com.ruoyi.project.storage.msg.Msg;
 import com.ruoyi.project.storage.service.UserService;
+import com.ruoyi.project.storage.util.InfoUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
+import static com.ruoyi.project.storage.util.InfoUtil.judgeUpdateInfo;
+import static com.ruoyi.project.storage.util.InfoUtil.judgeUserInfo;
 
 /**
  * @author :lihao
@@ -36,14 +39,21 @@ public class UserServiceImpl extends Msg implements UserService {
     private final RegisterMapper registerMapper;
 
     /**
+     * 用户角色mapper接口
+     */
+    private final UserRoleMapper userRoleMapper;
+
+    /**
      * 通过构造方法注入
      * @param userMapper 用户Mapper
      * @param registerMapper 注册mapper
+     * @param userRoleMapper 用户角色mapper
      */
     @Autowired
-    public UserServiceImpl(UserMapper userMapper, RegisterMapper registerMapper) {
+    public UserServiceImpl(UserMapper userMapper, RegisterMapper registerMapper, UserRoleMapper userRoleMapper) {
         this.userMapper = userMapper;
         this.registerMapper = registerMapper;
+        this.userRoleMapper = userRoleMapper;
     }
 
     /**
@@ -54,6 +64,14 @@ public class UserServiceImpl extends Msg implements UserService {
      */
     @Override
     public List<User> queryUserList(User user) {
+        // 如果搜索信息不为空
+        if (user.getSearchValue() != null){
+            // 如果存在非法字符
+            if (InfoUtil.isHaveIllegalChar(user.getSearchValue())){
+                // 抛异常
+                throw new CustomException("存在非法字符");
+            }
+        }
         // 返回查询结果
         return userMapper.queryUserList(user);
     }
@@ -65,31 +83,35 @@ public class UserServiceImpl extends Msg implements UserService {
      */
     @Override
     public int insertUser(User user) {
+        // 校验用户信息
+        judgeUserInfo(user);
         // 如果当前账号存在
         if (registerMapper.queryByUserName(user.getUserName())!=null){
             // 抛异常
-            throw new CustomException("用户名已存在");
+            throw new CustomException("用户名重复");
         }
         // 如果当前邮箱存在
         if (registerMapper.queryByEmail(user.getEmail())!=null){
             // 抛异常
-            throw new CustomException("邮箱已存在");
+            throw new CustomException("邮箱重复");
         }
         // 如果当前手机号存在
         if (registerMapper.queryByPhoneNumber(user.getPhonenumber())!=null){
             // 抛异常
-            throw new CustomException("手机号已存在");
+            throw new CustomException("手机号重复");
         }
         // 设置创建时间
         user.setCreateTime(DateUtils.getNowDate());
         // 设置创建人
         user.setCreateBy(SecurityUtils.getUsername());
         // 设置初始密码
-        user.setPassword(SecurityUtils.encryptPassword("Abc,123456"));
+        user.setPassword(SecurityUtils.encryptPassword("Abc123456"));
         // 设置启用
         user.setStatus("0");
         // 设置类型
         user.setUserType("01");
+        // 设置客户部门
+        user.setDeptId(111L);
         // 设置版本号
         user.setVersion(0L);
         // 设置未删除
@@ -100,6 +122,11 @@ public class UserServiceImpl extends Msg implements UserService {
         if (count == ERROR){
             // 抛异常
             throw new CustomException("新增失败");
+        }
+        // 添加用户角色信息
+        if (userRoleMapper.insertUserRole(user.getUserId(),BACKEND) == ERROR){
+            // 抛异常
+            throw new CustomException("添加用户角色信息失败");
         }
         // 返回成功信息
         return SUCCESS;
@@ -113,21 +140,8 @@ public class UserServiceImpl extends Msg implements UserService {
      */
     @Override
     public int updateUser(User user) {
-        /*// 如果当前账号存在
-        if (registerMapper.queryByUserName(user.getUserName())!=null){
-            // 抛异常
-            throw new CustomException("用户名已存在");
-        }
-        // 如果当前邮箱存在
-        if (registerMapper.queryByEmail(user.getEmail())!=null){
-            // 抛异常
-            throw new CustomException("邮箱已存在");
-        }
-        // 如果当前手机号存在
-        if (registerMapper.queryByPhoneNumber(user.getPhonenumber())!=null){
-            // 抛异常
-            throw new CustomException("手机号已存在");
-        }*/
+        // 判断更新信息
+        judgeUpdateInfo(user);
         // 设置更新时间
         user.setUpdateTime(DateUtils.getNowDate());
         // 设置更新人
@@ -137,7 +151,7 @@ public class UserServiceImpl extends Msg implements UserService {
         // 乐观锁判断
         if (count == ERROR){
             // 抛出异常
-            throw new CustomException("修改失败");
+            throw new CustomException("当前用户已被他人操作，请刷新后重试");
         }
         // 返回修改条数
         return SUCCESS;
@@ -156,7 +170,7 @@ public class UserServiceImpl extends Msg implements UserService {
         // 如果更新条数不等于数组长度
         if (count != ids.length){
             // 抛异常
-            throw new CustomException("删除失败");
+            throw new CustomException("当前用户已被他人操作，请刷新后重试");
         }
         // 返回成功信息
         return SUCCESS;
@@ -178,7 +192,7 @@ public class UserServiceImpl extends Msg implements UserService {
             // 如果更新条数不等于数组长度
             if (count != ids.length){
                 // 抛异常
-                throw new CustomException("停用失败");
+                throw new CustomException("状态为停用的用户，不能停用");
             }
             // 返回成功信息
             return SUCCESS;
@@ -190,7 +204,7 @@ public class UserServiceImpl extends Msg implements UserService {
             // 如果更新条数不等于数组长度
             if (count != ids.length){
                 // 抛异常
-                throw new CustomException("启用失败");
+                throw new CustomException("状态为启用的用户，不能启用");
             }
             // 返回成功信息
             return SUCCESS;
@@ -200,7 +214,7 @@ public class UserServiceImpl extends Msg implements UserService {
     }
 
     /**
-     * 重置用户密码 : 重置为初始密码【Abc,123456】
+     * 重置用户密码 : 重置为初始密码【Abc123456】
      *
      * @param ids 用户id数组
      * @return 结果
@@ -208,11 +222,11 @@ public class UserServiceImpl extends Msg implements UserService {
     @Override
     public int resetUserPassword(Long[] ids) {
         // 定义变量接收操作条数
-        int count = userMapper.resetUserPassword(ParameterUtil.getBatchUpdateMapByOperateIds(SecurityUtils.encryptPassword("Abc,123456"),ids));
+        int count = userMapper.resetUserPassword(ParameterUtil.getBatchUpdateMapByOperateIds(SecurityUtils.encryptPassword("Abc123456"),ids));
         // 如果更新条数不等于数组长度
         if (count != ids.length){
             // 抛异常
-            throw new CustomException("重置失败");
+            throw new CustomException("重置密码失败");
         }
         // 返回成功信息
         return SUCCESS;

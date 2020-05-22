@@ -1,8 +1,10 @@
 package com.ruoyi.common.utils;
 
 import java.lang.management.ManagementFactory;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
@@ -163,5 +165,28 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
         // 计算差多少秒//输出结果
         // long sec = diff % nd % nh % nm / ns;
         return day + "天" + hour + "小时" + min + "分钟";
+    }
+
+    /**
+     * 日期增加一天
+     * @param date 当前日期
+     * @return 增加一天
+     * @throws ParseException 格式异常
+     */
+    public static String dayUpOne(String date) throws ParseException {
+        // 接收时间格式
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        // 转换成Date类型
+        Date today = format.parse(date);
+        // 获取日历
+        Calendar c = Calendar.getInstance();
+        // 装入当前时间
+        c.setTime(today);
+        // 时间加一天
+        c.add(Calendar.DAY_OF_MONTH, 1);
+        // 赋值到明天
+        Date tomorrow = c.getTime();
+        // 装换成String类型输出
+        return format.format(tomorrow);
     }
 }

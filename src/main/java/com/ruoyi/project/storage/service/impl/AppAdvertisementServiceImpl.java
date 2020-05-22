@@ -6,8 +6,6 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.project.common.util.ParameterUtil;
 import com.ruoyi.project.storage.domain.Advertisement;
 import com.ruoyi.project.storage.domain.Point;
-import com.ruoyi.project.storage.domain.Register;
-import com.ruoyi.project.storage.domain.User;
 import com.ruoyi.project.storage.mapper.AppAdvertisementMapper;
 import com.ruoyi.project.storage.mapper.PointMapper;
 import com.ruoyi.project.storage.msg.Msg;
@@ -16,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -64,14 +60,13 @@ public class AppAdvertisementServiceImpl extends Msg implements AppAdvertisement
     /**
      * 广告积分获取
      *
-     * @param id     广告id
-     * @param points 可获积分
+     * @param advertisement 广告对象
      * @return 结果
      */
     @Override
-    public int getAdvertisementPoints(Long id, Long points) {
+    public int getAdvertisementPoints(Advertisement advertisement) {
         // 广告不存在或积分错误
-        if (appAdvertisementMapper.queryByIdPoints(id,points) == null){
+        if (appAdvertisementMapper.queryByIdPoints(advertisement.getId(),advertisement.getPoints()) == null){
             // 抛出异常
             throw new CustomException("广告不存在或积分错误");
         }
@@ -82,7 +77,7 @@ public class AppAdvertisementServiceImpl extends Msg implements AppAdvertisement
                                 // 客户id
                                 SecurityUtils.getUserId(),
                                 // 可获积分
-                                points,
+                                advertisement.getPoints(),
                                 // 更新人
                                 SecurityUtils.getUsername(),
                                 // 更新时间
@@ -90,10 +85,10 @@ public class AppAdvertisementServiceImpl extends Msg implements AppAdvertisement
         // 如果更新客户积分失败
         if (count == ERROR){
             // 抛出异常
-            throw new CustomException("更新客户积分失败");
+            throw new CustomException("积分获取失败，请联系管理员");
         }
         // 调用添加积分记录方法
-        insertPoint(id,points);
+        insertPoint(advertisement.getId(),advertisement.getPoints());
         // 返回成功信息
         return SUCCESS;
     }
@@ -125,7 +120,7 @@ public class AppAdvertisementServiceImpl extends Msg implements AppAdvertisement
         // 向积分表添加记录
         if (pointMapper.insertPoint(point) == ERROR){
             // 抛出异常
-            throw new CustomException("添加积分记录失败");
+            throw new CustomException("积分获取失败，请联系管理员");
         }
     }
 }

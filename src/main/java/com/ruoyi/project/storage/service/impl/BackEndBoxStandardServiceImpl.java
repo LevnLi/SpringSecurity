@@ -13,11 +13,11 @@ import com.ruoyi.project.storage.mapper.BackEndBoxInfoMapper;
 import com.ruoyi.project.storage.mapper.BackEndBoxStandardMapper;
 import com.ruoyi.project.storage.msg.Msg;
 import com.ruoyi.project.storage.service.BackEndBoxStandardService;
+import com.ruoyi.project.storage.util.InfoUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +52,6 @@ public class BackEndBoxStandardServiceImpl extends Msg implements BackEndBoxStan
         this.backEndBoxInfoMapper = backEndBoxInfoMapper;
     }
 
-
     /**
      * 箱子规格列表（分页）
      *
@@ -61,6 +60,14 @@ public class BackEndBoxStandardServiceImpl extends Msg implements BackEndBoxStan
      */
     @Override
     public List<BoxStandard> queryBoxStandardList(BoxStandard boxStandard) {
+        // 如果存在箱子规格
+        if (boxStandard.getBoxStandard() != null){
+            // 如果箱子规格不合法
+            if (!InfoUtil.isHaveIllegalBoxStandard(boxStandard.getBoxStandard())){
+                // 抛异常
+                throw new CustomException("请输入正确箱子规格");
+            }
+        }
         // 返回查询分页列表
         return backEndBoxStandardMapper.queryBoxStandardList(boxStandard);
     }
@@ -73,16 +80,8 @@ public class BackEndBoxStandardServiceImpl extends Msg implements BackEndBoxStan
      */
     @Override
     public int insertBoxStandard(BoxStandard boxStandard) {
-        // 如果箱子积分单价小于0
-        if (boxStandard.getBoxUnitPrice().intValue() <= ERROR){
-            // 抛出异常
-            throw new CustomException("箱子积分小于零");
-        }
-        // 如果库存数量小于等于0
-        if (boxStandard.getInventoryNumber().intValue() <= ERROR){
-            // 抛出异常
-            throw new CustomException("库存数量不能小于等于0");
-        }
+        // 调用规格信息判断方法
+        isIllegalInfo(boxStandard);
         // 获取当前箱子规格的id、积分单价
         BoxStandardV1 boxStandardV1 = backEndBoxStandardMapper.queryBox(boxStandard.getBoxStandard());
         // 如果不存在当前箱子规格
@@ -123,7 +122,7 @@ public class BackEndBoxStandardServiceImpl extends Msg implements BackEndBoxStan
         // 如果修改条数不等于当前ids数组长度
         if (count !=ids.length){
             // 抛出异常
-            throw new CustomException("删除失败");
+            throw new CustomException("已有他人率先操作，请刷新后重试");
         }
         // 返回成功
         return SUCCESS;
@@ -200,6 +199,45 @@ public class BackEndBoxStandardServiceImpl extends Msg implements BackEndBoxStan
         if (count == ERROR){
             // 抛出异常
             throw new CustomException("添加箱子规格失败");
+        }
+    }
+
+    /**
+     * 判断添加箱子规格信息
+     * @param boxStandard 箱子规格对象
+     */
+    private void isIllegalInfo(BoxStandard boxStandard){
+        // 如果箱子规格不存在或为空
+        if (
+                // 箱子规格为空或不存在
+                boxStandard.getBoxStandard() == null || "".equals(boxStandard.getBoxStandard())||
+                // 箱子积分为空或箱子数理为空
+                boxStandard.getBoxUnitPrice() == null || boxStandard.getInventoryNumber() == null||
+                // 备注信息为空
+                boxStandard.getRemark() == null
+        ){
+            // 抛异常
+            throw new CustomException("请完善箱子规格信息");
+        }
+        // 如果箱子规格不合法
+        if (!InfoUtil.isHaveIllegalBoxStandard(boxStandard.getBoxStandard())){
+            // 抛异常
+            throw new CustomException("请输入正确箱子规格");
+        }
+        // 如果箱子积分单价小于0
+        if (boxStandard.getBoxUnitPrice().intValue() <= ERROR){
+            // 抛出异常
+            throw new CustomException("箱子积分不能小于等于零");
+        }
+        // 如果库存数量小于等于0
+        if (boxStandard.getInventoryNumber().intValue() <= ERROR){
+            // 抛出异常
+            throw new CustomException("库存数量不能小于等于零");
+        }
+        // 如果备注过长
+        if (boxStandard.getRemark().length()>REMARK_MAX_LENGTH){
+            // 抛异常
+            throw new CustomException("备注信息过长");
         }
     }
 }

@@ -42,19 +42,21 @@
                 user_name like concat(#{searchValue}, '%')
                 or nick_name like concat(#{searchValue}, '%')
                 or phonenumber like concat(#{searchValue}, '%')
+                or email like concat(#{searchValue}, '%')
                 )
             </if>
         </where>
-        order by create_time desc
+        order by update_time desc,create_time desc
     </select>
 
-    <insert id="insertCustomer" parameterType="com.ruoyi.project.storage.domain.User" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertCustomer" parameterType="com.ruoyi.project.storage.domain.User" useGeneratedKeys="true" keyProperty="userId">
         insert into sys_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="userId != null">user_id,</if>
             <if test="userName != null and userName != ''">user_name,</if>
             <if test="nickName != null and nickName != ''">nick_name,</if>
             <if test="userType != null and userType != ''">user_type,</if>
+            <if test="deptId != null">dept_id,</if>
             <if test="email != null and email != ''">email,</if>
             <if test="phonenumber != null and phonenumber != ''">phonenumber,</if>
             <if test="sex != null and sex != ''">sex,</if>
@@ -73,6 +75,7 @@
             <if test="userName != null and userName != ''">#{userName},</if>
             <if test="nickName != null and nickName != ''">#{nickName},</if>
             <if test="userType != null and userType != ''">#{userType},</if>
+            <if test="deptId != null">#{deptId},</if>
             <if test="email != null and email != ''">#{email},</if>
             <if test="phonenumber != null and phonenumber != ''">#{phonenumber},</if>
             <if test="sex != null and sex != ''">#{sex},</if>

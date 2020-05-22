@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
+import static com.ruoyi.project.storage.util.InfoUtil.judgeNumberInfo;
+
 /**
  * @author :lihao
  * @date :2020/05/09
@@ -191,13 +193,19 @@ public class AddressServiceImpl extends Msg implements AddressService {
     private void isNullInfo(Address address){
         // 如果地址信息不完整
         if (
-            address.getContacts() == null || "".equals(address.getContacts()) ||
-            address.getContactsPhone() == null || "".equals(address.getContactsPhone()) ||
+            // 地址为空或不存在
             address.getAddress() == null || "".equals(address.getAddress())||
+            // 联系人为空或不存在
+            address.getContacts() == null || "".equals(address.getContacts()) ||
+            // 联系电话为空或不存在
+            address.getContactsPhone() == null || "".equals(address.getContactsPhone()) ||
+            // 默认地址不存在或值错误
             address.getIsDefault() == null || address.getIsDefault() > 1 || address.getIsDefault() < 0
         ){
             // 抛出异常
             throw new CustomException("地址信息不完整");
         }
+        // 判断手机号是否规范
+        judgeNumberInfo(address.getContactsPhone());
     }
 }

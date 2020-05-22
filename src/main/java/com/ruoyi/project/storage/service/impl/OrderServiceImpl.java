@@ -16,7 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.text.ParseException;
 import java.util.List;
+
+import static com.ruoyi.project.storage.util.InfoUtil.judgeTime;
 
 /**
  * @author :lihao
@@ -56,7 +60,18 @@ public class OrderServiceImpl extends Msg implements OrderService {
      * @return 结果
      */
     @Override
-    public List<Order> getOrderList(OrderV1 orderV1) {
+    public List<Order> getOrderList(OrderV1 orderV1) throws ParseException {
+        // 如果空箱上门下单结束时间存在且不为空
+        if (orderV1.getEmptyBoxOrderTimeEnd() != null && !"".equals(orderV1.getEmptyBoxOrderTimeEnd())){
+            // 空箱上门下单结束时间加一天
+            orderV1.setEmptyBoxOrderTimeEnd(DateUtils.dayUpOne(orderV1.getEmptyBoxOrderTimeEnd()));
+        }
+        // 如果重箱提取下单结束时间存在且不为空
+        if (orderV1.getHeavyBoxOrderTimeEnd() != null && !"".equals(orderV1.getHeavyBoxOrderTimeEnd())){
+            // 重箱提取下单结束时间加一天
+            orderV1.setHeavyBoxOrderTimeEnd(DateUtils.dayUpOne(orderV1.getHeavyBoxOrderTimeEnd()));
+        }
+        // 返回结果
         return orderMapper.getOrderList(orderV1);
     }
 
@@ -80,6 +95,13 @@ public class OrderServiceImpl extends Msg implements OrderService {
      */
     @Override
     public int orderOperation(OrderV0 orderV0) {
+        // 添加订单删除记录
+        int count = orderHistoryMapper.insertOrderHistory(orderV0.getId());
+        // 订单历史添加失败
+        if (count == ERROR){
+            // 抛出异常
+            throw new CustomException("订单历史添加失败");
+        }
         // 获取当前id下的订单信息
         Order order = orderMapper.selectOrderInfo(orderV0.getId());
         // 如果是后台端操作
@@ -105,22 +127,22 @@ public class OrderServiceImpl extends Msg implements OrderService {
     @Override
     public int deleteOrder(Long[] ids) {
         // 定义记录变量
-        int count;
+        int count = 0;
+        for (Long id: ids) {
+            // 填加订单历史记录
+            count += orderHistoryMapper.insertOrderHistory(id);
+        }
+        // 如果更改条数不等于数组长度
+        if (count != ids.length){
+            // 抛出异常
+            throw new CustomException("订单历史添加失败");
+        }
         // 记录订单更改条数
         count = orderMapper.deleteOrder(ParameterUtil.getIdsUpdateByUpdateTime(ids,SecurityUtils.getUsername(), DateUtils.getNowDate()));
         // 如果更改条数不等于数组长度
         if (count != ids.length){
             // 抛出异常
-            throw new CustomException("删除失败");
-        }
-        for (Long id: ids) {
-            // 删除订单历史记录
-            count = orderHistoryMapper.insertOrderHistory(id);
-        }
-        // 如果更改条数不等于数组长度
-        if (count != ids.length){
-            // 抛出异常
-            throw new CustomException("删除失败");
+            throw new CustomException("订单删除失败");
         }
         // 返回删除订单记录结果
         return SUCCESS;
@@ -138,7 +160,7 @@ public class OrderServiceImpl extends Msg implements OrderService {
             // 如果订单操作指令错误
             if (orderV0.getOperate() != OrderEnum.STATUS3.getValue()){
                 // 抛出异常
-                throw new CustomException("操作失败: 状态2");
+                throw new CustomException("待收空箱失败");
             }
             // 调用更新订单方法
             updateOrder(order);
@@ -150,7 +172,7 @@ public class OrderServiceImpl extends Msg implements OrderService {
             // 如果不是手机端用户且订单操作指令错误
             if (orderV0.getOperate() != OrderEnum.STATUS4.getValue()){
                 // 抛出异常
-                throw new CustomException("操作失败: 状态3");
+                throw new CustomException("待发重箱失败");
             }
             // 调用更新订单方法
             updateOrder(order);
@@ -162,7 +184,7 @@ public class OrderServiceImpl extends Msg implements OrderService {
             // 如果不是手机端用户且订单操作指令错误
             if (orderV0.getOperate() != OrderEnum.STATUS6.getValue()){
                 // 抛出异常
-                throw new CustomException("操作失败: 状态5");
+                throw new CustomException("预约提取失败");
             }
             if (
                 // 提取时间不存在
@@ -178,6 +200,23 @@ public class OrderServiceImpl extends Msg implements OrderService {
             ){
                 // 抛出异常
                 throw new CustomException("缺少重箱提取信息！！！");
+            }
+            // 判断上门时间段
+            judgeTime(orderV0.getHeavyBoxCallInterval());
+            // 如果重箱提取姓名过长
+            if (orderV0.getHeavyBoxCallName().length() > NAME_MAX_LENGTH){
+                // 抛异常
+                throw new CustomException("重箱提取姓名过长");
+            }
+            // 如果重箱提取电话过长
+            if (orderV0.getHeavyBoxCallPhone().length() > NUMBER_MAX_LENGTH){
+                // 抛异常
+                throw new CustomException("重箱提取电话过长");
+            }
+            // 如果重箱提取地址过长
+            if (orderV0.getHeavyBoxCallAddress().length() > ADDRESS_MAX_LENGTH){
+                // 抛异常
+                throw new CustomException("重箱提取地址过长");
             }
             // 填写重箱提取姓名
             order.setHeavyBoxCallName(orderV0.getHeavyBoxCallName());
@@ -201,7 +240,7 @@ public class OrderServiceImpl extends Msg implements OrderService {
             // 如果不是手机端用户且订单操作指令错误
             if (orderV0.getOperate() != OrderEnum.STATUS8.getValue()){
                 // 抛出异常
-                throw new CustomException("操作失败: 状态7");
+                throw new CustomException("待收重箱失败");
             }
             // 调用更新订单方法
             updateOrder(order);
@@ -213,7 +252,7 @@ public class OrderServiceImpl extends Msg implements OrderService {
             // 如果不是手机端用户且订单操作指令错误
             if (orderV0.getOperate() != OrderEnum.STATUS9.getValue()){
                 // 抛出异常
-                throw new CustomException("操作失败: 状态8");
+                throw new CustomException("待发空箱失败");
             }
             // 调用更新订单方法
             updateOrder(order);
@@ -225,7 +264,7 @@ public class OrderServiceImpl extends Msg implements OrderService {
             // 如果订单操作指令错误
             if (orderV0.getOperate() != OrderEnum.STATUS10.getValue()){
                 // 抛出异常
-                throw new CustomException("操作失败: 状态10");
+                throw new CustomException("删除订单失败");
             }
             // 定义变量接收删除手机端订单结果
             int count = orderMapper.deleteOrderByPhone(ParameterUtil.getIdDataUpdateByUpdateTime(order.getId(),SecurityUtils.getUserId(),SecurityUtils.getUsername(),DateUtils.getNowDate()));
@@ -235,15 +274,6 @@ public class OrderServiceImpl extends Msg implements OrderService {
                 log.error("手机端删除订单失败");
                 throw new CustomException("订单删除失败");
             }
-            log.info("==> 手机端删除订单成功");
-            // 添加订单删除记录
-            count = orderHistoryMapper.insertOrderHistory(order.getId());
-            // 订单历史添加失败
-            if (count == ERROR){
-                // 抛出异常
-                throw new CustomException("订单删除失败");
-            }
-            log.info("==> 订单历史记录添加成功");
             // 表示操作成功
             return SUCCESS;
         }
@@ -262,7 +292,7 @@ public class OrderServiceImpl extends Msg implements OrderService {
             // 如果不是后台端用户且订单操作指令错误
             if (orderV0.getOperate() != OrderEnum.STATUS2.getValue()){
                 // 抛出异常
-                throw new CustomException("操作失败: 状态1");
+                throw new CustomException("发送空箱失败");
             }
             // 调用更新订单方法
             updateOrder(order);
@@ -274,7 +304,7 @@ public class OrderServiceImpl extends Msg implements OrderService {
             // 如果不是后台端用户且订单操作指令错误
             if (orderV0.getOperate() != OrderEnum.STATUS5.getValue()){
                 // 抛出异常
-                throw new CustomException("操作失败: 状态4");
+                throw new CustomException("收取重箱失败");
             }
             // 调用更新订单方法
             updateOrder(order);
@@ -285,7 +315,8 @@ public class OrderServiceImpl extends Msg implements OrderService {
         if (order.getStatus() == OrderEnum.STATUS6.getValue()){
             // 如果不是后台端用户且订单操作指令错误
             if (orderV0.getOperate() != OrderEnum.STATUS7.getValue()){
-                throw new CustomException("操作失败: 状态6");
+                // 抛异常
+                throw new CustomException("发送重箱失败");
             }
             // 调用更新订单方法
             updateOrder(order);
@@ -296,7 +327,8 @@ public class OrderServiceImpl extends Msg implements OrderService {
         if (order.getStatus() == OrderEnum.STATUS9.getValue()){
             // 如果不是后台端用户且订单操作指令错误
             if (orderV0.getOperate() != OrderEnum.STATUS10.getValue()){
-                throw new CustomException("操作失败: 状态9");
+                // 抛异常
+                throw new CustomException("收取空箱失败");
             }
             // 调用更新订单方法
             updateOrder(order);
@@ -310,7 +342,7 @@ public class OrderServiceImpl extends Msg implements OrderService {
     }
 
     /**
-     * 更新订单，创建历史记录
+     * 更新订单
      * @param order 订单对象
      */
     private void updateOrder(Order order){
@@ -320,21 +352,9 @@ public class OrderServiceImpl extends Msg implements OrderService {
         order.setUpdateBy(SecurityUtils.getUsername());
         // 更新时间
         order.setUpdateTime(DateUtils.getNowDate());
-        // 定义记录变量
-        int count;
         // 记录订单更改条数
-        count = orderMapper.updateOrderInfo(order);
-        if (count != SUCCESS){
-            // 抛出异常
-            throw new CustomException("更新订单失败");
-        }
-        // 创建时间
-        order.setCreateTime(DateUtils.getNowDate());
-        // 创建人
-        order.setCreateBy(SecurityUtils.getUsername());
-        // 记录订单历史记录创建条数
-        count = orderHistoryMapper.insertOrderHistory(order.getId());
-        // 如果更新订单或插入订单历史记录失败
+        int count = orderMapper.updateOrderInfo(order);
+        // 如果订单更新失败
         if (count == ERROR){
             // 抛出异常
             throw new CustomException("更新订单失败");

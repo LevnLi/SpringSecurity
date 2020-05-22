@@ -75,6 +75,7 @@
             GROUP BY
                 stand.box_standard
         ) temp
+        ORDER BY temp.ctm DESC,temp.utm DESC
     </select>
 
     <insert id="insertBoxStandard" parameterType="com.ruoyi.project.storage.domain.BoxStandard">
@@ -142,6 +143,7 @@
             box_unit_price as boxUnitPrice
         FROM t_box_standard
         WHERE box_standard = #{boxStandard}
+        and del_flag = '0'
     </select>
 
 

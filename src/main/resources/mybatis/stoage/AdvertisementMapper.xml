@@ -31,12 +31,11 @@
             <if test="searchValue != null and searchValue != ''">
                 and (
                        title like concat(#{searchValue}, '%')
-                    or img_url like concat(#{searchValue}, '%')
                     or points = #{searchValue}
                 )
             </if>
         </where>
-        order by sort_no
+        order by sort_no , update_time desc
     </select>
 
     <insert id="insertAdvertisement" parameterType="com.ruoyi.project.storage.domain.Advertisement" useGeneratedKeys="true" keyProperty="id">

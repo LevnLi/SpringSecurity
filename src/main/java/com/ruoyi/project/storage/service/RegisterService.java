@@ -1,6 +1,6 @@
 package com.ruoyi.project.storage.service;
 
-import com.ruoyi.project.storage.domain.Register;
+import com.ruoyi.project.storage.domain.User;
 
 /**
  * @author :lihao
@@ -11,8 +11,8 @@ public interface RegisterService {
 
     /**
      * 手机用户注册
-     * @param register
+     * @param user 用户
      * @return 结果
      */
-    int registerUser(Register register);
+    int registerUser(User user);
 }

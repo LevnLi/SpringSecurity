@@ -8,6 +8,7 @@ import com.ruoyi.project.storage.domain.Advertisement;
 import com.ruoyi.project.storage.mapper.AdvertisementMapper;
 import com.ruoyi.project.storage.msg.Msg;
 import com.ruoyi.project.storage.service.AdvertisementService;
+import com.ruoyi.project.storage.util.InfoUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,14 @@ public class AdvertisementServiceImpl extends Msg implements AdvertisementServic
      */
     @Override
     public List<Advertisement> selectAdvertisementList(Advertisement advertisement) {
+        // 如果搜索内容不为空
+        if (advertisement.getSearchValue() != null){
+            // 如果搜索内容存在非法字符
+            if (InfoUtil.isHaveIllegalChar(advertisement.getSearchValue())){
+                // 抛异常
+                throw new CustomException("搜索内容存在非法字符");
+            }
+        }
         // 返回广告列表数据
         return advertisementMapper.selectAdvertisementList(advertisement);
     }
@@ -56,11 +65,8 @@ public class AdvertisementServiceImpl extends Msg implements AdvertisementServic
      */
     @Override
     public int insertAdvertisement(Advertisement advertisement) {
-        // 如果可获积分小于等于0
-        if (advertisement.getPoints().intValue() <= ERROR){
-            // 抛出异常
-            throw new CustomException("广告可获得积分不能小于等于0");
-        }
+        // 判断广告新增信息是否符合要求
+        InfoUtil.insertAdvertisementInfo(advertisement);
         // 设置创建时间
         advertisement.setCreateTime(DateUtils.getNowDate());
         // 设置创建人
@@ -89,11 +95,8 @@ public class AdvertisementServiceImpl extends Msg implements AdvertisementServic
      */
     @Override
     public int updateAdvertisement(Advertisement advertisement) {
-        // 如果可获积分小于等于0
-        if (advertisement.getPoints().intValue() <= ERROR){
-            // 抛出异常
-            throw new CustomException("广告可获得积分不能小于等于0");
-        }
+        // 判断广告更新信息
+        InfoUtil.updateAdvertisementInfo(advertisement);
         // 设置更新时间
         advertisement.setUpdateTime(DateUtils.getNowDate());
         // 设置更新人
@@ -121,7 +124,7 @@ public class AdvertisementServiceImpl extends Msg implements AdvertisementServic
         // 如果更新客户积分失败
         if (count != ids.length){
             // 抛出异常
-            throw new CustomException("新增广告信息失败");
+            throw new CustomException("状态为停用的广告，才可以删除");
         }
         // 返回成功
         return SUCCESS;
@@ -142,7 +145,7 @@ public class AdvertisementServiceImpl extends Msg implements AdvertisementServic
             // 如果更新条数不等于数组长度
             if (count != ids.length){
                 // 抛异常
-                throw new CustomException("停用失败");
+                throw new CustomException("状态为停用的广告，不能停用");
             }
             // 返回成功信息
             return SUCCESS;
@@ -154,7 +157,7 @@ public class AdvertisementServiceImpl extends Msg implements AdvertisementServic
             // 如果更新条数不等于数组长度
             if (count != ids.length){
                 // 抛异常
-                throw new CustomException("启用失败");
+                throw new CustomException("状态为启用的广告，不能启用");
             }
             // 返回成功信息
             return SUCCESS;

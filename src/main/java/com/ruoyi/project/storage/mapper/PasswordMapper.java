@@ -2,7 +2,6 @@ package com.ruoyi.project.storage.mapper;
 
 import com.ruoyi.project.storage.domain.User;
 import org.apache.ibatis.annotations.Mapper;
-import java.util.Map;
 
 /**
  * @author :lihao
@@ -14,10 +13,10 @@ public interface PasswordMapper {
 
     /**
      * 查询旧密码
-     * @param map
+     * @param userId 用户id
      * @return 返回结果
      */
-    String queryOldPassword(Map<String, Object> map);
+    String queryOldPassword(Long userId);
 
     /**
      * 更新密码

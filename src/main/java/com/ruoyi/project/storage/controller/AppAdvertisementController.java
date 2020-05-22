@@ -6,6 +6,7 @@ import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
 import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.framework.web.page.TableDataInfo;
+import com.ruoyi.project.storage.domain.Advertisement;
 import com.ruoyi.project.storage.domain.Point;
 import com.ruoyi.project.storage.mapper.AppAdvertisementMapper;
 import com.ruoyi.project.storage.service.AppAdvertisementService;
@@ -55,16 +56,15 @@ public class AppAdvertisementController extends BaseController {
 
     /**
      * 广告积分获取
-     * @param id 广告id
-     * @param points 可获积分
+     * @param advertisement 广告对象
      * @return 结果
      */
     @Log(title = "5.2.2.2 广告积分获取", businessType = BusinessType.UPDATE)
     @PutMapping("/points")
     @ApiOperation(value = "5.2.2.2 广告积分获取",notes = "广告积分获取")
-    public AjaxResult getPoints(Long id,Long points){
+    public AjaxResult getPoints(@RequestBody Advertisement advertisement){
         // 广告积分获取结果
-        return appAdvertisementService.getAdvertisementPoints(id, points)>0 ?
+        return appAdvertisementService.getAdvertisementPoints(advertisement)>0 ?
                 AjaxResult.success("获取积分成功") :
                 AjaxResult.error("获取积分失败");
     }

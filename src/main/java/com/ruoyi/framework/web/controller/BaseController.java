@@ -38,6 +38,16 @@ public class BaseController
     public static final String ENABLE = "enable";
 
     /**
+     * 静态私有常量 SUCCESS表示操作成功
+     */
+    public static final int SUCCESS = 1;
+
+    /**
+     * 静态私有常量 ERROR表示操作失败
+     */
+    public static final int ERROR = 0;
+
+    /**
      * 将前台传递过来的日期格式的字符串，自动转化为Date类型
      */
     @InitBinder

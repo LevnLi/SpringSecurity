@@ -7,7 +7,6 @@ import com.ruoyi.project.common.util.ParameterUtil;
 import com.ruoyi.project.common.util.SeqGeneratorUtil;
 import com.ruoyi.project.storage.domain.*;
 import com.ruoyi.project.storage.mapper.BoxBespeakMapper;
-import com.ruoyi.project.storage.mapper.OrderHistoryMapper;
 import com.ruoyi.project.storage.mapper.PointMapper;
 import com.ruoyi.project.storage.msg.Msg;
 import com.ruoyi.project.storage.service.BoxBespeakService;
@@ -18,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 
+import static com.ruoyi.project.storage.util.InfoUtil.judgeTime;
+
 /**
  * @author :lihao
  * @date :2020/05/09
@@ -25,6 +26,7 @@ import java.util.Map;
  */
 @Service
 @Slf4j
+@Transactional(rollbackFor = Exception.class)
 public class BoxBespeakServiceImpl extends Msg implements BoxBespeakService {
 
     /**
@@ -38,21 +40,14 @@ public class BoxBespeakServiceImpl extends Msg implements BoxBespeakService {
     private final BoxBespeakMapper boxBespeakMapper;
 
     /**
-     * 积分历史记录mapper接口
-     */
-    private final OrderHistoryMapper orderHistoryMapper;
-
-    /**
      * 通过构造方法注入
      * @param pointMapper 积分mapper接口
      * @param boxBespeakMapper 空箱预约mapper接口
-     * @param orderHistoryMapper 订单历史记录mapper接口
      */
     @Autowired
-    public BoxBespeakServiceImpl(PointMapper pointMapper, BoxBespeakMapper boxBespeakMapper, OrderHistoryMapper orderHistoryMapper) {
+    public BoxBespeakServiceImpl(PointMapper pointMapper, BoxBespeakMapper boxBespeakMapper) {
         this.pointMapper = pointMapper;
         this.boxBespeakMapper = boxBespeakMapper;
-        this.orderHistoryMapper = orderHistoryMapper;
     }
 
     /**
@@ -84,8 +79,9 @@ public class BoxBespeakServiceImpl extends Msg implements BoxBespeakService {
      * @return 结果
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public int boxOrder(Order order) {
+        // 判断预约信息
+        judgeBoxBespeakInfo(order);
         // 获取当前用户积分
         Long userPoint = boxBespeakMapper.queryUserPoint(SecurityUtils.getUserId());
         // 如果当前用户积分不能存在或未零或小于所需积分
@@ -96,18 +92,18 @@ public class BoxBespeakServiceImpl extends Msg implements BoxBespeakService {
         // 如果当前规格下没有可用箱子
         if (queryIsStandard(order.getBoxStandard(),order.getBoxUnitPrice())==null){
             // 抛出异常
-            throw new CustomException("当前规格无空余箱子");
+            throw new CustomException("箱子库存不足，请重新选择");
         }
         // 接收获得箱子信息
         BoxInfo boxInfo = randGetBoxInfoByStandard(ParameterUtil.getMapByIdMsg(order.getBoxUnitPrice(),order.getBoxStandard()));
         // 如果没有箱子信息更新条数
         if (updateBoxInfo(boxInfo)<=ERROR){
-            // 抛出异常
-            throw new CustomException("更新箱子信息失败！！！");
+            // 补偿机制,返回失败,再次预约箱子
+            return ERROR;
         }
         // 如果没有扣除客户积分
         if(subtractUserPoint(userPoint - boxInfo.getBoxUnitPrice() * order.getLeaseDuration())<=ERROR){
-            throw new CustomException("扣除客户积分失败！！！");
+            throw new CustomException("扣除客户积分失败");
         }
         // 实付积分
         order.setTotalPrice(boxInfo.getBoxUnitPrice() * order.getLeaseDuration());
@@ -196,6 +192,8 @@ public class BoxBespeakServiceImpl extends Msg implements BoxBespeakService {
         order.setBoxId(boxInfo.getId());
         // 箱子编号
         order.setBoxCode(boxInfo.getBoxCode());
+        // 空箱上门下单时间
+        order.setEmptyBoxOrderTime(DateUtils.getNowDate());
         // 创建时间
         order.setCreateTime(DateUtils.getNowDate());
         // 创建人
@@ -213,12 +211,7 @@ public class BoxBespeakServiceImpl extends Msg implements BoxBespeakService {
         // 如果订单id为null
         if (order.getId()==null){
             // 抛出异常
-            throw new CustomException("创建订单失败！！！");
-        }
-        // 如果订单历史记录创建失败
-        if (orderHistoryMapper.insertOrderHistory(order.getId()) == ERROR){
-            //抛出异常
-            throw new CustomException("创建订单历史记录失败！！！");
+            throw new CustomException("提交订单失败，请联系管理员");
         }
         // 返回订单id
         return order.getId();
@@ -250,5 +243,53 @@ public class BoxBespeakServiceImpl extends Msg implements BoxBespeakService {
         point.setDelFlag("0");
         // 返回添加积分记录结果
         return pointMapper.insertPoint(point);
+    }
+
+    /**
+     * 判断空箱预约信息是否完整
+     * @param order 订单对象
+     */
+    private void judgeBoxBespeakInfo(Order order){
+        if (
+            // 订单名称不存在
+            order.getOrderName() == null ||
+            // 箱子规格不存在或为空
+            order.getBoxStandard() == null || "".equals(order.getOrderName())||
+            // 箱子积分单价不存在或为空
+            order.getBoxUnitPrice() == null || "".equals(order.getBoxStandard()) ||
+            // 空箱上门时间不存在或租赁时长小于等于0
+            order.getEmptyBoxCallTime() == null || order.getLeaseDuration() <= ERROR ||
+            // 空箱上门电话不存在或为空
+            order.getEmptyBoxCallPhone() == null || "".equals(order.getEmptyBoxCallPhone()) ||
+            // 空箱上门地址不存在或为空
+            order.getEmptyBoxCallAddress() == null || "".equals(order.getEmptyBoxCallAddress()) ||
+            // 空箱上门时段不存在或为空
+            order.getEmptyBoxCallInterval() == null || "".equals(order.getEmptyBoxCallInterval())
+        ){
+            // 抛异常
+            throw new CustomException("缺少预约信息");
+        }
+        // 如果订单名称过长
+        if (order.getOrderName().length() > ORDER_NAME_MAX_LENGTH){
+            // 抛异常
+            throw new CustomException("订单名称过长");
+        }
+        // 如果空箱上门姓名过长
+        if (order.getEmptyBoxCallName().length() > NAME_MAX_LENGTH){
+            // 抛异常
+            throw new CustomException("空箱上门姓名过长");
+        }
+        // 如果空箱上门电话过长
+        if (order.getEmptyBoxCallPhone().length() > NUMBER_MAX_LENGTH){
+            // 抛异常
+            throw new CustomException("空箱上门电话过长");
+        }
+        // 如果空箱上门地址过长
+        if (order.getEmptyBoxCallAddress().length() > ADDRESS_MAX_LENGTH){
+            // 抛异常
+            throw new CustomException("空箱上门地址过长");
+        }
+        // 判断上门时间段
+        judgeTime(order.getEmptyBoxCallInterval());
     }
 }

@@ -89,6 +89,7 @@
             t_box_info
         WHERE
           is_used = 0
+        AND used_by IS NULL
         AND del_flag = '0'
         AND box_standard = #{msg}
         AND box_unit_price = #{id}

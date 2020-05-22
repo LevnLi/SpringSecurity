@@ -12,6 +12,7 @@ import com.ruoyi.project.storage.mapper.BackEndBoxInfoMapper;
 import com.ruoyi.project.storage.mapper.BackEndBoxStandardMapper;
 import com.ruoyi.project.storage.msg.Msg;
 import com.ruoyi.project.storage.service.BackEndBoxInfoService;
+import com.ruoyi.project.storage.util.InfoUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,23 @@ public class BackEndBoxInfoServiceImpl extends Msg implements BackEndBoxInfoServ
      */
     @Override
     public List<BoxInfo> queryBoxInfoList(BoxInfo boxInfo) {
+        // 如果是否使用字段存在
+        if (boxInfo.getIsUsed()!=null){
+            // 如果使用字段输入格式错误
+            if (boxInfo.getIsUsed() != NO_USED || boxInfo.getIsUsed() != IS_USED){
+                // 抛异常
+                throw new CustomException("使用状态格式错误");
+            }
+        }
+        // 如果存在使用人姓名
+        if (boxInfo.getUsedByName()!=null){
+            // 如果姓名存在非法字符
+            if (InfoUtil.isHaveIllegalChar(boxInfo.getUsedByName())){
+                // 抛异常
+                throw new CustomException("使用姓名存在非法字符");
+            }
+        }
+        // 返回查询结果
         return backEndBoxInfoMapper.queryBoxInfoList(boxInfo);
     }
 
@@ -74,7 +92,7 @@ public class BackEndBoxInfoServiceImpl extends Msg implements BackEndBoxInfoServ
         // 如果更新条数不等于数组长度
         if (count != ids.length){
             // 抛出异常
-            throw new CustomException("删除失败");
+            throw new CustomException("箱子仍有订单,箱子不能删除");
         }
         // 返回成功信息
         return SUCCESS;
@@ -91,9 +109,9 @@ public class BackEndBoxInfoServiceImpl extends Msg implements BackEndBoxInfoServ
         // 如果箱子积分单价小于0
         if (boxInfo.getBoxUnitPrice().intValue()<=ERROR){
             // 抛出异常
-            throw new CustomException("箱子积分小于等于零");
+            throw new CustomException("箱子积分不能小于等于零");
         }
-        // 获取当前箱子规格的id、积分单价
+        // 获取当前箱子规格的基本信息
         BoxStandardV1 boxStandardV1 = backEndBoxStandardMapper.queryBox(boxInfo.getBoxStandard());
         // 如果不存在当前箱子规格
         if (boxStandardV1 == null){
@@ -117,7 +135,7 @@ public class BackEndBoxInfoServiceImpl extends Msg implements BackEndBoxInfoServ
      * @param boxInfo 箱子信息对象
      */
     private void insertInfo(BoxInfo boxInfo){
-        // 箱子编号: 年月日+随机六位数
+        // 生成箱子编号: 年月日+随机六位数
         boxInfo.setBoxCode(Long.valueOf(SeqGeneratorUtil.seqGenerator(DateUtils.getNowDateStr(),6)));
         // 未使用
         boxInfo.setIsUsed(0);

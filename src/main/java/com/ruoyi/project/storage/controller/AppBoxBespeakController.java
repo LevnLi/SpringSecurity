@@ -68,9 +68,12 @@ public class AppBoxBespeakController extends BaseController {
     @PostMapping("/order")
     @ApiOperation(value = "5.2.3.3 预约",notes = "预约")
     public AjaxResult boxOrder(@RequestBody Order order){
-        // 空箱预约结果: 大于0: 预约成功 否则: 预约失败
-        return boxBespeakService.boxOrder(order)>0 ?
-                AjaxResult.success("预约成功") :
-                AjaxResult.error("预约失败");
+        // 当空箱预约失败时
+        while (boxBespeakService.boxOrder(order)<=ERROR){
+            // 再次预约
+            boxBespeakService.boxOrder(order);
+        }
+        // 返回结果
+        return AjaxResult.success("预约成功");
     }
 }

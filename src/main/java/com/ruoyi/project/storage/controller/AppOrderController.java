@@ -1,5 +1,6 @@
 package com.ruoyi.project.storage.controller;
 
+import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.Log;
 import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
@@ -12,6 +13,11 @@ import com.ruoyi.project.storage.service.OrderService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
+import java.util.Currency;
+
+import static com.ruoyi.project.storage.msg.Msg.APP;
 
 /**
  * @author :lihao
@@ -49,7 +55,7 @@ public class AppOrderController extends BaseController {
             @ApiImplicitParam(paramType = "query",name = "pageNum",dataType = "int",value = "当前页数",defaultValue = "1"),
             @ApiImplicitParam(paramType = "query",name = "pageSize",dataType = "int",value = "每页显示记录数",defaultValue = "10")
     })
-    public TableDataInfo list(OrderV1 orderV1){
+    public TableDataInfo list(OrderV1 orderV1) throws ParseException {
         // 获取分页信息
         startPage();
         // 装入客户id
@@ -70,6 +76,10 @@ public class AppOrderController extends BaseController {
     @PutMapping("/operate/{id}/{operate}/{version}")
     @ApiOperation(value = "5.2.4.3 订单操作",notes = "订单操作")
     public AjaxResult orderOperation(@PathVariable Long id, @PathVariable Integer operate, @PathVariable Long version,@RequestBody OrderV0 orderV0){
+        // 空值判断
+        if (id == null || operate == null || version == null){
+            throw new CustomException("订单id/订单操作/版本号不存在");
+        }
         // 装入订单id
         orderV0.setId(id);
         // 装入订单状态
@@ -77,7 +87,7 @@ public class AppOrderController extends BaseController {
         // 装入订单版本号
         orderV0.setVersion(version);
         // 转入信息
-        orderV0.setMsg("app");
+        orderV0.setMsg(APP);
         // 订单操作结果: 大于0，操作成功  否则，操作失败
         return orderService.orderOperation(orderV0)>0 ?
                 AjaxResult.success("操作成功") :

@@ -1,6 +1,6 @@
 package com.ruoyi.project.storage.mapper;
 
-import com.ruoyi.project.storage.domain.Register;
+import com.ruoyi.project.storage.domain.User;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -13,10 +13,10 @@ public interface RegisterMapper {
 
     /**
      * 手机用户注册
-     * @param register 注册对象
+     * @param user 注册对象
      * @return 结果
      */
-    int registerUser(Register register);
+    int registerUser(User user);
 
     /**
      * 账号是否存在

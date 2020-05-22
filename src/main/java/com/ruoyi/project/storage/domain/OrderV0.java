@@ -111,5 +111,5 @@ public class OrderV0 {
     /**
      * 信息
      */
-    private String msg;
+    private Long msg;
 }

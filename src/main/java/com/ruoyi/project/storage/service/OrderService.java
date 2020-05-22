@@ -4,6 +4,7 @@ import com.ruoyi.project.storage.domain.Order;
 import com.ruoyi.project.storage.domain.OrderV0;
 import com.ruoyi.project.storage.domain.OrderV1;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ public interface OrderService {
      * @param orderV1 订单对象
      * @return 结果
      */
-    List<Order> getOrderList(OrderV1 orderV1);
+    List<Order> getOrderList(OrderV1 orderV1) throws ParseException;
 
     /**
      * 通过id查订单信息

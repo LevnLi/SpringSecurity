@@ -7,6 +7,7 @@ import com.ruoyi.project.storage.domain.Advice;
 import com.ruoyi.project.storage.mapper.AdviceMapper;
 import com.ruoyi.project.storage.msg.Msg;
 import com.ruoyi.project.storage.service.AdviceService;
+import com.ruoyi.project.storage.util.InfoUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+
+import static com.ruoyi.project.storage.msg.Msg.TITLE_MAX_LENGTH;
 
 /**
  * @author :lihao
@@ -46,6 +49,14 @@ public class AdviceServiceImpl extends Msg implements AdviceService {
      */
     @Override
     public List<Advice> queryAllAdvice(Advice advice) {
+        // 如果搜索值不为空
+        if (advice.getSearchValue()!=null){
+            // 如果存在非法字符
+            if (InfoUtil.isHaveIllegalChar(advice.getSearchValue())){
+                // 抛出异常
+                throw new CustomException("存在非法字符");
+            }
+        }
         // 返回查询结果
         return adviceMapper.queryAllAdvice(advice);
     }
@@ -57,6 +68,8 @@ public class AdviceServiceImpl extends Msg implements AdviceService {
      */
     @Override
     public int insertAdvice(Advice advice) {
+        // 校验输入信息
+        adviceInfo(advice);
         // 设置用户id
         advice.setUserId(SecurityUtils.getUserId());
         // 设置创建时间
@@ -74,5 +87,31 @@ public class AdviceServiceImpl extends Msg implements AdviceService {
         }
         // 返回成功信息
         return SUCCESS;
+    }
+
+    /**
+     * 意见信息判断
+     * @param advice 意见对象
+     */
+    private void adviceInfo(Advice advice){
+        if (
+            // 标题为空或不存在
+            advice.getTitle() == null || "".equals(advice.getTitle()) ||
+            // 内容为空或不存在
+            advice.getContent() == null || "".equals(advice.getContent())
+        ){
+            // 抛异常
+            throw new CustomException("标题/内容为空");
+        }
+        // 如果标题过长
+        if (advice.getTitle().length()>TITLE_MAX_LENGTH){
+            // 抛异常
+            throw new CustomException("标题过长");
+        }
+        // 如果内容过长
+        if (advice.getContent().length()>CONTENT_MAX_LENGTH){
+            // 抛异常
+            throw new CustomException("内容过长");
+        }
     }
 }

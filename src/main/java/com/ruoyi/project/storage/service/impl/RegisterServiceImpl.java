@@ -4,15 +4,19 @@ import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.project.storage.domain.Point;
-import com.ruoyi.project.storage.domain.Register;
+import com.ruoyi.project.storage.domain.User;
 import com.ruoyi.project.storage.mapper.PointMapper;
 import com.ruoyi.project.storage.mapper.RegisterMapper;
+import com.ruoyi.project.storage.mapper.UserRoleMapper;
 import com.ruoyi.project.storage.msg.Msg;
 import com.ruoyi.project.storage.service.RegisterService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.ruoyi.project.storage.util.InfoUtil.judgeRegisterInfo;
+import static com.ruoyi.project.storage.util.InfoUtil.judgeUserInfo;
 
 /**
  * @author :lihao
@@ -35,58 +39,75 @@ public class RegisterServiceImpl extends Msg implements RegisterService {
     private final PointMapper pointMapper;
 
     /**
+     * 用户角色mapper接口
+     */
+    private final UserRoleMapper userRoleMapper;
+
+    /**
      * 通过构造方法注入
      * @param registerMapper 注册mapper
      * @param pointMapper  积分记录mapper
+     * @param userRoleMapper 用户角色mapper
      */
     @Autowired
-    public RegisterServiceImpl(RegisterMapper registerMapper, PointMapper pointMapper) {
+    public RegisterServiceImpl(RegisterMapper registerMapper, PointMapper pointMapper, UserRoleMapper userRoleMapper) {
         this.registerMapper = registerMapper;
         this.pointMapper = pointMapper;
+        this.userRoleMapper = userRoleMapper;
     }
 
     /**
-     * 手机用户注册
+     * 手机客户注册
      *
-     * @param register 注册实体
+     * @param user 注册实体
      * @return 结果
      */
     @Override
-    public int registerUser(Register register) {
+    public int registerUser(User user) {
+        // 校验用户信息
+        judgeRegisterInfo(user);
         // 如果当前账号存在
-        if (registerMapper.queryByUserName(register.getUserName())!=null){
+        if (registerMapper.queryByUserName(user.getUserName())!=null){
             // 抛异常
-            throw new CustomException("新增用户'"+register.getUserName()+"'失败，登录账号已存在");
+            throw new CustomException("新增客户'"+user.getUserName()+"'失败，登录账号已存在");
         }
         // 如果当前邮箱存在
-        if (registerMapper.queryByEmail(register.getEmail())!=null){
+        if (registerMapper.queryByEmail(user.getEmail())!=null){
             // 抛异常
-            throw new CustomException("新增用户'"+register.getUserName()+"'失败，邮箱账号已存在");
+            throw new CustomException("新增客户'"+user.getUserName()+"'失败，邮箱账号已存在");
         }
         // 如果当前手机号存在
-        if (registerMapper.queryByPhoneNumber(register.getPhonenumber())!=null){
+        if (registerMapper.queryByPhoneNumber(user.getPhonenumber())!=null){
             // 抛异常
-            throw new CustomException("新增用户'"+register.getUserName()+"'失败，手机号码已存在");
+            throw new CustomException("新增客户'"+user.getUserName()+"'失败，手机号码已存在");
         }
+        // 接收客户注册成功的id
+        Long userId = insertCustomer(user);
+        // 添加客户角色信息
+        if (userRoleMapper.insertUserRole(userId,APP) == ERROR){
+            throw new CustomException("添加客户角色信息失败");
+        }
+        // 传入客户ID
+        user.setUserId(userId);
         // 调用添加积分对象接口
-        insertPoint(register);
+        insertPoint(user);
         // 返回成功信息
         return SUCCESS;
     }
 
     /**
      * 添加积分记录
-     * @param register 注册实体
+     * @param user 注册实体
      */
-    private void insertPoint(Register register){
+    private void insertPoint(User user){
         // new一个积分对象
         Point point = new Point();
         // 创建人
-        point.setCreateBy(register.getUserName());
+        point.setCreateBy(user.getUserName());
         // 创建时间
         point.setCreateTime(DateUtils.getNowDate());
-        // 通过注册用户返回的用户id，传给point对象
-        point.setUserId(insertCustomer(register));
+        // 通过注册客户返回的客户id，传给point对象
+        point.setUserId(user.getUserId());
         // 获取方式
         point.setWay(1);
         // 获得积分
@@ -104,32 +125,34 @@ public class RegisterServiceImpl extends Msg implements RegisterService {
 
     /**
      * 添加客户信息
-     * @param register 注册实体
+     * @param user 注册实体
      * @return 客户id
      */
-    private Long insertCustomer(Register register){
+    private Long insertCustomer(User user){
         // 设置创建时间
-        register.setCreateTime(DateUtils.getNowDate());
-        // 设置用户类型
-        register.setUserType("02");
-        // 设置用户状态
-        register.setStatus("0");
+        user.setCreateTime(DateUtils.getNowDate());
+        // 设置客户类型
+        user.setUserType("02");
+        // 设置客户状态
+        user.setStatus("0");
+        // 设置客户部门
+        user.setDeptId(110L);
         // 设置未删除
-        register.setDelFlag("0");
+        user.setDelFlag("0");
         // 设置创建方式
-        register.setCreateBy("appRegister");
+        user.setCreateBy("appRegister");
         // 设置版本号
-        register.setVersion(0L);
+        user.setVersion(0L);
         // 密码加密存放
-        register.setPassword(SecurityUtils.encryptPassword(register.getPassword()));
+        user.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
         // 设置初始积分
-        register.setCurrentPoints(10000L);
-        // 如果添加用户信息失败
-        if (registerMapper.registerUser(register) == ERROR){
+        user.setCurrentPoints(10000L);
+        // 如果添加客户信息失败
+        if (registerMapper.registerUser(user) == ERROR){
             // 抛出异常
             throw new CustomException("添加客户信息失败");
         }
-        // 返回注册用户的id
-        return register.getUserId();
+        // 返回注册客户的id
+        return user.getUserId();
     }
 }

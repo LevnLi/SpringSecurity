@@ -45,8 +45,7 @@
             <if test="searchValue != null and searchValue != ''">
                 and (
                 advic.title like concat(#{searchValue}, '%')
-                or advic.content like concat(#{searchValue}, '%')
-                or advic.create_by like concat(#{searchValue}, '%')
+                or `user`.nick_name like concat(#{searchValue}, '%')
                 )
             </if>
         </where>

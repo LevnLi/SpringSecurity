@@ -19,10 +19,9 @@ public interface AppAdvertisementService {
 
     /**
      * 广告积分获取
-     * @param id 广告id
-     * @param points 可获积分
+     * @param advertisement 广告对象
      * @return 结果
      */
-    int getAdvertisementPoints(Long id,Long points);
+    int getAdvertisementPoints(Advertisement advertisement);
 
 }
