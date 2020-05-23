@@ -142,7 +142,7 @@ public class OrderServiceImpl extends Msg implements OrderService {
         // 如果更改条数不等于数组长度
         if (count != ids.length){
             // 抛出异常
-            throw new CustomException("订单删除失败");
+            throw new CustomException("订单还未结束，删除失败");
         }
         // 返回删除订单记录结果
         return SUCCESS;

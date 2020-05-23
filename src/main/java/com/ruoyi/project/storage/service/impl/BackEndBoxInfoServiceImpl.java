@@ -59,14 +59,6 @@ public class BackEndBoxInfoServiceImpl extends Msg implements BackEndBoxInfoServ
      */
     @Override
     public List<BoxInfo> queryBoxInfoList(BoxInfo boxInfo) {
-        // 如果是否使用字段存在
-        if (boxInfo.getIsUsed()!=null){
-            // 如果使用字段输入格式错误
-            if (boxInfo.getIsUsed() != NO_USED || boxInfo.getIsUsed() != IS_USED){
-                // 抛异常
-                throw new CustomException("使用状态格式错误");
-            }
-        }
         // 如果存在使用人姓名
         if (boxInfo.getUsedByName()!=null){
             // 如果姓名存在非法字符

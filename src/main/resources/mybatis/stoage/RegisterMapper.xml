@@ -19,6 +19,8 @@
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
             <if test="currentPoints != null">current_points,</if>
             <if test="version != null">version,</if>
         </trim>
@@ -35,6 +37,8 @@
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
             <if test="currentPoints != null">#{currentPoints},</if>
             <if test="version != null">#{version},</if>
         </trim>

@@ -89,8 +89,6 @@ public class InfoUtil extends Msg {
         judgeContent(advertisement.getContent());
         // 判断积分
         judgePoint(advertisement.getPoints());
-        // 判断图片地址长度
-        judgeUrl(advertisement.getImgUrl());
         // 判断序号
         judgeSortNo(advertisement.getSortNo());
     }
@@ -108,9 +106,6 @@ public class InfoUtil extends Msg {
         }
         if (advertisement.getPoints() != null){
             judgePoint(advertisement.getPoints());
-        }
-        if (advertisement.getImgUrl() != null){
-            judgeUrl(advertisement.getImgUrl());
         }
         if (advertisement.getPoints() != null){
             judgeSortNo(advertisement.getSortNo());
@@ -236,15 +231,6 @@ public class InfoUtil extends Msg {
         }
     }
 
-    public static void judgeUrl(String url){
-        if (url == null || "".equals(url)){
-            throw new CustomException("图片地址不能为空");
-        }
-        if (url.length()>URL_MAX_LENGTH){
-            throw new CustomException("图片地址过长");
-        }
-    }
-
     public static void judgeSortNo(Long sortNo){
         if (sortNo.intValue()<=ERROR){
             throw new CustomException("广告排序需大于零");
@@ -262,7 +248,7 @@ public class InfoUtil extends Msg {
         tree += time.substring(9,11);
         int tow = Integer.parseInt(one);
         int four = Integer.parseInt(tree);
-        if (tow > four){
+        if (tow >= four){
             throw new CustomException("上门时间段错误");
         }
     }

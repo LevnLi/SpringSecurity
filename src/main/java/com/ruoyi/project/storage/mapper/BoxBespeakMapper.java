@@ -22,10 +22,9 @@ public interface BoxBespeakMapper {
 
     /**
      * 有效箱子规格选择（非分页）
-     * @param userId 用户ID
      * @return 结果
      */
-    List<BoxStandardV1> getStandardList(Long userId);
+    List<BoxStandardV1> getStandardList();
 
     /**
      * 查询用户当前积分余额

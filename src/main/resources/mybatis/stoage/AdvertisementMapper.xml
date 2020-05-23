@@ -27,7 +27,7 @@
     <select id="selectAdvertisementList" parameterType="com.ruoyi.project.storage.domain.Advertisement" resultMap="AdvertisementResult">
         <include refid="selectAdvertisementVo"/>
         <where>
-            and del_flag = '0'
+            del_flag = '0'
             <if test="searchValue != null and searchValue != ''">
                 and (
                        title like concat(#{searchValue}, '%')

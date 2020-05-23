@@ -56,8 +56,9 @@
             t_box_standard  stand left join
             t_box_info info ON stand.box_standard = info.box_standard
         WHERE
-            stand.del_flag = '0'
-        and info.is_used = 0
+            info.is_used = 0
+        AND info.del_flag = '0'
+        AND stand.del_flag = '0'
         order by stand.box_unit_price
     </select>
 
@@ -114,7 +115,7 @@
         insert into t_order
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="userId != null">user_id,</if>
-            <if test="status != null">status,</if>
+            <if test="status != null">`status`,</if>
             <if test="orderCode != null">order_code,</if>
             <if test="orderName != null and orderName != ''">order_name,</if>
             <if test="emptyBoxOrderTime != null">empty_box_order_time,</if>
@@ -131,6 +132,8 @@
             <if test="totalPrice != null">total_price,</if>
             <if test="createTime != null">create_time,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
             <if test="version != null">version,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
             <if test="appDelFlag != null">app_del_flag,</if>
@@ -155,6 +158,8 @@
             <if test="totalPrice != null">#{totalPrice},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
             <if test="version != null">#{version},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
             <if test="appDelFlag != null">#{appDelFlag},</if>

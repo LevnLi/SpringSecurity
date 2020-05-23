@@ -162,6 +162,10 @@ public class BackEndBoxStandardServiceImpl extends Msg implements BackEndBoxStan
             boxInfo.setCreateBy(SecurityUtils.getUsername());
             // 创建时间
             boxInfo.setCreateTime(DateUtils.getNowDate());
+            // 更新人
+            boxInfo.setUpdateBy(SecurityUtils.getUsername());
+            // 更新时间
+            boxInfo.setUpdateTime(DateUtils.getNowDate());
             // 未使用
             boxInfo.setIsUsed(0);
             // 版本号
@@ -189,6 +193,10 @@ public class BackEndBoxStandardServiceImpl extends Msg implements BackEndBoxStan
         boxStandard.setCreateBy(SecurityUtils.getUsername());
         // 创建时间
         boxStandard.setCreateTime(DateUtils.getNowDate());
+        // 更新人
+        boxStandard.setUpdateBy(SecurityUtils.getUsername());
+        // 更新时间
+        boxStandard.setUpdateTime(DateUtils.getNowDate());
         // 版本号
         boxStandard.setVersion(0L);
         // 未删除

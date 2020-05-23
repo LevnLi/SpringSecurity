@@ -27,7 +27,8 @@
     <select id="selectAdvertisementList" resultMap="AdvertisementResult">
         <include refid="selectAdvertisementVo"/>
         <where>
-            and del_flag = '0'
+            del_flag = '0'
+            and is_enable = 0
         </where>
         order by sort_no , update_time DESC
     </select>

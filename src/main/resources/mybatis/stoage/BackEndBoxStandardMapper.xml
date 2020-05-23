@@ -75,7 +75,7 @@
             GROUP BY
                 stand.box_standard
         ) temp
-        ORDER BY temp.ctm DESC,temp.utm DESC
+        ORDER BY temp.utm DESC
     </select>
 
     <insert id="insertBoxStandard" parameterType="com.ruoyi.project.storage.domain.BoxStandard">
@@ -86,6 +86,8 @@
             <if test="remark != null and remark != ''">remark,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
             <if test="version != null">version,</if>
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
         </trim>
@@ -95,6 +97,8 @@
             <if test="remark != null and remark != ''">#{remark},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
             <if test="version != null">#{version},</if>
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
         </trim>

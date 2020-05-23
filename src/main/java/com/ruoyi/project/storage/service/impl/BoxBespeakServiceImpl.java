@@ -69,7 +69,7 @@ public class BoxBespeakServiceImpl extends Msg implements BoxBespeakService {
     @Override
     public List<BoxStandardV1> getStandardList() {
         // 返回查询结果
-        return boxBespeakMapper.getStandardList(SecurityUtils.getUserId());
+        return boxBespeakMapper.getStandardList();
     }
 
     /**
@@ -198,6 +198,10 @@ public class BoxBespeakServiceImpl extends Msg implements BoxBespeakService {
         order.setCreateTime(DateUtils.getNowDate());
         // 创建人
         order.setCreateBy(SecurityUtils.getUsername());
+        // 更新时间
+        order.setUpdateTime(DateUtils.getNowDate());
+        // 更新人
+        order.setUpdateBy(SecurityUtils.getUsername());
         // 版本号
         order.setVersion(0L);
         // 未删除

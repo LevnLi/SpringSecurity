@@ -46,7 +46,7 @@
                 )
             </if>
         </where>
-        order by update_time desc,create_time desc
+        order by update_time desc
     </select>
 
     <insert id="insertCustomer" parameterType="com.ruoyi.project.storage.domain.User" useGeneratedKeys="true" keyProperty="userId">
@@ -66,6 +66,8 @@
             <if test="delFlag != null and delFlag != ''">del_flag,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
             <if test="remark != null and remark != ''">remark,</if>
             <if test="currentPoints != null">current_points,</if>
             <if test="version != null">version,</if>
@@ -85,6 +87,8 @@
             <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
             <if test="remark != null and remark != ''">#{remark},</if>
             <if test="currentPoints != null">#{currentPoints},</if>
             <if test="version != null">#{version},</if>

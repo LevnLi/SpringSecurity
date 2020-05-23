@@ -102,6 +102,10 @@ public class CustomerServiceImpl extends Msg implements CustomerService {
         user.setCreateTime(DateUtils.getNowDate());
         // 设置创建人
         user.setCreateBy(SecurityUtils.getUsername());
+        // 更新时间
+        user.setUpdateTime(DateUtils.getNowDate());
+        // 更新人
+        user.setUpdateBy(SecurityUtils.getUsername());
         // 设置初始密码
         user.setPassword(SecurityUtils.encryptPassword("12345678"));
         // 设置启用
@@ -169,7 +173,7 @@ public class CustomerServiceImpl extends Msg implements CustomerService {
         // 如果更新条数不等于数组长度
         if (count != ids.length){
             // 抛异常
-            throw new CustomException("当前客户已被他人操作，请刷新后重试");
+            throw new CustomException("状态为启用状态的用户，不能删除");
         }
         // 返回成功信息
         return SUCCESS;

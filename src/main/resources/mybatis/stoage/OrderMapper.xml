@@ -109,7 +109,7 @@
         <if test="heavyBoxOrderTimeEnd != null and heavyBoxOrderTimeEnd != ''">
             and `order`.heavy_box_order_time <![CDATA[ <= ]]> #{heavyBoxOrderTimeEnd}
         </if>
-        order by `order`.create_time desc,`order`.update_time desc
+        order by `order`.update_time desc
     </select>
 
     <select id="getOrderInfoById" parameterType="map" resultMap="OrderResult">

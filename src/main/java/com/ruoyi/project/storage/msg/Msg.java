@@ -88,16 +88,6 @@ public class Msg {
     public static final int ORDER_NAME_MAX_LENGTH = 16;
 
     /**
-     * 未使用
-     */
-    public static final Integer NO_USED = 0;
-
-    /**
-     * 已使用
-     */
-    public static final Integer IS_USED = 1;
-
-    /**
      * 图片地址最大长度
      */
     public static final int URL_MAX_LENGTH = 512;

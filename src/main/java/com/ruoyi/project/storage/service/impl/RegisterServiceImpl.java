@@ -129,23 +129,27 @@ public class RegisterServiceImpl extends Msg implements RegisterService {
      * @return 客户id
      */
     private Long insertCustomer(User user){
-        // 设置创建时间
+        // 创建时间
         user.setCreateTime(DateUtils.getNowDate());
-        // 设置客户类型
-        user.setUserType("02");
-        // 设置客户状态
-        user.setStatus("0");
-        // 设置客户部门
-        user.setDeptId(110L);
-        // 设置未删除
-        user.setDelFlag("0");
-        // 设置创建方式
+        // 创建方式
         user.setCreateBy("appRegister");
-        // 设置版本号
+        // 更新时间
+        user.setUpdateTime(DateUtils.getNowDate());
+        // 更新人
+        user.setUpdateBy("appRegister");
+        // 客户类型
+        user.setUserType("02");
+        // 客户状态
+        user.setStatus("0");
+        // 客户部门
+        user.setDeptId(110L);
+        // 未删除
+        user.setDelFlag("0");
+        // 版本号
         user.setVersion(0L);
         // 密码加密存放
         user.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
-        // 设置初始积分
+        // 初始积分
         user.setCurrentPoints(10000L);
         // 如果添加客户信息失败
         if (registerMapper.registerUser(user) == ERROR){

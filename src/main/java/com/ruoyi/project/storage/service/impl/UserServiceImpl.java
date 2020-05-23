@@ -100,21 +100,25 @@ public class UserServiceImpl extends Msg implements UserService {
             // 抛异常
             throw new CustomException("手机号重复");
         }
-        // 设置创建时间
+        // 创建时间
         user.setCreateTime(DateUtils.getNowDate());
-        // 设置创建人
+        // 创建人
         user.setCreateBy(SecurityUtils.getUsername());
-        // 设置初始密码
+        // 更新时间
+        user.setUpdateTime(DateUtils.getNowDate());
+        // 更新人
+        user.setUpdateBy(SecurityUtils.getUsername());
+        // 初始密码
         user.setPassword(SecurityUtils.encryptPassword("Abc123456"));
-        // 设置启用
+        // 启用
         user.setStatus("0");
-        // 设置类型
+        // 类型
         user.setUserType("01");
-        // 设置客户部门
+        // 客户部门
         user.setDeptId(111L);
-        // 设置版本号
+        // 版本号
         user.setVersion(0L);
-        // 设置未删除
+        // 未删除
         user.setDelFlag("0");
         // 添加条数
         int count = userMapper.insertUser(user);
@@ -142,9 +146,9 @@ public class UserServiceImpl extends Msg implements UserService {
     public int updateUser(User user) {
         // 判断更新信息
         judgeUpdateInfo(user);
-        // 设置更新时间
+        // 更新时间
         user.setUpdateTime(DateUtils.getNowDate());
-        // 设置更新人
+        // 更新人
         user.setUpdateBy(SecurityUtils.getUsername());
         // 修改条数
         int count = userMapper.updateUser(user);
@@ -170,7 +174,7 @@ public class UserServiceImpl extends Msg implements UserService {
         // 如果更新条数不等于数组长度
         if (count != ids.length){
             // 抛异常
-            throw new CustomException("当前用户已被他人操作，请刷新后重试");
+            throw new CustomException("状态为启用状态的用户，不能删除");
         }
         // 返回成功信息
         return SUCCESS;

@@ -125,7 +125,7 @@ public class CommonService {
         // 实例化StringBuilder
         StringBuilder result = new StringBuilder();
         // 拼接退出登录url
-        url = url.replaceAll("51120", "51110").replaceAll("51130", "51110").replaceAll("51140", "51110").replaceAll("51150", "51110") + "/logout";
+        url = url.replaceAll("51120", "51110").replaceAll("51130", "51110").replaceAll("51140", "51110").replaceAll("51150", "51110").replaceAll("51160", "51110").replaceAll("51170", "51110") + "/logout";
         try {
             // 打log
             log.info("sendPost - {}", url);

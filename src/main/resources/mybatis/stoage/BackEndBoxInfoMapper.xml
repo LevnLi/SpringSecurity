@@ -54,11 +54,11 @@
             and sys.del_flag = '0'
             and sys.nick_name like concat(#{usedByName}, '%')
         </if>
-        order by update_time desc , create_time desc
+        order by update_time desc
     </select>
 
     <insert id="insertBoxInfo" parameterType="list" useGeneratedKeys="true" keyProperty="id">
-        insert into t_box_info(box_code,box_standard,box_unit_price,is_used,remark,create_by,create_time,version,del_flag)
+        insert into t_box_info(box_code,box_standard,box_unit_price,is_used,remark,create_by,create_time,update_by,update_time,version,del_flag)
         values
         <foreach item="item" collection="list" index="index" separator=",">
             (
@@ -69,6 +69,8 @@
             #{item.remark},
             #{item.createBy},
             #{item.createTime},
+            #{item.updateBy},
+            #{item.updateTime},
             #{item.version},
             #{item.delFlag}
             )
