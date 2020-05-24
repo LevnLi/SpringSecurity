@@ -271,7 +271,6 @@ public class OrderServiceImpl extends Msg implements OrderService {
             // 如果订单删除失败
             if (count == ERROR){
                 // 抛出异常
-                log.error("手机端删除订单失败");
                 throw new CustomException("订单删除失败");
             }
             // 表示操作成功
@@ -357,7 +356,7 @@ public class OrderServiceImpl extends Msg implements OrderService {
         // 如果订单更新失败
         if (count == ERROR){
             // 抛出异常
-            throw new CustomException("更新订单失败");
+            throw new CustomException("当前用户已被他人操作，请刷新后重试");
         }
     }
 

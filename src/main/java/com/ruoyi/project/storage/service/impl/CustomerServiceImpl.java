@@ -225,7 +225,7 @@ public class CustomerServiceImpl extends Msg implements CustomerService {
     @Override
     public int resetCustomerPassword(Long[] ids) {
         // 定义变量接收操作条数
-        int count = customerMapper.resetCustomerPassword(ParameterUtil.getBatchUpdateMapByOperateIds(SecurityUtils.encryptPassword("12345678"),ids));
+        int count = customerMapper.resetCustomerPassword(ParameterUtil.getIdsOperateUpdateByUpdateTime(ids,SecurityUtils.encryptPassword("12345678"),SecurityUtils.getUsername(),DateUtils.getNowDate()));
         // 如果更新条数不等于数组长度
         if (count != ids.length){
             // 抛异常

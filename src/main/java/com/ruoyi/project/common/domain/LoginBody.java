@@ -20,13 +20,13 @@ public class LoginBody {
     /**
      * 用户名
      */
-    @ApiModelProperty(value = "用户名",example = "\"1\"")
+    @ApiModelProperty(value = "用户名",example = "\"lihaoapp1\"")
     private String username;
 
     /**
      * 用户密码
      */
-    @ApiModelProperty(value = "用户密码",example = "\"1\"")
+    @ApiModelProperty(value = "用户密码",example = "\"12345678\"")
     private String password;
 
     /**

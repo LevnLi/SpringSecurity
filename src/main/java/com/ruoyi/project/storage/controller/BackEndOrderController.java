@@ -97,9 +97,9 @@ public class BackEndOrderController extends BaseController {
         // 转入信息
         orderV0.setMsg(BACKEND);
         // 订单操作结果: 大于0，操作成功  否则，操作失败
-        return orderService.orderOperation(orderV0)>0 ?
+        return orderService.orderOperation(orderV0)==SUCCESS ?
                 AjaxResult.success("操作成功") :
-                AjaxResult.error("操作失败");
+                AjaxResult.error("当前订单已被他人操作，请刷新后重试");
     }
 
     /**

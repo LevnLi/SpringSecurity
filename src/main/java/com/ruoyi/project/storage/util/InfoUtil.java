@@ -299,7 +299,7 @@ public class InfoUtil extends Msg {
      * @return 结果
      */
     public static boolean isHaveIllegalChar(String info){
-        String str = "[`~!#$%^&*()+=|{}':;',//[//].<>/?~！#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+        String str = "[`~!#$%^&*()_+=|{}':;',//[//].<>/?~！#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
         Pattern p=Pattern.compile(str);
         Matcher m=p.matcher(info);
         return m.find();

@@ -13,10 +13,7 @@ import com.ruoyi.project.storage.service.OrderService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.text.ParseException;
-import java.util.Currency;
-
 import static com.ruoyi.project.storage.msg.Msg.APP;
 
 /**
@@ -89,9 +86,9 @@ public class AppOrderController extends BaseController {
         // 转入信息
         orderV0.setMsg(APP);
         // 订单操作结果: 大于0，操作成功  否则，操作失败
-        return orderService.orderOperation(orderV0)>0 ?
+        return orderService.orderOperation(orderV0)==SUCCESS ?
                 AjaxResult.success("操作成功") :
-                AjaxResult.error("操作失败");
+                AjaxResult.error("当前订单已被他人操作，请刷新后重试");
     }
 
     /**

@@ -156,9 +156,9 @@
     <update id="resetUserPassword" parameterType="Map">
         update sys_user
         set
-            password = #{operate},
+            `password` = #{operate},
             version = version + 1,
-            update_time = #{time},
+            update_time = #{updateTime},
             update_by = #{updateBy}
         where
             del_flag = '0'

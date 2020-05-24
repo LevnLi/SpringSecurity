@@ -226,11 +226,11 @@ public class UserServiceImpl extends Msg implements UserService {
     @Override
     public int resetUserPassword(Long[] ids) {
         // 定义变量接收操作条数
-        int count = userMapper.resetUserPassword(ParameterUtil.getBatchUpdateMapByOperateIds(SecurityUtils.encryptPassword("Abc123456"),ids));
+        int count = userMapper.resetUserPassword(ParameterUtil.getIdsOperateUpdateByUpdateTime(ids,SecurityUtils.encryptPassword("Abc123456"),SecurityUtils.getUsername(),DateUtils.getNowDate()));
         // 如果更新条数不等于数组长度
         if (count != ids.length){
             // 抛异常
-            throw new CustomException("重置密码失败");
+            throw new CustomException("当前用户已被他人操作，请刷新后重试");
         }
         // 返回成功信息
         return SUCCESS;

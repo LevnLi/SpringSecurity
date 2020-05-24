@@ -84,8 +84,10 @@ public class BoxBespeakServiceImpl extends Msg implements BoxBespeakService {
         judgeBoxBespeakInfo(order);
         // 获取当前用户积分
         Long userPoint = boxBespeakMapper.queryUserPoint(SecurityUtils.getUserId());
+        // 计算积分
+        Long sum = order.getBoxUnitPrice() * order.getLeaseDuration();
         // 如果当前用户积分不能存在或未零或小于所需积分
-        if (userPoint == null || userPoint.intValue() == 0 || userPoint<order.getBoxUnitPrice() * order.getLeaseDuration()){
+        if (userPoint == null || userPoint.intValue() == 0 || userPoint < sum){
             // 抛出异常
             throw new CustomException("积分余额不足");
         }
@@ -94,21 +96,21 @@ public class BoxBespeakServiceImpl extends Msg implements BoxBespeakService {
             // 抛出异常
             throw new CustomException("箱子库存不足，请重新选择");
         }
-        // 接收获得箱子信息
+        // 接收当前规格下随机获得箱子信息
         BoxInfo boxInfo = randGetBoxInfoByStandard(ParameterUtil.getMapByIdMsg(order.getBoxUnitPrice(),order.getBoxStandard()));
         // 如果没有箱子信息更新条数
-        if (updateBoxInfo(boxInfo)<=ERROR){
+        if (updateBoxInfo(boxInfo)!=SUCCESS){
             // 补偿机制,返回失败,再次预约箱子
             return ERROR;
         }
         // 如果没有扣除客户积分
-        if(subtractUserPoint(userPoint - boxInfo.getBoxUnitPrice() * order.getLeaseDuration())<=ERROR){
+        if(subtractUserPoint(userPoint - sum)!=SUCCESS){
             throw new CustomException("扣除客户积分失败");
         }
         // 实付积分
         order.setTotalPrice(boxInfo.getBoxUnitPrice() * order.getLeaseDuration());
         // 如果没有添加积分记录
-        if (insertPoint(boxInfo,order)<=ERROR){
+        if (insertPoint(boxInfo,order)!=SUCCESS){
             // 抛出异常
             throw new CustomException("添加积分记录失败！！！");
         }
@@ -150,7 +152,11 @@ public class BoxBespeakServiceImpl extends Msg implements BoxBespeakService {
         // 设置已使用
         boxInfo.setIsUsed(1);
         // 返回更新结果
-        return boxBespeakMapper.updateBoxInfo(boxInfo);
+        if (boxBespeakMapper.updateBoxInfo(boxInfo) == SUCCESS){
+            return SUCCESS;
+        }else {
+            return ERROR;
+        }
     }
 
     /**
@@ -160,7 +166,7 @@ public class BoxBespeakServiceImpl extends Msg implements BoxBespeakService {
      */
     private int subtractUserPoint(Long point){
         // 返回扣除积分结果
-        return boxBespeakMapper.subtractUserPoint(
+        int count =  boxBespeakMapper.subtractUserPoint(
                 // 封装成map集合
                 ParameterUtil.getIdDataUpdateByUpdateTime(
                     // 客户id
@@ -173,6 +179,11 @@ public class BoxBespeakServiceImpl extends Msg implements BoxBespeakService {
                     DateUtils.getNowDate()
                 )
         );
+        if (count == SUCCESS){
+            return SUCCESS;
+        }else {
+            return ERROR;
+        }
     }
 
     /**
@@ -246,7 +257,12 @@ public class BoxBespeakServiceImpl extends Msg implements BoxBespeakService {
         // 未删除
         point.setDelFlag("0");
         // 返回添加积分记录结果
-        return pointMapper.insertPoint(point);
+        int count = pointMapper.insertPoint(point);
+        if (count == SUCCESS){
+            return SUCCESS;
+        }else {
+            return ERROR;
+        }
     }
 
     /**

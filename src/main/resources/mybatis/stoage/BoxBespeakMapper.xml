@@ -102,7 +102,7 @@
         set
             used_by = #{usedBy},
             is_used = #{isUsed},
-            update_by = #{usedBy},
+            update_by = #{updateBy},
             update_time = #{updateTime},
             version = version + 1
         where

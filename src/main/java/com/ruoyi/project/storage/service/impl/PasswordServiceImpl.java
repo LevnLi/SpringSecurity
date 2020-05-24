@@ -56,7 +56,7 @@ public class PasswordServiceImpl extends Msg implements PasswordService {
         // 如果输入的旧密码和数据库中的旧密码不一样
         if (!SecurityUtils.matchesPassword(oldPassword,password)){
             // 抛出异常信息
-            throw new CustomException("旧密码错误");
+            throw new CustomException("原密码错误");
         }
         // 如果输入旧密码正确但是新密码与数据库旧密码相同
         if(SecurityUtils.matchesPassword(newPassword,password)){
